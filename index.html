@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RACHID CHOKRANI — Cybersecurity Portfolio</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <script src="assets/js/theme.js"></script> <!-- no defer: avoids a dark flash on load -->
+</head>
+
+<body>
+
+  <!-- ==================== NAV ==================== -->
+  <nav>
+    <a href="index.html" class="logo" style="text-decoration:none;">
+      <span class="prompt">$</span> R4CH1D0X<span class="cursor"></span>
+    </a>
+    <div class="links">
+      <a href="projects.html">[Projects]</a>
+      <a href="writeups/index.html">[Writeups]</a>
+      <a href="Notes/index.html">[Notes]</a>
+      <a href="contact.html">[Contact]</a>
+    </div>
+  </nav>
+
+  <!-- ==================== HERO ==================== -->
+  <div class="container">
+
+    <section class="hero" id="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="tag">// cybersecurity portfolio</span>
+          <h1>Rachid Chokrani<span class="accent">.</span></h1>
+          <div class="title-line">Cybersecurity Engineering Student</div>
+          <p class="bio">
+            Cybersecurity and digital trust engineering student at ENSIASD with a strong command of programming concepts
+            and information technologies. Driven by applying skills to concrete, innovative projects with a deep
+            interest in solving technical problems, offensive security, and network defense.
+          </p>
+          <div class="contact-bar">
+            <a href="mailto:chokrani.rachid10@gmail.com" class="contact-item">
+              <span class="icon">✉</span> chokrani.rachid10@gmail.com
+            </a>
+
+            <span class="contact-item">
+              <span class="icon">⚑</span> Morocco
+            </span>
+          </div>
+          <div class="status">
+            <span class="dot"></span>
+            Open to internships &amp; opportunities
+          </div>
+        </div>
+
+        <!-- Terminal Card -->
+        <div class="terminal-window">
+          <div class="terminal-bar">
+            <span class="terminal-dot dot-red"></span>
+            <span class="terminal-dot dot-yellow"></span>
+            <span class="terminal-dot dot-green"></span>
+            <span class="terminal-title">root@r4ch1d0x:~</span>
+          </div>
+          <div class="terminal-body">
+            <div class="term-welcome">Welcome to my portfolio. Type "help" to start.</div>
+            <div class="term-scroll" id="term-body" data-lenis-prevent>
+              <div class="term-out" id="term-out" aria-live="polite"></div>
+              <div class="term-line">
+                <span class="prompt">root@r4ch1d0x:~#</span>
+                <input id="term-in" type="text" autocomplete="off" autocapitalize="off"
+              spellcheck="false" aria-label="Terminal input. Type help for commands.">
+            </div>
+          </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROJECTS ==================== -->
+    <section id="projects">
+      <div class="section-header">
+        <span class="label">01 // Projects</span>
+        <h2>ls -la ~/projects/</h2>
+      </div>
+
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="p-header">
+            <div>
+              <div class="p-title">Safe Shelter Connect — Comparative Security Audit</div>
+              <div class="p-context">Personal project, ENSIASD Taroudant</div>
+            </div>
+            <span class="p-date">2026</span>
+          </div>
+          <ul class="p-details">
+            <li>Conducted a comprehensive security audit identifying Broken Access Control, JWT forgery (hardcoded
+              secrets), and privilege escalation via unprotected admin registration</li>
+            <li>Authored a technical report and presentation detailing impact, PoC reproduction, and remediation</li>
+          </ul>
+        </div>
+
+        <div class="project-card">
+          <div class="p-header">
+            <div>
+              <div class="p-title">Symmetric Cryptographic Algorithms for Network Security</div>
+              <div class="p-context">PFE — EST Safi</div>
+            </div>
+            <span class="p-date">Dec 2024 – Apr 2025</span>
+          </div>
+          <ul class="p-details">
+            <li>Implemented AES in Counter mode using Python, ensuring performant and flexible data encryption</li>
+            <li>Developed secure key establishment protocols to mitigate symmetric key distribution vulnerabilities</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== WRITEUPS ==================== -->
+    <section id="writeups">
+      <div class="section-header">
+        <span class="label">02 // Writeups</span>
+        <h2>cat ./writeups/*</h2>
+      </div>
+
+      <div class="writeups-grid">
+        <a href="writeups/HTB/touch-writeup.html" class="writeup-card">
+          <div class="card-top">
+            <h3>HTB: Touch</h3>
+            <span class="difficulty easy">Easy</span>
+          </div>
+          <p class="desc">Windows kiosk breakout into MySQL UDF privilege escalation. Chained a leaked serial number →
+            plaintext creds → kiosk escape → file-dialog-to-shell → SYSTEM via UDF.</p>
+          <div class="card-tags">
+            <span class="card-tag">Kiosk Escape</span>
+            <span class="card-tag">Credential Hunting</span>
+            <span class="card-tag">MySQL UDF</span>
+            <span class="card-tag">SYSTEM Privesc</span>
+          </div>
+        </a>
+
+        <!-- Placeholder for future writeups -->
+        <div class="writeup-card" style="opacity:0.35; pointer-events:none; border-style:dashed;">
+          <div class="card-top">
+            <h3>More coming soon...</h3>
+            <span class="difficulty easy" style="opacity:0.5;">—</span>
+          </div>
+          <p class="desc">New HTB, THM, and CTF writeups will be added as they're completed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== NOTES ==================== -->
+    <section id="notes">
+      <div class="section-header">
+        <span class="label">03 // Notes</span>
+        <h2>./Notes --read</h2>
+      </div>
+
+      <div class="writeups-grid">
+        <a href="Notes/sql-injection.html" class="writeup-card">
+          <div class="card-top">
+            <div>
+              <div class="lab-num">Note 01</div>
+              <h3>SQL Injection Fundamentals</h3>
+            </div>
+            <span class="difficulty medium">Web security</span>
+          </div>
+          <p class="desc">Learn SQL fundamentals, understand how injection happens, and review practical ways to prevent
+            it with parameterized queries.</p>
+          <div class="card-tags">
+            <span class="card-tag">SQL</span>
+            <span class="card-tag">Injection awareness</span>
+            <span class="card-tag">Prevention</span>
+          </div>
+        </a>
+
+        <a href="Notes/lab-ddos.html" class="writeup-card">
+          <div class="card-top">
+            <div>
+              <div class="lab-num">Lab 01</div>
+              <h3>DDoS Simulator</h3>
+            </div>
+            <span class="difficulty easy">Network</span>
+          </div>
+          <p class="desc">A 3D server under attack. Add bots, watch real users time out, then enable rate limiting and a
+            CDN. Plus a live traffic graph, attack types and a defense game.</p>
+          <div class="card-tags">
+            <span class="card-tag">Three.js</span>
+            <span class="card-tag">GSAP</span>
+            <span class="card-tag">Chart.js</span>
+          </div>
+        </a>
+
+        <a href="Notes/lab-jwt.html" class="writeup-card">
+          <div class="card-top">
+            <div>
+              <div class="lab-num">Lab 02</div>
+              <h3>JWT Forgery</h3>
+            </div>
+            <span class="difficulty medium">Web auth</span>
+          </div>
+          <p class="desc">Forge an admin token from a hardcoded secret and call a protected API. Based on a finding
+            from my Safe Shelter Connect audit, with a patched mode that shows the fix.</p>
+          <div class="card-tags">
+            <span class="card-tag">HS256</span>
+            <span class="card-tag">Broken Access Control</span>
+            <span class="card-tag">Remediation</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==================== SKILLS ==================== -->
+    <section id="skills">
+      <div class="section-header">
+        <span class="label">04 // Skills &amp; Tools</span>
+        <h2>which *</h2>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-item">
+          <div class="skill-category">Languages</div>
+          <ul class="skill-list">
+            <li>C / C++</li>
+            <li>Python</li>
+            <li>Java</li>
+            <li>Bash</li>
+            <li>PHP</li>
+            <li>XML</li>
+          </ul>
+        </div>
+        <div class="skill-item">
+          <div class="skill-category">Offensive Security</div>
+          <ul class="skill-list">
+            <li>Nmap</li>
+            <li>Gobuster</li>
+            <li>Burp Suite</li>
+            <li>Metasploit</li>
+            <li>Wireshark</li>
+            <li>John the Ripper</li>
+          </ul>
+        </div>
+        <div class="skill-item">
+          <div class="skill-category">Defensive Security</div>
+          <ul class="skill-list">
+            <li>Wazuh</li>
+            <li>ELK Stack</li>
+            <li>Suricata</li>
+            <li>iptables</li>
+            <li>fail2ban</li>
+            <li>DNSSEC</li>
+          </ul>
+        </div>
+        <div class="skill-item">
+          <div class="skill-category">Cloud &amp; DevSecOps</div>
+          <ul class="skill-list">
+            <li>AWS (Fundamentals)</li>
+            <li>Docker</li>
+            <li>CI/CD (GitHub Actions)</li>
+            <li>Ansible</li>
+          </ul>
+        </div>
+        <div class="skill-item">
+          <div class="skill-category">Databases</div>
+          <ul class="skill-list">
+            <li>MySQL</li>
+            <li>PostgreSQL</li>
+          </ul>
+        </div>
+        <div class="skill-item">
+          <div class="skill-category">Tools &amp; Platforms</div>
+          <ul class="skill-list">
+            <li>Git / GitHub</li>
+            <li>Linux</li>
+            <li>Windows</li>
+            <li>Active Directory</li>
+            <li>Laravel</li>
+            <li>Odoo</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CERTIFICATIONS ==================== -->
+    <section id="certs">
+      <div class="section-header">
+        <span class="label">05 // Certifications</span>
+        <h2>gpg --verify ./certs.sig</h2>
+      </div>
+      <div class="certs-grid">
+        <div class="cert-item">
+          <span class="cert-badge">CISCO</span>
+          <span class="cert-name">CCNA 1 &amp; 2 (SRWE) — Cisco Networking Academy</span>
+        </div>
+        <div class="cert-item">
+          <span class="cert-badge">CTF</span>
+          <span class="cert-name">Cybersecurity Bootcamp — CyberTalents</span>
+        </div>
+        <div class="cert-item">
+          <span class="cert-badge">RANK</span>
+          <span class="cert-name">Problem Solving (Basic) — HackerRank</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CONTACT ==================== -->
+    <section id="contact">
+      <div class="section-header">
+        <span class="label">06 // Contact</span>
+        <h2>ssh user@R4CH1D0X</h2>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:chokrani.rachid10@gmail.com" class="contact-link">
+          <span class="icon">✉</span> chokrani.rachid10@gmail.com
+        </a>
+        <a href="https://github.com/" target="_blank" class="contact-link">
+          <span class="icon">⟐</span> GitHub
+        </a>
+        <a href="https://linkedin.com/in/" target="_blank" class="contact-link">
+          <span class="icon">◆</span> LinkedIn
+        </a>
+        <a href="https://app.hackthebox.com/" target="_blank" class="contact-link">
+          <span class="icon">▣</span> Hack The Box
+        </a>
+      </div>
+    </section>
+
+  </div><!-- /.container -->
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer>
+    <div class="container">
+      <span class="prompt-line">$</span> echo "Built with caffeine and curiosity."<br>
+      © 2026 Rachid Chokrani. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script>
+    const lenis = new Lenis({ lerp: 0.1 });
+    function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+
+    // Keep anchor links working with the navigation offset.
+    document.querySelectorAll('a[href^="#"]').forEach(a =>
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) { e.preventDefault(); lenis.scrollTo(target, { offset: -80 }); }
+      })
+    );
+  </script>
+  <script src="site.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQL Injection Fundamentals | R4CH1D0X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../assets/css/theme.css">
+<script src="../assets/js/theme.js"></script>
+<style>
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000000;--bg-raised:#0a0a0a;--bg-code:#0d0d0d;--panel:rgba(10,10,10,.72);
+  --text:#cccccc;--muted:#8a8a8a;--fg:#e6e6e6;
+  --accent:#00ff88;--info:#00ccff;--warn:#ffaa00;--bad:#ff4444;--special:#c800ff;
+  --border:#1a1a1a;--line:#222222;--nav-h:55px;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+html{scroll-behavior:smooth}
+body{background-color:var(--bg);background-image:linear-gradient(rgba(0,255,136,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.025) 1px,transparent 1px);background-size:36px 36px;background-attachment:fixed;color:var(--text);font-family:var(--mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased;padding-top:var(--nav-h)}
+::selection{background:var(--accent);color:#000}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
+a{color:var(--accent);text-decoration:none;transition:color .2s}a:hover{color:var(--info)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+h1,h2,h3,h4{line-height:1.25;text-wrap:balance;letter-spacing:-.01em;color:#fff}
+h1{font-size:clamp(1.8rem,4.6vw,2.8rem);font-weight:700}
+h2{font-size:clamp(1.35rem,3vw,1.9rem);font-weight:700}
+h3{font-size:1.02rem;font-weight:600}
+h4{font-size:.9rem;font-weight:600}
+code{font-family:var(--mono);color:var(--info);font-size:.92em}
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(0,0,0,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:14px 30px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+nav .logo{font-weight:700;font-size:15px;color:var(--accent);letter-spacing:1px;text-decoration:none;white-space:nowrap;flex:none}
+nav .logo .prompt{color:var(--muted)}
+.cursor{display:inline-block;width:8px;height:17px;background:var(--accent);margin-left:4px;vertical-align:middle;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+nav .links{display:flex;gap:24px;min-width:0;overflow-x:auto;scrollbar-width:none;align-items:center}
+nav .links::-webkit-scrollbar{display:none}
+nav .links a{color:#dbe7de;font-size:13px;letter-spacing:.5px;padding:4px 8px;border-radius:3px;border:1px solid transparent;white-space:nowrap}
+nav .links a:hover{color:var(--accent)}
+nav .links a.active{color:var(--accent);background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.25)}
+.subnav{position:sticky;top:calc(var(--nav-h) - 1px);z-index:50;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.subnav .wrap{display:flex;gap:4px;align-items:center;height:44px;overflow-x:auto;scrollbar-width:none}
+.subnav .wrap::-webkit-scrollbar{display:none}
+.subnav a{font:500 12px var(--mono);color:var(--muted);padding:7px 12px;border-radius:3px;white-space:nowrap;border:1px solid transparent}
+.subnav a:hover{color:var(--fg)}
+.subnav a.on{color:var(--accent);background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.25)}
+/* layout */
+.station{padding-block:60px;scroll-margin-top:calc(var(--nav-h) + 56px)}
+.stack{display:flex;flex-direction:column;gap:22px}
+.head{display:flex;flex-direction:column;gap:12px}
+.lead{color:var(--muted);font-size:14px;line-height:1.8;max-width:72ch}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.back{font-size:12px;color:var(--muted)}
+.chap-meta{font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.note{font:400 12px/1.6 var(--mono);color:var(--muted)}
+.objectives{border-left:2px solid var(--accent);padding:2px 0 2px 16px;color:var(--muted);font-size:13px;max-width:74ch}
+.objectives b{color:var(--fg)}
+.objectives ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.takeaways{background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--accent);border-radius:6px;padding:18px 22px}
+.takeaways h3{font:600 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.takeaways ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:13px}
+.takeaways li::marker,.checks li::marker,.plain li::marker{color:var(--accent)}
+.warnbox{border-left:2px solid var(--warn);padding:2px 0 2px 14px;color:var(--muted);font-size:12.5px;max-width:74ch}
+.warnbox b,.card b,.prose b,.lead b{color:var(--fg);font-weight:600}
+.prose{display:flex;flex-direction:column;gap:12px;max-width:74ch}
+.prose p{color:var(--muted);font-size:13.5px;line-height:1.8}
+.g2,.g3{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px 20px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.card h3{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.card p,.card li{color:var(--muted);font-size:12.5px;line-height:1.75}
+.card .seen{border-top:1px dashed var(--line);padding-top:10px}
+.span2{grid-column:1/-1}
+.tag{font:700 10px var(--mono);letter-spacing:.1em;padding:2px 8px;border-radius:3px;border:1px solid;white-space:nowrap;display:inline-block}
+.t-cy{color:var(--info);border-color:rgba(0,204,255,.45);background:rgba(0,204,255,.08)}
+.t-am{color:var(--warn);border-color:rgba(255,170,0,.45);background:rgba(255,170,0,.08)}
+.t-vi{color:#e26bff;border-color:rgba(200,0,255,.45);background:rgba(200,0,255,.08)}
+.t-rd{color:var(--bad);border-color:rgba(255,68,68,.45);background:rgba(255,68,68,.08)}
+.t-gr{color:var(--accent);border-color:rgba(0,255,136,.45);background:rgba(0,255,136,.08)}
+.pill{display:inline-flex;align-items:center;gap:8px;font:600 11px var(--mono);padding:4px 11px;border-radius:99px;border:1px solid;letter-spacing:.04em}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.ok{color:var(--accent);border-color:rgba(0,255,136,.45);background:rgba(0,255,136,.08)}
+.pill.warn{color:var(--warn);border-color:rgba(255,170,0,.45);background:rgba(255,170,0,.08)}
+.pill.bad{color:var(--bad);border-color:rgba(255,68,68,.5);background:rgba(255,68,68,.1)}
+.btn{font:700 12px var(--mono);min-height:40px;padding:8px 14px;border-radius:3px;border:1px solid var(--line);background:#111;color:var(--fg);cursor:pointer;transition:border-color .2s,color .2s}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:rgba(0,255,136,.08)}
+.chip{font:700 11px var(--mono);padding:4px 10px;border-radius:3px;border:1px solid var(--line);background:#0d0d0d;color:var(--muted);cursor:pointer;min-height:28px}
+.chip:hover{color:var(--fg)}
+.chip[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:rgba(0,255,136,.08)}
+.switch{display:inline-flex;align-items:center;gap:10px;background:#111;border:1px solid var(--line);border-radius:3px;padding:7px 12px;color:var(--fg);font:700 12px var(--mono);cursor:pointer;min-height:44px}
+.switch .track{width:34px;height:18px;border-radius:99px;background:#262626;position:relative;transition:background .2s}
+.switch .knob{position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:#8a8a8a;transition:transform .2s,background .2s}
+.switch[aria-checked="true"]{border-color:rgba(0,204,255,.55)}
+.switch[aria-checked="true"] .track{background:rgba(0,204,255,.3)}
+.switch[aria-checked="true"] .knob{transform:translateX(16px);background:var(--info)}
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+table.tbl{width:100%;border-collapse:collapse;font-size:12.5px;min-width:560px}
+.tbl th{text-align:left;font:500 10px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--muted);line-height:1.6}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td:first-child{color:#fff;font-weight:700}
+/* code, sql colours */
+.pre{margin:0;background:#060606;border:1px solid var(--line);border-radius:4px;padding:12px 14px;font:400 12px/1.7 var(--mono);overflow-x:auto;color:var(--muted);white-space:pre}
+.pre .c{color:#666}
+.dev{color:var(--muted)}
+.inp{color:var(--bad);background:rgba(255,68,68,.12);border-radius:2px;padding:0 2px}
+.ok-t{color:var(--accent)}.info-t{color:var(--info)}
+.cnv{width:100%;height:240px;display:block;border-radius:4px;background:#080808;border:1px solid var(--line)}
+.cnv.tall{height:260px}
+/* 3D stages */
+.stage{position:relative;height:clamp(300px,44vw,470px);border:1px solid var(--line);border-radius:6px;overflow:hidden;background:radial-gradient(60% 60% at 50% 50%,#0d0d0d,#000)}
+.stage canvas{width:100%;height:100%;display:block}
+.stage.live canvas{cursor:grab;touch-action:pan-y}
+.stage.live canvas:active{cursor:grabbing}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font:500 11px var(--mono);color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.stage .legend{position:absolute;left:12px;top:12px;max-width:calc(100% - 24px);background:rgba(0,0,0,.6);padding:6px 10px;border-radius:4px}
+.stage .hint{position:absolute;right:12px;top:12px;font:400 11px var(--mono);color:var(--muted);background:rgba(0,0,0,.6);padding:6px 10px;border-radius:4px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--accent);display:inline-block;flex:none}
+.dot.bad{background:var(--bad)}.dot.warn{background:var(--warn)}.dot.info{background:var(--info)}.dot.gray{background:#555}.dot.vi{background:var(--special)}
+.scene-cap{position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:12px;align-items:center;background:rgba(0,0,0,.78);border:1px solid var(--line);border-radius:4px;padding:10px 12px;font-size:12px;color:var(--fg);line-height:1.6}
+.scene-cap .pill{flex:none}
+.fallback{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--muted);font-size:13px}
+.layers{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;counter-reset:l}
+.layers li{counter-increment:l;display:flex;gap:12px;color:var(--muted);font-size:12.5px;line-height:1.7}
+.layers li::before{content:counter(l);flex:none;font:700 11px var(--mono);color:var(--accent);border:1px solid var(--accent);border-radius:3px;height:20px;min-width:20px;display:grid;place-items:center;margin-top:1px}
+.layers b{color:var(--fg)}
+.plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:13px;max-width:78ch}
+.plain b{color:var(--fg)}
+.checks{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px}
+.checks label{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:12.5px;line-height:1.65;cursor:pointer}
+.checks input{accent-color:var(--accent);width:16px;height:16px;margin-top:3px;flex:none}
+/* live lab */
+.lab{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:16px;grid-template-areas:"ctl ctl" "stage side" "wire side";align-items:start}
+.lab-ctl{grid-area:ctl;display:flex;flex-direction:column;gap:14px;padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:6px}
+.lab-stage{grid-area:stage;min-width:0}
+.lab-side{grid-area:side;min-width:0;position:sticky;top:calc(var(--nav-h) + 56px);display:flex;flex-direction:column;gap:14px;padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:6px}
+.lab-wire{grid-area:wire;min-width:0}
+.vecs{display:flex;flex-wrap:wrap;gap:8px}
+.vecs .btn{display:inline-flex;gap:8px;align-items:center;min-height:44px}
+.vecs .btn small{font-size:9px;letter-spacing:.08em;opacity:.85;border:1px solid currentColor;border-radius:3px;padding:0 5px}
+.ctl-row{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+.ctl-row label{font:500 11px var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.ctl-row input[type=range]{accent-color:var(--info);width:180px;max-width:100%;height:44px}
+.ctl-row output{font:700 13px var(--mono);min-width:2ch;font-variant-numeric:tabular-nums;color:var(--fg)}
+.ex-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ex-head h3{font-size:1.05rem;flex:1 1 100%}
+.ex-sec{display:flex;flex-direction:column;gap:5px}
+.ex-sec h4{font:500 10px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+.ex-sec p,.ex-sec li{color:var(--muted);font-size:12.5px;line-height:1.7}
+.ex-sec ul{margin:0;padding-left:18px}
+.ex-sec li::marker{color:var(--accent)}
+.meters{display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--line);padding-top:14px}
+.mrow{display:flex;justify-content:space-between;gap:8px;font:500 11px var(--mono);color:var(--muted);margin-bottom:4px}
+.mrow b{color:var(--fg);font-variant-numeric:tabular-nums}
+.bar{height:8px;border-radius:99px;background:#0d0d0d;border:1px solid var(--line);overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:var(--accent);transition:background .2s}
+.statrow{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.wire{background:#090909;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.wire-bar{display:flex;gap:10px 14px;flex-wrap:wrap;align-items:center;padding:8px 12px;background:#12151b;border-bottom:1px solid var(--line);font:500 11px var(--mono);color:var(--muted)}
+.wire-bar .sp{flex:1}
+.wire-bar .ttl{color:var(--fg);font-weight:700}
+.wire-scroll{overflow:auto;height:300px;background:#060606}
+table.pkts{width:100%;border-collapse:collapse;font:400 11.5px var(--mono);min-width:720px}
+.pkts th{position:sticky;top:0;background:#12151b;text-align:left;padding:5px 8px;color:var(--muted);font-weight:500;z-index:1}
+.pkts td{padding:4px 8px;white-space:nowrap;color:var(--fg);max-width:300px;overflow:hidden;text-overflow:ellipsis}
+.pkts td:first-child{border-left:3px solid transparent}
+.pkts tr{cursor:pointer}
+.pkts tr.atk td:first-child{border-left-color:var(--bad)}
+.pkts tr.leg td:first-child{border-left-color:var(--accent)}
+.pkts tr.sel td{background:rgba(0,204,255,.22)!important}
+.pkts tr.atk td{background:rgba(255,68,68,.05)}
+.pkts tr:hover td{background:rgba(255,255,255,.04)}
+.wire-detail{border-top:1px solid var(--line);padding:10px 14px;font:400 11.5px/1.7 var(--mono);height:290px;overflow:auto;color:var(--fg);background:#0a0a0a}
+.wire-detail h5{font:700 10px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:8px 0 3px}
+.wire-detail h5:first-child{margin-top:0}
+.wire-detail pre{white-space:pre-wrap;word-break:break-word;font:inherit;color:var(--muted)}
+.wire-detail .why{display:block;margin-top:10px;color:var(--warn)}
+.dim{color:var(--muted)}
+.det-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+/* cheat sheet */
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.cs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.cs-card{gap:12px}
+.cs-card h4{font:700 10px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:-4px}
+.cs-card .pre{white-space:pre-wrap;word-break:break-word}
+.cs-fix{border-top:1px dashed var(--line);padding-top:10px;color:var(--fg)!important}
+footer{border-top:1px solid var(--border);padding:30px 0;text-align:center;color:var(--muted);font-size:12px}
+footer .pl{color:var(--accent)}
+.page-intro{padding-top:34px;padding-bottom:24px}
+.notes-layout{display:grid;grid-template-columns:minmax(220px,270px) minmax(0,1fr);gap:28px;align-items:start}
+.notes-sidebar{position:sticky;top:calc(var(--nav-h) + 18px);max-height:calc(100vh - var(--nav-h) - 36px);overflow:auto;margin:18px 0;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:6px}
+.notes-sidebar>summary{display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;font:600 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+.notes-sidebar>summary::-webkit-details-marker{display:none}
+.notes-sidebar>summary::after{content:"+";font-size:16px;letter-spacing:0}
+.notes-sidebar[open]>summary::after{content:"-"}
+.notes-sidebar ol{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:3px}
+.notes-sidebar a{display:block;padding:5px 7px;border-radius:3px;color:var(--muted);font-size:11px;line-height:1.45}
+.notes-sidebar a:hover{color:var(--accent);background:rgba(0,255,136,.08)}
+.notes-content{min-width:0}
+.notes-content .station{padding:36px 0;scroll-margin-top:calc(var(--nav-h) + 18px)}
+.notes-content .station:first-child{padding-top:42px}
+.notes-content .station:not(:last-child){border-bottom:1px solid var(--line)}
+.notes-content .station.empty{padding:20px 0}
+.notes-content .station.empty h2{font-size:1.15rem}
+.query-box{border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#060606}
+.query-box-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.query-box-header h3{font-size:.82rem}
+.query-actions{display:flex;align-items:center;gap:10px}
+.copy-btn{font:700 11px var(--mono);padding:5px 9px;border:1px solid var(--line);border-radius:3px;background:#111;color:var(--fg);cursor:pointer}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.copy-status{font-size:10px;color:var(--muted)}
+.query-box .pre{border:0;border-radius:0;background:transparent}
+html[data-theme="light"] nav .links a{color:#0f1712}
+html[data-theme="light"] nav .links a:hover,html[data-theme="light"] nav .links a.active{color:var(--accent)}
+html[data-theme="light"] .query-box-header h3{color:#e6e6e6!important}
+html[data-theme="light"] .copy-btn{background:#111;color:#e6e6e6;border-color:#444}
+html[data-theme="light"] .copy-status{color:#ccc}
+@media (max-width:980px){.lab{grid-template-columns:minmax(0,1fr);grid-template-areas:"ctl" "stage" "side" "wire"}.lab-side{position:static}}
+@media (max-width:860px){.g2,.g3,.split,.cs-grid,.checks{grid-template-columns:minmax(0,1fr)}.station{padding-block:46px}.span2{grid-column:auto}}
+@media (max-width:640px){:root{--nav-h:51px}nav{padding:12px 16px}nav .links{gap:14px}nav .links a{font-size:12px}.wrap{padding:0 16px}.scene-cap{flex-direction:column;align-items:flex-start;gap:6px}}
+@media (max-width:980px){.notes-layout{grid-template-columns:minmax(0,1fr);gap:8px}.notes-sidebar{position:static;max-height:55vh;margin:12px 0 0}.notes-content .station{padding:28px 0}.notes-content .station:first-child{padding-top:30px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="logo"><span class="prompt">$</span> R4CH1D0X<span class="cursor"></span></a>
+  <div class="links">
+    <a href="../projects.html">[Projects]</a><a href="../writeups/index.html">[Writeups]</a><a href="index.html" class="active">[Notes]</a><a href="../contact.html">[Contact]</a>
+  </div>
+</nav>
+<header class="wrap page-intro">
+  <p class="eyebrow">// notes - web security</p>
+  <h1>SQL Injection Fundamentals</h1>
+  <p class="lead">SQL and secure query construction notes. Sections 1-12 cover baseline SQL and the injection boundary; 13-28 walk UNION-based extraction end to end; 29-31 close with methodology and defense.</p>
+</header>
+
+<main class="wrap notes-layout">
+  <details class="notes-sidebar" aria-label="On this page" open>
+    <summary>On this page</summary>
+    <ol>
+      <li><a href="#section-1">Understand SQL before SQL injection</a></li>
+      <li><a href="#section-2">Connect to MySQL</a></li>
+      <li><a href="#section-3">Navigate databases</a></li>
+      <li><a href="#section-4">Explore tables and columns</a></li>
+      <li><a href="#section-5">Read data with SELECT</a></li>
+      <li><a href="#section-6">Filter results</a></li>
+      <li><a href="#section-7">Sort and limit output</a></li>
+      <li><a href="#section-8">Boolean logic matters</a></li>
+      <li><a href="#section-9">What SQL injection changes</a></li>
+      <li><a href="#section-10">Testing input boundaries</a></li>
+      <li><a href="#section-11">Authentication bypass concept</a></li>
+      <li><a href="#section-12">Why comments are useful</a></li>
+      <li><a href="#section-13">UNION-based SQL injection</a></li>
+      <li><a href="#section-14">Find the number of columns</a></li>
+      <li><a href="#section-15">Confirm the column count with UNION</a></li>
+      <li><a href="#section-16">Identify visible columns</a></li>
+      <li><a href="#section-17">Fingerprint MySQL</a></li>
+      <li><a href="#section-18">Identify the current database</a></li>
+      <li><a href="#section-19">INFORMATION_SCHEMA</a></li>
+      <li><a href="#section-20">Enumerate databases</a></li>
+      <li><a href="#section-21">Enumerate tables</a></li>
+      <li><a href="#section-22">Enumerate columns</a></li>
+      <li><a href="#section-23">Retrieve data from another database</a></li>
+      <li><a href="#section-24">Identify the current MySQL user</a></li>
+      <li><a href="#section-25">Inspect database privileges</a></li>
+      <li><a href="#section-26">Understand secure_file_priv</a></li>
+      <li><a href="#section-27">Reading local files</a></li>
+      <li><a href="#section-28">Writing files from MySQL</a></li>
+      <li><a href="#section-29">Think in stages</a></li>
+      <li><a href="#section-30">How to prevent SQL injection</a></li>
+      <li><a href="#section-31">Key takeaway</a></li>
+    </ol>
+  </details>
+  <div class="notes-content">
+<section id="section-1" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#01</div><h2>Understand SQL before SQL injection</h2>
+      <p class="lead">SQL is a language for working with structured data. A statement has a defined shape: clauses select data, identify tables, filter rows, and order results. Learning that ordinary structure makes it easier to reason about how applications should handle input.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>A small read-only query</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SELECT id, title FROM articles WHERE status = 'published';</code></pre></div></article>
+  </div>
+</section>
+<section id="section-2" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#02</div><h2>Connect to MySQL</h2>
+      <p class="lead">A MySQL client connects to a server using a host, account, and authentication method. For a local practice database, keep the connection on loopback and use a restricted account rather than an administrator.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Local client example</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>mysql --host=127.0.0.1 --user=app_reader --password</code></pre></div></article>
+  </div>
+</section>
+<section id="section-3" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#03</div><h2>Navigate databases</h2>
+      <p class="lead">A server can host multiple databases. In an authorized development instance, the client can show databases visible to the current account and select the database for subsequent statements.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Choose the working database</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SHOW DATABASES; USE app_db;</code></pre></div></article>
+  </div>
+</section>
+<section id="section-4" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#04</div><h2>Explore tables and columns</h2>
+      <p class="lead">Once the intended database is selected, table and column descriptions help developers understand a schema they own or maintain.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Inspect a development schema</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SHOW TABLES; DESCRIBE articles;</code></pre></div></article>
+  </div>
+</section>
+<section id="section-5" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#05</div><h2>Read data with SELECT</h2>
+      <p class="lead">A <code>SELECT</code> statement returns rows. Listing the fields needed by a feature is clearer and safer than fetching every column.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Request a small result</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SELECT id, title FROM articles LIMIT 10;</code></pre></div></article>
+  </div>
+</section>
+<section id="section-6" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#06</div><h2>Filter results</h2>
+      <p class="lead"><code>WHERE</code> narrows results to rows that match a condition. In an application, bind user-provided values through the database driver's parameter interface.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Filter by a fixed status</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SELECT id, title FROM articles WHERE status = 'published';</code></pre></div></article>
+  </div>
+</section>
+<section id="section-7" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#07</div><h2>Sort and limit output</h2>
+      <p class="lead"><code>ORDER BY</code> controls result order; <code>LIMIT</code> bounds the number of rows. These clauses are useful for predictable pages and manageable queries.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Newest published articles</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SELECT id, title, created_at FROM articles WHERE status = 'published' ORDER BY created_at DESC LIMIT 10;</code></pre></div></article>
+  </div>
+</section>
+<section id="section-8" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#08</div><h2>Boolean logic matters</h2>
+      <p class="lead"><code>AND</code>, <code>OR</code>, and <code>NOT</code> combine conditions. Parentheses make intended grouping explicit and make complex filters easier to review.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Group conditions clearly</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SELECT id, title FROM articles WHERE status = 'published' AND (category = 'security' OR category = 'engineering');</code></pre></div></article>
+  </div>
+</section>
+<section id="section-9" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#09</div><h2>What SQL injection changes</h2>
+      <p class="lead">SQL injection is a code/data separation failure. If an application constructs a statement by mixing SQL text with untrusted input, the database may interpret part of that input as query structure instead of as a value.</p>
+    </div>
+    <div class="g2">
+      <article class="card"><h3>Root cause</h3><p>The application lets request data influence the meaning or structure of a database command. This can undermine the feature's intended filters or access checks.</p></article>
+      <article class="card"><h3>Primary defense</h3><p>Use a prepared statement and bind values separately. The query structure stays fixed while the input remains data.</p></article>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Safe parameterized shape</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SELECT id, title FROM articles WHERE slug = ?;</code></pre></div></article>
+  </div>
+</section>
+<section id="section-10" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#10</div><h2>Testing input boundaries</h2>
+      <p class="lead">Before anything else, confirm the field actually reaches a query. Send a single quote. A concatenated query usually breaks (syntax error or HTTP 500); a bound parameter treats it as a harmless character and the page behaves normally.</p>
+    </div>
+    <div class="g2">
+      <article class="card"><h3>Signal: broke it</h3><p>One quote causes an error, a blank page, or a different response length than a normal letter would. The field likely feeds a concatenated string.</p></article>
+      <article class="card"><h3>Signal: no change</h3><p>The quote is treated like any other character (a search for it, a validation rejection). The field is likely parameterized or filtered.</p></article>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>What the server builds from one quote</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SELECT * FROM articles WHERE slug = '''; -- the extra quote closes the string early</code></pre></div></article>
+    <p class="note">Only test input fields on a system you own or are authorized to assess, and prefer a local or lab copy over a production instance.</p>
+  </div>
+</section>
+<section id="section-11" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#11</div><h2>Authentication bypass concept</h2>
+      <p class="lead">A login query usually checks two things: the username matches AND the password matches. If the username field is concatenated into the query, text that makes the first condition always true can satisfy the whole <code>WHERE</code> clause without a valid password.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Intended query</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SELECT id, role FROM users WHERE username = '$u' AND password = '$p';</code></pre></div></article>
+    <p>A classic teaching example, documented by OWASP and most intro security courses, is submitting a username such as <code>' OR '1'='1</code>. <code>'1'='1'</code> is always true, so the row-matching condition becomes true for every row regardless of the password.</p>
+    <article><div class="query-box"><div class="query-box-header"><h3>What the database actually runs</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SELECT id, role FROM users WHERE username = '' OR '1'='1' AND password = '$p';</code></pre></div></article>
+    <p class="note">The exact outcome depends on operator precedence and which row the application reads first, which is why section 12 adds a comment to remove the password check entirely rather than relying on it still matching.</p>
+  </div>
+</section>
+<section id="section-12" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#12</div><h2>Why comments are useful</h2>
+      <p class="lead">An inline comment (<code>-- </code> in standard SQL and MySQL, <code>#</code> in MySQL only) tells the database to ignore everything after it on that line. In MySQL, <code>--</code> must be followed by a space to be treated as a comment.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Truncating the rest of the statement</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SELECT id, role FROM users WHERE username = '' OR '1'='1' -- ' AND password = '$p';</code></pre></div></article>
+    <p>Everything from <code>--</code> onward, including the password check, is now a comment rather than executable SQL. This matters whenever the application appends more SQL text after the injectable value (a trailing condition, an <code>ORDER BY</code>, a closing parenthesis) that would otherwise cause a syntax error.</p>
+  </div>
+</section>
+<section id="section-13" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#13</div><h2>UNION-based SQL injection</h2>
+      <p class="lead"><code>UNION</code> combines the rows of two <code>SELECT</code> statements into one result set. If a page already prints the output of a query, appending a <code>UNION SELECT</code> can make it print the output of a second, attacker-chosen query instead.</p>
+    </div>
+    <div class="g2">
+      <article class="card"><h3>Requirement: column count</h3><p>Both <code>SELECT</code> statements must return the same number of columns, or the database rejects the statement with an error.</p></article>
+      <article class="card"><h3>Requirement: compatible types</h3><p>Columns in matching positions should be comparable types. Mismatched types usually error, though some engines coerce loosely.</p></article>
+    </div>
+    <p>Sections 14 to 23 walk the UNION technique in the order it is normally used: count columns, confirm the count, find which columns the page actually displays, then use those columns to read data.</p>
+  </div>
+</section>
+<section id="section-14" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#14</div><h2>Find the number of columns</h2>
+      <p class="lead"><code>ORDER BY</code> accepts a column position number. Raising that number past the real column count produces a database error, which brackets the count.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Probe one position at a time</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>' ORDER BY 1 --
+' ORDER BY 2 --
+' ORDER BY 3 --
+' ORDER BY 4 -- </code></pre></div></article>
+    <p>The page loads normally while the number is within range. The first number that produces an "Unknown column" error (or an HTTP 500, if errors are not shown) is one past the real column count.</p>
+  </div>
+</section>
+<section id="section-15" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#15</div><h2>Confirm the column count with UNION</h2>
+      <p class="lead"><code>NULL</code> is compatible with almost every column type, so it is a safe placeholder while confirming the count before worrying about what data to put where.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Column-count check</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>' UNION SELECT NULL,NULL,NULL -- </code></pre></div></article>
+    <p>A statement with too few or too many <code>NULL</code>s errors with "different number of columns". The count that stops erroring matches the count found in section 14.</p>
+  </div>
+</section>
+<section id="section-16" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#16</div><h2>Identify visible columns</h2>
+      <p class="lead">Not every column of the original query is necessarily printed on the page. Replacing each <code>NULL</code> with a distinct marker shows which positions actually reach the rendered output.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Marker values per position</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>' UNION SELECT 1,2,3 -- </code></pre></div></article>
+    <p>Whichever numbers appear somewhere in the page are the usable columns for section 17 onward. A column that never shows (used only in HTML attributes, or not rendered at all) cannot carry extracted data back to the attacker.</p>
+  </div>
+</section>
+<section id="section-17" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#17</div><h2>Fingerprint MySQL</h2>
+      <p class="lead">Once a visible column is known, built-in functions can replace a marker to read information about the server instead of a fixed number.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Server version in a visible column</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>' UNION SELECT 1,version(),3 -- </code></pre></div></article>
+    <p>The version string indicates which syntax and functions are supported (MySQL 5.x versus 8.x differ in a few areas, notably <code>information_schema</code> access rules).</p>
+  </div>
+</section>
+<section id="section-18" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#18</div><h2>Identify the current database</h2>
+      <p class="lead"><code>database()</code> (equivalently <code>schema()</code>) returns the name of the database the current connection is using, which is needed to scope later enumeration.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Current database name</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>' UNION SELECT 1,database(),3 -- </code></pre></div></article>
+  </div>
+</section>
+<section id="section-19" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#19</div><h2>INFORMATION_SCHEMA</h2>
+      <p class="lead"><code>information_schema</code> is a built-in, read-only database every MySQL server exposes. Its tables describe the server's own metadata: which databases, tables, and columns exist, visible to the extent the current account's privileges allow.</p>
+    </div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Table</th><th>Holds</th></tr></thead>
+      <tbody>
+        <tr><td>SCHEMATA</td><td>One row per database (<code>schema_name</code>).</td></tr>
+        <tr><td>TABLES</td><td>One row per table (<code>table_schema</code>, <code>table_name</code>).</td></tr>
+        <tr><td>COLUMNS</td><td>One row per column (<code>table_schema</code>, <code>table_name</code>, <code>column_name</code>).</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+<section id="section-20" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#20</div><h2>Enumerate databases</h2>
+      <p class="lead">Listing <code>schema_name</code> from <code>information_schema.schemata</code> shows every database the account can see, which may include more than the one application database.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>List databases</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>' UNION SELECT 1,schema_name,3 FROM information_schema.schemata -- </code></pre></div></article>
+    <p class="note">A single visible column returns one database name per row, so the page needs to display multiple rows (or section 22's concatenation trick) to see the full list at once.</p>
+  </div>
+</section>
+<section id="section-21" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#21</div><h2>Enumerate tables</h2>
+      <p class="lead">Scoping by <code>table_schema</code> lists the tables inside one database, typically the current one from section 18.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>List tables in the current database</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>' UNION SELECT 1,table_name,3 FROM information_schema.tables WHERE table_schema = database() -- </code></pre></div></article>
+  </div>
+</section>
+<section id="section-22" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#22</div><h2>Enumerate columns</h2>
+      <p class="lead">Once a table name of interest is known, its columns are listed the same way, scoped by both <code>table_schema</code> and <code>table_name</code>.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>List columns of one table</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>' UNION SELECT 1,column_name,3 FROM information_schema.columns WHERE table_schema = database() AND table_name = 'users' -- </code></pre></div></article>
+    <p>When only one column is visible but two values are needed at once (a username and a password hash, for example), <code>concat()</code> joins them into a single string with a separator, such as <code>concat(username,0x3a,password)</code> where <code>0x3a</code> is the hex code for <code>:</code>, avoiding extra quotes inside the payload.</p>
+  </div>
+</section>
+<section id="section-23" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#23</div><h2>Retrieve data from another database</h2>
+      <p class="lead">A table in a different database (one found in section 20) is addressed by qualifying it with the database name, provided the connected account has privileges on that database.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Cross-database reference</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>' UNION SELECT 1,column_name,3 FROM other_db.information_schema.columns WHERE table_name = 'accounts' -- </code></pre></div></article>
+    <p class="note">This step only works if the application's database account was granted access beyond its own schema — itself a sign of excess privilege, see section 30.</p>
+  </div>
+</section>
+<section id="section-24" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#24</div><h2>Identify the current MySQL user</h2>
+      <p class="lead"><code>current_user()</code> returns the account and host MySQL actually authenticated as, which can differ from <code>user()</code> (the account requested at connect time) when aliasing is in play.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Connected account</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>' UNION SELECT 1,current_user(),3 -- </code></pre></div></article>
+  </div>
+</section>
+<section id="section-25" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#25</div><h2>Inspect database privileges</h2>
+      <p class="lead"><code>SHOW GRANTS</code> lists what the current account is actually allowed to do, which determines how far an injection can reach: read-only on one schema is very different from an account holding <code>FILE</code> or administrative grants.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Grants for the current account</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SHOW GRANTS FOR CURRENT_USER();</code></pre></div></article>
+    <p>From an application's perspective this is the check worth running proactively: the account a web app connects with should hold only the grants that application actually needs (see section 30).</p>
+  </div>
+</section>
+<section id="section-26" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#26</div><h2>Understand secure_file_priv</h2>
+      <p class="lead"><code>secure_file_priv</code> is a server variable that restricts where MySQL's file-reading and file-writing functions are allowed to touch the filesystem, independent of the connected account's own grants.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Check the current restriction</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>SHOW VARIABLES LIKE 'secure_file_priv';</code></pre></div></article>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Value</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>empty string</td><td>No restriction — file functions can touch any path the OS user can reach. Dangerous.</td></tr>
+        <tr><td>a path</td><td>File functions are limited to that one directory.</td></tr>
+        <tr><td>NULL</td><td>File functions are disabled entirely. The safest setting for most deployments.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+<section id="section-27" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#27</div><h2>Reading local files</h2>
+      <p class="lead">MySQL's <code>LOAD_FILE()</code> function can return the contents of a file on the database server's own filesystem as a string, but only when three conditions all hold: the connected account has the <code>FILE</code> privilege, <code>secure_file_priv</code> permits the target path, and the OS file permissions allow the MySQL process to read it.</p>
+    </div>
+    <div class="card danger"><p>This turns a SQL injection into a filesystem read primitive on the database host. It is a high-impact finding, not a routine step — note it, don't dump sensitive files, and report it through the engagement's agreed process.</p></div>
+    <p>The defense is structural, not something to patch per query: revoke <code>FILE</code> from application accounts and keep <code>secure_file_priv</code> set to <code>NULL</code> or a narrow path (section 30).</p>
+  </div>
+</section>
+<section id="section-28" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#28</div><h2>Writing files from MySQL</h2>
+      <p class="lead"><code>SELECT ... INTO OUTFILE</code> writes a query's result to a new file on the server. It is gated by the same three conditions as <code>LOAD_FILE()</code> in section 27, plus the target file must not already exist.</p>
+    </div>
+    <div class="card danger"><p>Write access from inside the database can lead to dropping a script into a directory the web server executes, turning the injection into remote code execution. Treat a positive finding here as critical and stop rather than proving further impact beyond what the engagement scope calls for.</p></div>
+  </div>
+</section>
+<section id="section-29" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#29</div><h2>Think in stages</h2>
+      <p class="lead">The sections above form a methodology, not a single step: confirm the input reaches a query (10), find the injection's shape (11-12), size the result set (14-16), fingerprint the server (17-18), then widen into the schema (19-23) before touching anything privileged (24-28).</p>
+    </div>
+    <ol class="plain">
+      <li><b>Confirm</b> — does input break the query (section 10)?</li>
+      <li><b>Shape</b> — what closes the original statement cleanly (sections 11-12)?</li>
+      <li><b>Size</b> — how many columns, which ones render (sections 14-16)?</li>
+      <li><b>Fingerprint</b> — engine, version, current database, current user (sections 17-18, 24)?</li>
+      <li><b>Map</b> — what tables and columns exist, scoped to what's relevant (sections 19-23)?</li>
+      <li><b>Assess impact, stop</b> — privileges and file access describe risk; extracting more than needed to prove the finding adds exposure without adding evidence (sections 25-28).</li>
+    </ol>
+  </div>
+</section>
+<section id="section-30" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#30</div><h2>How to prevent SQL injection</h2>
+      <p class="lead">One fix removes the root cause; the rest reduce blast radius if something is still missed.</p>
+    </div>
+    <div class="g2">
+      <article class="card"><h3>Prepared statements <span class="tag t-gr">PRIMARY FIX</span></h3><p>Bind every value through the driver's parameter interface (section 9). The query structure is fixed before any input is attached, so input cannot change what the query does.</p></article>
+      <article class="card"><h3>Safe ORM use</h3><p>Most ORMs parameterize by default. The risk concentrates in raw-query or raw-SQL escape hatches — audit those specifically.</p></article>
+      <article class="card"><h3>Allow-list identifiers</h3><p>Column names, table names, and sort directions can't be bound as parameters. Validate them against a fixed list instead.</p></article>
+      <article class="card"><h3>Least-privilege accounts</h3><p>The application's DB account should not hold <code>FILE</code>, shouldn't reach other databases (section 23), and should be read-only where the feature allows it.</p></article>
+      <article class="card"><h3>Generic error pages</h3><p>Raw database errors leak table and column names (section 14). Show a generic message to the user; log detail server-side.</p></article>
+      <article class="card"><h3>secure_file_priv = NULL</h3><p>Disables file read/write primitives (sections 26-28) at the server level, regardless of any single account's grants.</p></article>
+    </div>
+  </div>
+</section>
+<section id="section-31" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#31</div><h2>Key takeaway</h2>
+      <p class="lead">SQL injection is what happens when a database can no longer tell the developer's code from the user's data inside the same string. Every technique in this note — bypassing a login, extracting a schema, reading a file — follows from that one failure. Parameterize first; everything else limits the damage when something is still missed.</p>
+    </div>
+  </div>
+</section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="note" style="margin-bottom:10px">Use only systems you own or are authorized to assess.</p>
+    <span class="pl">$</span> echo "Built with caffeine and curiosity."<br>
+    &copy; 2026 Rachid Chokrani. All rights reserved.
+  </div>
+</footer>
+<script>
+(function () {
+  const toc = document.querySelector('.notes-sidebar');
+  const compact = window.matchMedia('(max-width: 980px)');
+  const updateToc = function () { toc.open = !compact.matches; };
+  updateToc();
+  if (compact.addEventListener) compact.addEventListener('change', updateToc);
+  else compact.addListener(updateToc);
+
+  const fallbackCopy = function (text) {
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    document.body.appendChild(field);
+    field.select();
+    const copied = document.execCommand('copy');
+    field.remove();
+    if (!copied) throw new Error('Clipboard copy was rejected.');
+  };
+
+  document.querySelectorAll('.query-box').forEach(function (box) {
+    const button = box.querySelector('.copy-btn');
+    const status = box.querySelector('.copy-status');
+    button.addEventListener('click', async function () {
+      const text = box.querySelector('code').textContent.trim();
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          fallbackCopy(text);
+        }
+        status.textContent = 'Copied.';
+      } catch (error) {
+        console.error('Unable to copy query text.', error);
+        status.textContent = 'Copy failed. Select and copy the text manually.';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

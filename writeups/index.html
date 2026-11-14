@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Writeups — RACHID CHOKRANI</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/theme.css">
+  <script src="../assets/js/theme.js"></script>
+</head>
+
+<body>
+  <nav>
+    <a href="../index.html" class="logo" style="text-decoration:none;">
+      <span class="prompt">$</span> R4CH1D0X<span class="cursor"></span>
+    </a>
+    <div class="links">
+      <a href="../projects.html">[Projects]</a>
+      <a href="index.html" class="active">[Writeups]</a>
+      <a href="../Notes/index.html">[Notes]</a>
+      <a href="../contact.html">[Contact]</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header class="page-header">
+      <span class="tag">// machine writeups &amp; disclosures</span>
+      <h1>Writeups<span style="color:var(--accent);">.</span></h1>
+      <p>Technical walkthroughs, exploit notes, and privilege-escalation writeups covering Hack The Box and TryHackMe.</p>
+    </header>
+
+    <section id="writeups" style="padding-top:0;">
+      <div class="section-header">
+        <span class="label">Disclosures</span>
+        <h2>cat ./writeups/*</h2>
+      </div>
+
+      <div class="writeups-grid">
+        <a href="HTB/touch-writeup.html" class="writeup-card">
+          <div class="card-top">
+            <h3>HTB: Touch</h3>
+            <span class="difficulty easy">Easy</span>
+          </div>
+          <p class="desc">Windows kiosk breakout into MySQL UDF privilege escalation. Chained a leaked serial number → plaintext creds → kiosk escape → file-dialog-to-shell → SYSTEM via UDF.</p>
+          <div class="card-tags">
+            <span class="card-tag">Kiosk Escape</span>
+            <span class="card-tag">Credential Hunting</span>
+            <span class="card-tag">MySQL UDF</span>
+            <span class="card-tag">SYSTEM Privesc</span>
+          </div>
+        </a>
+
+        <a href="THM/index.html" class="writeup-card" style="opacity:0.7;">
+          <div class="card-top">
+            <h3>THM: Coming soon</h3>
+            <span class="difficulty easy">TryHackMe</span>
+          </div>
+          <p class="desc">TryHackMe writeups will be added here as new rooms and machines are completed.</p>
+          <div class="card-tags">
+            <span class="card-tag">Privilege Escalation</span>
+            <span class="card-tag">Web Security</span>
+            <span class="card-tag">Active Directory</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <span class="prompt-line">$</span> echo "Built with caffeine and curiosity."<br>
+      © 2026 Rachid Chokrani. All rights reserved.
+    </div>
+  </footer>
+</body>
+
+</html>
+
