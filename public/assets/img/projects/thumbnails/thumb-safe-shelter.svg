@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 366" role="img" aria-label="Architecture: a volunteer and an attacker reach the Safe Shelter Connect web app (UI, API with JWT auth, database); the audit finds broken access control, JWT forgery and privilege escalation, then produces PoCs, a report and remediation" xmlns:c2pa="http://c2pa.org/manifest">
 <defs>
-<pattern id="g" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#f04b38" stroke-opacity=".05"/></pattern>
-<marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f04b38"/></marker>
-<marker id="r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ff8a7a"/></marker>
-<marker id="c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4fd6e0"/></marker>
+<pattern id="g" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#ff3344" stroke-opacity=".05"/></pattern>
+<marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ff3344"/></marker>
+<marker id="r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ff7a85"/></marker>
+<marker id="c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa4b2"/></marker>
 <marker id="m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ffaa00"/></marker>
 </defs>
 <g font-family="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace" font-size="11" text-anchor="middle">
@@ -14,62 +14,62 @@
 <!-- ACTORS -->
 <rect x="15" y="40" width="100" height="170" rx="6" fill="#0a0a0a" stroke="#222"/>
 <text x="65" y="62" fill="#fff" font-weight="700" font-size="12">Actors</text>
-<rect x="25" y="85" width="80" height="34" rx="4" fill="rgba(79,214,224,.08)" stroke="#4fd6e0"/>
-<text x="65" y="106" fill="#4fd6e0" font-size="10.5">Volunteer</text>
-<rect x="25" y="140" width="80" height="34" rx="4" fill="rgba(240,75,56,.08)" stroke="#ff8a7a"/>
-<text x="65" y="161" fill="#ff8a7a" font-size="10.5" font-weight="700">Attacker</text>
-<line x1="118" y1="102" x2="137" y2="118" stroke="#f04b38" stroke-width="2" marker-end="url(#a)"/>
-<line x1="118" y1="157" x2="137" y2="141" stroke="#ff8a7a" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#r)"/>
+<rect x="25" y="85" width="80" height="34" rx="4" fill="rgba(154, 164, 178,.08)" stroke="#9aa4b2"/>
+<text x="65" y="106" fill="#9aa4b2" font-size="10.5">Volunteer</text>
+<rect x="25" y="140" width="80" height="34" rx="4" fill="rgba(255, 51, 68,.08)" stroke="#ff7a85"/>
+<text x="65" y="161" fill="#ff7a85" font-size="10.5" font-weight="700">Attacker</text>
+<line x1="118" y1="102" x2="137" y2="118" stroke="#ff3344" stroke-width="2" marker-end="url(#a)"/>
+<line x1="118" y1="157" x2="137" y2="141" stroke="#ff7a85" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#r)"/>
 
 <!-- APP -->
-<rect x="140" y="40" width="400" height="170" rx="6" fill="rgba(240,75,56,.03)" stroke="#f04b38" stroke-dasharray="6 4"/>
-<text x="340" y="62" fill="#f04b38" font-weight="700" font-size="12">Safe Shelter Connect</text>
+<rect x="140" y="40" width="400" height="170" rx="6" fill="rgba(255, 51, 68,.03)" stroke="#ff3344" stroke-dasharray="6 4"/>
+<text x="340" y="62" fill="#ff3344" font-weight="700" font-size="12">Safe Shelter Connect</text>
 <rect x="170" y="74" width="340" height="24" rx="12" fill="rgba(255,170,0,.08)" stroke="#ffaa00"/>
 <text x="340" y="90" fill="#ffaa00" font-size="11">JWT auth · role-based access</text>
 <line x1="334" y1="98" x2="334" y2="124" stroke="#ffaa00" marker-end="url(#m)"/>
-<rect x="165" y="126" width="90" height="38" rx="4" fill="rgba(79,214,224,.1)" stroke="#4fd6e0"/>
-<text x="210" y="149" fill="#4fd6e0" font-size="10.5">Web UI</text>
-<line x1="255" y1="145" x2="277" y2="145" stroke="#f04b38" marker-end="url(#a)"/>
-<rect x="279" y="126" width="110" height="38" rx="4" fill="rgba(240,75,56,.1)" stroke="#ff8a7a" stroke-width="1.5"/>
-<text x="334" y="149" fill="#ff8a7a" font-size="10.5" font-weight="700">REST API</text>
-<line x1="389" y1="145" x2="411" y2="145" stroke="#f04b38" marker-end="url(#a)"/>
-<rect x="413" y="126" width="90" height="38" rx="4" fill="#0a0a0a" stroke="#f04b38" stroke-opacity=".6"/>
-<text x="458" y="149" fill="#f04b38" font-size="10.5">Database</text>
+<rect x="165" y="126" width="90" height="38" rx="4" fill="rgba(154, 164, 178,.1)" stroke="#9aa4b2"/>
+<text x="210" y="149" fill="#9aa4b2" font-size="10.5">Web UI</text>
+<line x1="255" y1="145" x2="277" y2="145" stroke="#ff3344" marker-end="url(#a)"/>
+<rect x="279" y="126" width="110" height="38" rx="4" fill="rgba(255, 51, 68,.1)" stroke="#ff7a85" stroke-width="1.5"/>
+<text x="334" y="149" fill="#ff7a85" font-size="10.5" font-weight="700">REST API</text>
+<line x1="389" y1="145" x2="411" y2="145" stroke="#ff3344" marker-end="url(#a)"/>
+<rect x="413" y="126" width="90" height="38" rx="4" fill="#0a0a0a" stroke="#ff3344" stroke-opacity=".6"/>
+<text x="458" y="149" fill="#ff3344" font-size="10.5">Database</text>
 <g font-size="10">
-<rect x="160" y="177" width="110" height="22" rx="4" fill="rgba(240,75,56,.08)" stroke="#ff8a7a" stroke-opacity=".6"/><text x="215" y="192" fill="#ff8a7a">Broken access</text>
-<rect x="278" y="177" width="100" height="22" rx="4" fill="rgba(240,75,56,.08)" stroke="#ff8a7a" stroke-opacity=".6"/><text x="328" y="192" fill="#ff8a7a">Forged JWT</text>
-<rect x="386" y="177" width="124" height="22" rx="4" fill="rgba(240,75,56,.08)" stroke="#ff8a7a" stroke-opacity=".6"/><text x="448" y="192" fill="#ff8a7a">Open admin route</text>
+<rect x="160" y="177" width="110" height="22" rx="4" fill="rgba(255, 51, 68,.08)" stroke="#ff7a85" stroke-opacity=".6"/><text x="215" y="192" fill="#ff7a85">Broken access</text>
+<rect x="278" y="177" width="100" height="22" rx="4" fill="rgba(255, 51, 68,.08)" stroke="#ff7a85" stroke-opacity=".6"/><text x="328" y="192" fill="#ff7a85">Forged JWT</text>
+<rect x="386" y="177" width="124" height="22" rx="4" fill="rgba(255, 51, 68,.08)" stroke="#ff7a85" stroke-opacity=".6"/><text x="448" y="192" fill="#ff7a85">Open admin route</text>
 </g>
-<line x1="543" y1="125" x2="567" y2="125" stroke="#f04b38" stroke-width="2" marker-end="url(#a)"/>
+<line x1="543" y1="125" x2="567" y2="125" stroke="#ff3344" stroke-width="2" marker-end="url(#a)"/>
 
 <!-- FINDINGS -->
 <rect x="570" y="40" width="215" height="170" rx="6" fill="#0a0a0a" stroke="#222"/>
 <text x="677" y="62" fill="#fff" font-weight="700" font-size="12">Findings</text>
-<rect x="585" y="80" width="185" height="30" rx="4" fill="rgba(240,75,56,.08)" stroke="#ff8a7a"/>
-<circle cx="601" cy="95" r="4" fill="#ff8a7a"/><text x="615" y="99" fill="#ff8a7a" font-size="10.5" text-anchor="start">Broken Access Control</text>
+<rect x="585" y="80" width="185" height="30" rx="4" fill="rgba(255, 51, 68,.08)" stroke="#ff7a85"/>
+<circle cx="601" cy="95" r="4" fill="#ff7a85"/><text x="615" y="99" fill="#ff7a85" font-size="10.5" text-anchor="start">Broken Access Control</text>
 <rect x="585" y="122" width="185" height="30" rx="4" fill="rgba(255,170,0,.08)" stroke="#ffaa00"/>
 <circle cx="601" cy="137" r="4" fill="#ffaa00"/><text x="615" y="141" fill="#ffaa00" font-size="10.5" text-anchor="start">JWT forgery (hardcoded key)</text>
-<rect x="585" y="164" width="185" height="30" rx="4" fill="rgba(79,214,224,.08)" stroke="#4fd6e0"/>
-<circle cx="601" cy="179" r="4" fill="#4fd6e0"/><text x="615" y="183" fill="#4fd6e0" font-size="10.5" text-anchor="start">Privilege escalation</text>
+<rect x="585" y="164" width="185" height="30" rx="4" fill="rgba(154, 164, 178,.08)" stroke="#9aa4b2"/>
+<circle cx="601" cy="179" r="4" fill="#9aa4b2"/><text x="615" y="183" fill="#9aa4b2" font-size="10.5" text-anchor="start">Privilege escalation</text>
 
 <!-- vertical links -->
-<line x1="65" y1="213" x2="65" y2="247" stroke="#4fd6e0" marker-start="url(#c)" marker-end="url(#c)"/>
-<line x1="340" y1="213" x2="340" y2="247" stroke="#4fd6e0" marker-start="url(#c)" marker-end="url(#c)"/>
+<line x1="65" y1="213" x2="65" y2="247" stroke="#9aa4b2" marker-start="url(#c)" marker-end="url(#c)"/>
+<line x1="340" y1="213" x2="340" y2="247" stroke="#9aa4b2" marker-start="url(#c)" marker-end="url(#c)"/>
 
 <!-- COMPARISON BAR -->
-<rect x="15" y="250" width="770" height="30" rx="15" fill="rgba(79,214,224,.07)" stroke="#4fd6e0" stroke-opacity=".6"/>
-<text x="400" y="270" fill="#4fd6e0" font-size="12">AI-generated code  vs  human-written code  ·  comparative audit</text>
-<line x1="400" y1="283" x2="400" y2="297" stroke="#4fd6e0" marker-start="url(#c)" marker-end="url(#c)"/>
+<rect x="15" y="250" width="770" height="30" rx="15" fill="rgba(154, 164, 178,.07)" stroke="#9aa4b2" stroke-opacity=".6"/>
+<text x="400" y="270" fill="#9aa4b2" font-size="12">AI-generated code  vs  human-written code  ·  comparative audit</text>
+<line x1="400" y1="283" x2="400" y2="297" stroke="#9aa4b2" marker-start="url(#c)" marker-end="url(#c)"/>
 
 <!-- AUDIT & REPORTING -->
 <rect x="140" y="300" width="520" height="52" rx="6" fill="#0a0a0a" stroke="#222"/>
 <text x="400" y="315" fill="#777" font-size="10" letter-spacing="2">AUDIT &amp; REPORTING</text>
 <g font-size="10.5" fill="#ccc">
-<path d="M190 342l8-14 8 14z" fill="none" stroke="#ff8a7a" stroke-width="1.8"/><line x1="198" y1="333" x2="198" y2="337" stroke="#ff8a7a" stroke-width="1.8"/>
+<path d="M190 342l8-14 8 14z" fill="none" stroke="#ff7a85" stroke-width="1.8"/><line x1="198" y1="333" x2="198" y2="337" stroke="#ff7a85" stroke-width="1.8"/>
 <text x="214" y="338" text-anchor="start">PoC exploits</text>
-<rect x="348" y="327" width="13" height="16" rx="2" fill="none" stroke="#4fd6e0" stroke-width="1.6"/><line x1="351" y1="333" x2="358" y2="333" stroke="#4fd6e0"/><line x1="351" y1="337" x2="358" y2="337" stroke="#4fd6e0"/>
+<rect x="348" y="327" width="13" height="16" rx="2" fill="none" stroke="#9aa4b2" stroke-width="1.6"/><line x1="351" y1="333" x2="358" y2="333" stroke="#9aa4b2"/><line x1="351" y1="337" x2="358" y2="337" stroke="#9aa4b2"/>
 <text x="368" y="338" text-anchor="start">Technical report</text>
-<path d="M520 328l10 4v6c0 5-4 8-10 10c-6-2-10-5-10-10v-6z" fill="none" stroke="#f04b38" stroke-width="1.6"/><path d="M516 337l3 3 6-7" fill="none" stroke="#f04b38" stroke-width="1.6"/>
+<path d="M520 328l10 4v6c0 5-4 8-10 10c-6-2-10-5-10-10v-6z" fill="none" stroke="#ff3344" stroke-width="1.6"/><path d="M516 337l3 3 6-7" fill="none" stroke="#ff3344" stroke-width="1.6"/>
 <text x="540" y="338" text-anchor="start">Remediation</text>
 </g>
 </g>
