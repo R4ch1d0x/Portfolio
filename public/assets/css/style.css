@@ -1472,3 +1472,35 @@ footer .prompt-line {
 .terminal-body .term-line .prompt,
 .terminal-body .term-out .ps,
 .terminal-window .terminal-title { color: #4fd6e0; }
+
+/* Back to top button */
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid var(--accent, #f04b38);
+  border-radius: 50%;
+  background: var(--bg-raised, #15131d);
+  color: var(--accent, #f04b38);
+  font: 700 24px/1 var(--font-mono, var(--mono, monospace));
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .25);
+  transition: background-color .2s, color .2s, transform .2s;
+}
+.back-to-top:hover {
+  background: var(--accent, #f04b38);
+  color: var(--bg, #0b0a10);
+  transform: translateY(-2px);
+}
+.back-to-top:focus-visible {
+  outline: 2px solid var(--accent, #f04b38);
+  outline-offset: 3px;
+}
+.back-to-top[hidden] { display: none; }
+

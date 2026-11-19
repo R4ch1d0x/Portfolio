@@ -41,7 +41,6 @@ const {
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     {includePortfolioStyles && <link rel="stylesheet" href={withBase('/assets/css/style.css')} />}
-    {includePortfolioStyles && <link rel="stylesheet" href={withBase('/assets/css/theme.css')} />}
     <slot name="head" />
     {includeThemeScript && <script is:inline src={withBase('/assets/js/theme.js')}></script>}
   </head>

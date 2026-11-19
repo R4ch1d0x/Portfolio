@@ -1,37 +1,9 @@
-/* theme.js — shared theme switch and back-to-top control. Load in <head> so theme applies before first paint. */
+/* theme.js — shared back-to-top control. */
 (function () {
   'use strict';
-  var KEY = 'theme', root = document.documentElement;
-
-  function read() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
-  function save(v) { try { localStorage.setItem(KEY, v); } catch (e) { } }
-
-  var theme = read() === 'light' ? 'light' : 'dark';
-  root.setAttribute('data-theme', theme);
+  try { localStorage.removeItem('theme'); } catch (e) {}
 
   document.addEventListener('DOMContentLoaded', function () {
-    var host = document.querySelector('nav .links') || document.querySelector('nav');
-    if (host) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'theme-btn';
-
-      function paint() {
-        var light = root.getAttribute('data-theme') === 'light';
-        btn.textContent = light ? '☾' : '☀';
-        btn.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
-        btn.title = btn.getAttribute('aria-label');
-      }
-      btn.addEventListener('click', function () {
-        var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        root.setAttribute('data-theme', next);
-        save(next);
-        paint();
-      });
-      paint();
-      host.appendChild(btn);
-    }
-
     var backToTop = document.createElement('button');
     backToTop.type = 'button';
     backToTop.className = 'back-to-top';
