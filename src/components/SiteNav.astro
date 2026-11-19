@@ -1,0 +1,43 @@
+---
+import { withBase } from '../utils/paths';
+
+type Variant = 'main' | 'article';
+type ActivePage = '' | 'projects' | 'writeups' | 'notes' | 'contact';
+
+interface Props {
+  variant?: Variant;
+  active?: ActivePage;
+  backHref?: string;
+  backLabel?: string;
+  title?: string;
+}
+
+const {
+  variant = 'main',
+  active = '',
+  backHref = withBase('/writeups'),
+  backLabel = 'cd ./writeups',
+  title = 'writeups'
+} = Astro.props;
+---
+
+<nav>
+  {variant === 'article' ? (
+    <>
+      <a href={backHref} class="back"><span class="arrow">←</span> {backLabel}</a>
+      <span class="title">{title}</span>
+    </>
+  ) : (
+    <>
+      <a href={withBase('/')} class="logo" style="text-decoration:none;">
+        <span class="prompt">$</span> 0xr4sh<span class="cursor"></span>
+      </a>
+      <div class="links">
+        <a href={withBase('#projects')} class:list={{ active: active === 'projects' }}>[Projects]</a>
+        <a href={withBase('/writeups')} class:list={{ active: active === 'writeups' }}>[Writeups]</a>
+        <a href={withBase('/notes')} class:list={{ active: active === 'notes' }}>[Notes]</a>
+        <a href={withBase('/contact')} class:list={{ active: active === 'contact' }}>[Contact]</a>
+      </div>
+    </>
+  )}
+</nav>

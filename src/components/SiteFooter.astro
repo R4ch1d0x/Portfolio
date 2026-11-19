@@ -1,0 +1,37 @@
+---
+import { withBase } from '../utils/paths';
+
+type Variant = 'main' | 'article';
+
+interface Props {
+  variant?: Variant;
+  message?: string;
+  backHref?: string;
+  backLabel?: string;
+  articleLabel?: string;
+}
+
+const {
+  variant = 'main',
+  message = 'Built with caffeine and curiosity.',
+  backHref = withBase('/'),
+  backLabel = '← Back to portfolio',
+  articleLabel = ''
+} = Astro.props;
+---
+
+<footer>
+  <div class="container">
+    {variant === 'article' ? (
+      <>
+        <a href={backHref} style="color:var(--accent);">{backLabel}</a><br /><br />
+        <a href={withBase('/')} style="color:var(--accent);">$ 0xr4sh</a> — {articleLabel}
+      </>
+    ) : (
+      <>
+        <span class="prompt-line">$</span> echo "{message}"<br />
+        © 2026 Rachid Chokrani. All rights reserved.
+      </>
+    )}
+  </div>
+</footer>

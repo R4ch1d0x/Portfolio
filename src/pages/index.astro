@@ -1,0 +1,342 @@
+---
+import Base from "../layouts/Base.astro";
+import { withBase } from "../utils/paths";
+---
+
+<Base title="RACHID CHOKRANI — Cybersecurity Portfolio" navVariant="main" footerVariant="main">
+<!-- ==================== NAV ==================== -->
+  
+
+  <!-- ==================== HERO ==================== -->
+  <div class="container">
+
+    <section class="hero" id="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="tag">// cybersecurity portfolio</span>
+          <h1>Rachid Chokrani<span class="accent">.</span></h1>
+          <div class="title-line">Cybersecurity Engineering Student</div>
+          <p class="bio">
+            Cybersecurity and digital trust engineering student at ENSIASD with a strong command of programming concepts
+            and information technologies. Driven by applying skills to concrete, innovative projects with a deep
+            interest in solving technical problems, offensive security, and network defense.
+          </p>
+          <div class="contact-bar">
+            <a href="mailto:chokrani.rachid10@gmail.com" class="contact-item">
+              <span class="icon">✉</span> chokrani.rachid10@gmail.com
+            </a>
+
+            <span class="contact-item">
+              <span class="icon">⚑</span> Morocco
+            </span>
+          </div>
+          <div class="status">
+            <span class="dot"></span>
+            Open to internships &amp; opportunities
+          </div>
+        </div>
+
+        <!-- Terminal Card -->
+        <div class="terminal-window">
+          <div class="terminal-bar">
+            <span class="terminal-dot dot-red"></span>
+            <span class="terminal-dot dot-yellow"></span>
+            <span class="terminal-dot dot-green"></span>
+            <span class="terminal-title">root@0xr4sh:~</span>
+          </div>
+          <div class="terminal-body">
+            <div class="term-welcome">Welcome to my portfolio. Type "help" to start.</div>
+            <div class="term-scroll" id="term-body">
+              <div class="term-out" id="term-out" aria-live="polite"></div>
+              <div class="term-line">
+                <span class="prompt">root@0xr4sh:~#</span>
+                <input id="term-in" type="text" autocomplete="off" autocapitalize="off"
+                  spellcheck="false" aria-label="Terminal input. Type help for commands.">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROJECTS ==================== -->
+    <section id="projects">
+      <div class="section-header">
+        <span class="label">01 // Projects</span>
+        <h2>ls -la ~/projects/</h2>
+      </div>
+
+      <div class="projects-carousel" aria-label="Project slides">
+        <button type="button" class="projects-arrow projects-prev" aria-label="Previous project">‹</button>
+        <div class="projects-grid" id="projects-grid" tabindex="0" aria-label="Projects"></div>
+        <button type="button" class="projects-arrow projects-next" aria-label="Next project">›</button>
+        <div class="projects-dots" aria-label="Choose a project page"></div>
+      </div>
+    </section>
+
+    <!-- ==================== WRITEUPS ==================== -->
+    <section id="writeups">
+      <div class="section-header">
+        <span class="label">02 // Writeups</span>
+        <h2>cat ./writeups/*</h2>
+      </div>
+
+      <div class="writeups-grid">
+        <a href={withBase('/writeups/htb/touch-writeup')} class="writeup-card">
+          <div class="card-top">
+            <h3>HTB: Touch</h3>
+            <span class="difficulty easy">Easy</span>
+          </div>
+          <p class="desc">Windows kiosk breakout into MySQL UDF privilege escalation. Chained a leaked serial number →
+            plaintext creds → kiosk escape → file-dialog-to-shell → SYSTEM via UDF.</p>
+          <div class="card-tags">
+            <span class="card-tag">Kiosk Escape</span>
+            <span class="card-tag">Credential Hunting</span>
+            <span class="card-tag">MySQL UDF</span>
+            <span class="card-tag">SYSTEM Privesc</span>
+          </div>
+        </a>
+
+        <a href={withBase('/writeups/thm/pickle-rick-writeup')} class="writeup-card">
+          <div class="card-top">
+            <h3>THM: Pickle Rick</h3>
+            <span class="difficulty easy">Easy</span>
+          </div>
+          <p class="desc">Rick and Morty-themed web exploitation. Recover three ingredients through information disclosure, command-panel RCE, a reverse shell, and unrestricted sudo privileges.</p>
+          <div class="card-tags">
+            <span class="card-tag">Information Disclosure</span>
+            <span class="card-tag">Reverse Shell</span>
+            <span class="card-tag">Sudo NOPASSWD</span>
+          </div>
+        </a>
+
+        <!-- Placeholder for future writeups -->
+        <div class="writeup-card" style="opacity:0.35; pointer-events:none; border-style:dashed;">
+          <div class="card-top">
+            <h3>More coming soon...</h3>
+            <span class="difficulty easy" style="opacity:0.5;">—</span>
+          </div>
+          <p class="desc">New HTB, THM, and CTF writeups will be added as they're completed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== NOTES ==================== -->
+    <section id="notes">
+      <div class="section-header">
+        <span class="label">03 // Notes</span>
+        <h2>./notes --read</h2>
+      </div>
+
+      <div class="writeups-grid">
+        <a href={withBase('/notes/sql-injection')} class="writeup-card">
+          <div class="card-top">
+            <div>
+              <h3>SQL Injection Fundamentals</h3>
+            </div>
+            <span class="difficulty medium">Web</span>
+          </div>
+          <p class="desc">Learn SQL fundamentals, understand how injection happens, and review practical ways to prevent
+            it with parameterized queries.</p>
+          <div class="card-tags">
+            <span class="card-tag">SQL</span>
+            <span class="card-tag">Injection awareness</span>
+            <span class="card-tag">Prevention</span>
+          </div>
+        </a>
+
+        <a href={withBase('/notes/lab-metasploit')} class="writeup-card">
+          <div class="card-top">
+            <div>
+              <h3>Metasploit Framework Cheatsheet</h3>
+            </div>
+            <span class="difficulty medium">Pwn</span>
+          </div>
+          <p class="desc">A practical msfconsole reference covering databases, modules, payloads, sessions, Meterpreter,
+            msfvenom, and resource scripts.</p>
+          <div class="card-tags">
+            <span class="card-tag">Metasploit</span>
+            <span class="card-tag">msfconsole</span>
+            <span class="card-tag">Post-exploitation</span>
+          </div>
+        </a>
+
+        <a href={withBase('/notes/linux-privesc-enum')} class="writeup-card">
+          <div class="card-top">
+            <div>
+              <h3>Linux Privilege Escalation Enumeration</h3>
+            </div>
+            <span class="difficulty medium">Misc</span>
+          </div>
+          <p class="desc">A manual enumeration reference for Linux hosts, users, processes, permissions, SUID binaries,
+            cron jobs, and privilege-escalation checks.</p>
+          <div class="card-tags">
+            <span class="card-tag">Linux</span>
+            <span class="card-tag">Enumeration</span>
+            <span class="card-tag">Privilege escalation</span>
+          </div>
+        </a>
+
+        <a href={withBase('/notes')} class="writeup-card notes-more-card">
+          <div class="card-top">
+            <h3>Explore More Notes</h3>
+            <span class="notes-more-arrow" aria-hidden="true">→</span>
+          </div>
+          <p class="desc">Browse the full notes library, search by topic, and filter guides by category.</p>
+          <div class="card-tags">
+            <span class="card-tag">Search</span>
+            <span class="card-tag">Filters</span>
+            <span class="card-tag">More guides</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==================== SKILLS ==================== -->
+    <section id="skills">
+      <div class="section-header">
+        <span class="label">04 // Skills &amp; Tools</span>
+        <h2>which *</h2>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-item">
+          <div class="skill-category">Languages</div>
+          <ul class="skill-list">
+            <li>C / C++</li>
+            <li>Python</li>
+            <li>Java</li>
+            <li>Bash</li>
+            <li>PHP</li>
+            <li>XML</li>
+          </ul>
+        </div>
+        <div class="skill-item">
+          <div class="skill-category">Offensive Security</div>
+          <ul class="skill-list">
+            <li>Nmap</li>
+            <li>Gobuster</li>
+            <li>Burp Suite</li>
+            <li>Metasploit</li>
+            <li>Wireshark</li>
+            <li>John the Ripper</li>
+          </ul>
+        </div>
+        <div class="skill-item">
+          <div class="skill-category">Defensive Security</div>
+          <ul class="skill-list">
+            <li>Wazuh</li>
+            <li>ELK Stack</li>
+            <li>Suricata</li>
+            <li>iptables</li>
+            <li>fail2ban</li>
+            <li>DNSSEC</li>
+          </ul>
+        </div>
+        <div class="skill-item">
+          <div class="skill-category">Cloud &amp; DevSecOps</div>
+          <ul class="skill-list">
+            <li>AWS (Fundamentals)</li>
+            <li>Docker</li>
+            <li>CI/CD (GitHub Actions)</li>
+            <li>Ansible</li>
+          </ul>
+        </div>
+        <div class="skill-item">
+          <div class="skill-category">Databases</div>
+          <ul class="skill-list">
+            <li>MySQL</li>
+            <li>PostgreSQL</li>
+          </ul>
+        </div>
+        <div class="skill-item">
+          <div class="skill-category">Tools &amp; Platforms</div>
+          <ul class="skill-list">
+            <li>Git / GitHub</li>
+            <li>Linux</li>
+            <li>Windows</li>
+            <li>Active Directory</li>
+            <li>Laravel</li>
+            <li>Odoo</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CERTIFICATIONS ==================== -->
+    <section id="certs">
+      <div class="section-header">
+        <span class="label">05 // Certifications</span>
+        <h2>gpg --verify ./certs.sig</h2>
+      </div>
+      <div class="certs-grid">
+        <div class="cert-item">
+          <button type="button" class="cert-img" aria-label="View CCNA certificate">
+            <img src={withBase('/assets/img/certs/ccna.jpg')} alt="CCNA 1 &amp; 2 (SRWE) certificate" loading="lazy">
+          </button>
+          <div class="cert-info">
+            <span class="cert-badge">CISCO</span>
+            <span class="cert-name">CCNA 1 &amp; 2 (SRWE) — Cisco Networking Academy</span>
+          </div>
+        </div>
+        <div class="cert-item">
+          <button type="button" class="cert-img" aria-label="View CyberTalents certificate">
+            <img src={withBase('/assets/img/certs/cybertalents.jpg')} alt="CyberTalents Cybersecurity Bootcamp certificate" loading="lazy">
+          </button>
+          <div class="cert-info">
+            <span class="cert-badge">CTF</span>
+            <span class="cert-name">Cybersecurity Bootcamp — CyberTalents</span>
+          </div>
+        </div>
+        <div class="cert-item">
+          <button type="button" class="cert-img" aria-label="View HackerRank certificate">
+            <img src={withBase('/assets/img/certs/hackerrank.jpg')} alt="HackerRank Problem Solving (Basic) certificate" loading="lazy">
+          </button>
+          <div class="cert-info">
+            <span class="cert-badge">RANK</span>
+            <span class="cert-name">Problem Solving (Basic) — HackerRank</span>
+          </div>
+        </div>
+      </div>
+      <dialog class="cert-preview" id="cert-preview" aria-label="Certificate preview">
+        <button type="button" class="cert-preview-close" aria-label="Close certificate preview">×</button>
+        <img alt="">
+      </dialog>
+    </section>
+
+    <!-- ==================== CONTACT ==================== -->
+    <section id="contact">
+      <div class="section-header">
+        <span class="label">06 // Contact</span>
+        <h2>ssh user@0xr4sh</h2>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:chokrani.rachid10@gmail.com" class="contact-link">
+          <span class="icon">✉</span> chokrani.rachid10@gmail.com
+        </a>
+        <a href="https://github.com/R4ch1d0x" target="_blank" rel="noopener noreferrer" class="contact-link">
+          <span class="icon">💻</span> GitHub
+        </a>
+        <a href="https://linkedin.com/in/rachid-chokrani/" target="_blank" rel="noopener noreferrer" class="contact-link">
+          <span class="icon">◆</span> LinkedIn
+        </a>
+        <a href="https://app.hackthebox.com/users/3997830" target="_blank" rel="noopener noreferrer" class="contact-link">
+          <span class="icon">▣</span> Hack The Box
+        </a>
+        <a href="https://tryhackme.com/p/0xr4sh" target="_blank" rel="noopener noreferrer" class="contact-link">
+          <span class="icon">◉</span> TryHackMe
+        </a>
+      </div>
+    </section>
+
+  </div><!-- /.container -->
+
+  <!-- ==================== FOOTER ==================== -->
+  
+
+  
+<script>
+  import "../scripts/site.js";
+</script>
+
+</Base>

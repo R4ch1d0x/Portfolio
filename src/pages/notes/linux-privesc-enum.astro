@@ -1,0 +1,450 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+
+<Base title="Linux Privilege Escalation — Enumeration | 0xr4sh" description="Manual enumeration checklist and methodology for Linux privilege escalation." activeNav="notes">
+  <Fragment slot="head">
+
+<style is:global>
+
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0a10;--bg-raised:#15131d;--bg-code:#08070e;--panel:rgba(21,19,29,.82);
+  --text:#eae7f0;--muted:#9a95a8;--fg:#eae7f0;
+  --accent:#f04b38;--info:#4fd6e0;--warn:#e2b53e;--bad:#ff8a7a;--special:#4fd6e0;
+  --border:rgba(255,255,255,.09);--line:rgba(255,255,255,.12);--nav-h:55px;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+html{scroll-behavior:smooth}
+body{background-color:var(--bg);background-image:linear-gradient(rgba(240, 75, 56,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(240, 75, 56,.025) 1px,transparent 1px);background-size:36px 36px;background-attachment:fixed;color:var(--text);font-family:var(--mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased;padding-top:var(--nav-h)}
+::selection{background:var(--accent);color:#000}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
+a{color:var(--accent);text-decoration:none;transition:color .2s}a:hover{color:var(--info)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+h1,h2,h3,h4{line-height:1.25;text-wrap:balance;letter-spacing:-.01em;color:#fff}
+h1{font-size:clamp(1.8rem,4.6vw,2.8rem);font-weight:700}
+h2{font-size:clamp(1.35rem,3vw,1.9rem);font-weight:700}
+h3{font-size:1.02rem;font-weight:600}
+h4{font-size:.9rem;font-weight:600}
+code{font-family:var(--mono);color:var(--info);font-size:.92em}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(0,0,0,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:14px 30px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+nav .logo{font-weight:700;font-size:15px;color:var(--accent);letter-spacing:1px;text-decoration:none;white-space:nowrap;flex:none}
+nav .logo .prompt{color:var(--muted)}
+.cursor{display:inline-block;width:8px;height:17px;background:var(--accent);margin-left:4px;vertical-align:middle;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+nav .links{display:flex;gap:24px;min-width:0;overflow-x:auto;scrollbar-width:none;align-items:center}
+nav .links::-webkit-scrollbar{display:none}
+nav .links a{color:#eae7f0;font-size:13px;letter-spacing:.5px;padding:4px 8px;border-radius:3px;border:1px solid transparent;white-space:nowrap}
+nav .links a:hover{color:var(--accent)}
+nav .links a.active{color:var(--accent);background:rgba(240, 75, 56,.08);border-color:rgba(240, 75, 56,.25)}
+.station{padding-block:60px;scroll-margin-top:calc(var(--nav-h) + 56px)}
+.stack{display:flex;flex-direction:column;gap:22px}
+.head{display:flex;flex-direction:column;gap:12px}
+.lead{color:var(--muted);font-size:14px;line-height:1.8;max-width:72ch}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.chap-meta{font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.note{font:400 12px/1.6 var(--mono);color:var(--muted)}
+.warnbox{border-left:2px solid var(--warn);padding:2px 0 2px 14px;color:var(--muted);font-size:12.5px;max-width:74ch}
+.warnbox b,.card b,.prose b,.lead b{color:var(--fg);font-weight:600}
+.prose{display:flex;flex-direction:column;gap:12px;max-width:74ch}
+.prose p{color:var(--muted);font-size:13.5px;line-height:1.8}
+.g2,.g3{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px 20px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.card h3{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.card p,.card li{color:var(--muted);font-size:12.5px;line-height:1.75}
+.card .seen{border-top:1px dashed var(--line);padding-top:10px}
+.tag{font:700 10px var(--mono);letter-spacing:.1em;padding:2px 8px;border-radius:3px;border:1px solid;white-space:nowrap;display:inline-block}
+.t-cy{color:var(--info);border-color:rgba(79, 214, 224,.45);background:rgba(79, 214, 224,.08)}
+.t-am{color:var(--warn);border-color:rgba(226, 181, 62,.45);background:rgba(226, 181, 62,.08)}
+.t-rd{color:var(--bad);border-color:rgba(240, 75, 56,.45);background:rgba(240, 75, 56,.08)}
+.t-gr{color:var(--accent);border-color:rgba(240, 75, 56,.45);background:rgba(240, 75, 56,.08)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+table.tbl{width:100%;border-collapse:collapse;font-size:12.5px;min-width:560px}
+.tbl th{text-align:left;font:500 10px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--muted);line-height:1.6}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td:first-child{color:#fff;font-weight:700}
+.pre{margin:0;background:#060606;border:1px solid var(--line);border-radius:4px;padding:12px 14px;font:400 12px/1.7 var(--mono);overflow-x:auto;color:var(--muted);white-space:pre}
+.takeaways{background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--accent);border-radius:6px;padding:18px 22px}
+.takeaways h3{font:600 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.takeaways ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:13px}
+.takeaways li::marker,.plain li::marker{color:var(--accent)}
+.plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:13px;max-width:78ch}
+.plain b{color:var(--fg)}
+.query-box{border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#060606}
+.query-box-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.query-box-header h3{font-size:.82rem}
+.query-actions{display:flex;align-items:center;gap:10px}
+.copy-btn{font:700 11px var(--mono);padding:5px 9px;border:1px solid var(--line);border-radius:3px;background:#111;color:var(--fg);cursor:pointer}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.copy-status{font-size:10px;color:var(--muted)}
+.query-box .pre{border:0;border-radius:0;background:transparent}
+footer{border-top:1px solid var(--border);padding:30px 0;text-align:center;color:var(--muted);font-size:12px}
+footer .pl{color:var(--accent)}
+.page-intro{padding-top:34px;padding-bottom:24px}
+.notes-layout{display:grid;grid-template-columns:minmax(220px,270px) minmax(0,1fr);gap:28px;align-items:start}
+.notes-sidebar{position:sticky;top:calc(var(--nav-h) + 18px);max-height:calc(100vh - var(--nav-h) - 36px);overflow:auto;margin:18px 0;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:6px}
+.notes-sidebar>summary{display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;font:600 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+.notes-sidebar>summary::-webkit-details-marker{display:none}
+.notes-sidebar>summary::after{content:"+";font-size:16px;letter-spacing:0}
+.notes-sidebar[open]>summary::after{content:"-"}
+.notes-sidebar ol{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:3px}
+.notes-sidebar a{display:block;padding:5px 7px;border-radius:3px;color:var(--muted);font-size:11px;line-height:1.45}
+.notes-sidebar a:hover{color:var(--accent);background:rgba(240, 75, 56,.08)}
+.notes-sidebar .toc-group{display:block;font:700 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);padding:10px 7px 3px;margin-top:6px}
+.notes-sidebar .toc-group:hover{background:rgba(240, 75, 56,.08)}
+.cat-head{padding-top:10px}
+.cat-head .eyebrow{color:var(--info)}
+.notes-content{min-width:0}
+.notes-content .station{padding:36px 0;scroll-margin-top:calc(var(--nav-h) + 18px)}
+.notes-content .station:first-child{padding-top:42px}
+.notes-content .station:not(:last-child){border-bottom:1px solid var(--line)}
+html[data-theme="light"] nav .links a{color:#2b3038}
+html[data-theme="light"] nav .links a:hover,html[data-theme="light"] nav .links a.active{color:var(--accent)}
+html[data-theme="light"] .query-box-header h3{color:#e6e6e6!important}
+html[data-theme="light"] .copy-btn{background:#111;color:#e6e6e6;border-color:#444}
+html[data-theme="light"] .copy-status{color:#ccc}
+@media (max-width:860px){.g2,.g3{grid-template-columns:minmax(0,1fr)}.station{padding-block:46px}}
+@media (max-width:640px){:root{--nav-h:51px}nav{padding:12px 16px}nav .links{gap:14px}nav .links a{font-size:12px}.wrap{padding:0 16px}}
+@media (max-width:980px){.notes-layout{grid-template-columns:minmax(0,1fr);gap:8px}.notes-sidebar{position:static;max-height:55vh;margin:12px 0 0}.notes-content .station{padding:28px 0}.notes-content .station:first-child{padding-top:30px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    
+</style>
+  </Fragment>
+<header class="wrap page-intro">
+  <p class="eyebrow">// notes - post-exploitation</p>
+  <h1>Linux Privilege Escalation — Enumeration</h1>
+  <p class="lead">Manual enumeration commands for a low-privileged Linux shell. Sections 1-6 cover system and process identification; 7-13 cover users, access and history; 14-17 cover SUID binaries, cron jobs, and a repeatable checklist.</p>
+</header>
+
+<main class="wrap notes-layout">
+  <details class="notes-sidebar" aria-label="On this page" open>
+    <summary>On this page</summary>
+    <ol>
+      <li><a href="#section-1">Why enumerate after access</a></li>
+      <li><a href="#cat-os" class="toc-group">OS enumeration</a></li>
+      <li><a href="#section-2">hostname</a></li>
+      <li><a href="#section-3">uname -a</a></li>
+      <li><a href="#section-4">/proc/version</a></li>
+      <li><a href="#section-5">/etc/issue</a></li>
+      <li><a href="#cat-user" class="toc-group">User enumeration</a></li>
+      <li><a href="#section-6">ps and ps aux</a></li>
+      <li><a href="#section-7">id</a></li>
+      <li><a href="#section-8">env</a></li>
+      <li><a href="#section-9">sudo -l</a></li>
+      <li><a href="#section-10">/etc/passwd</a></li>
+      <li><a href="#section-11">history</a></li>
+      <li><a href="#cat-network" class="toc-group">Network enumeration</a></li>
+      <li><a href="#section-12">ifconfig and ip route</a></li>
+      <li><a href="#section-13">netstat</a></li>
+      <li><a href="#cat-files" class="toc-group">Files enumeration</a></li>
+      <li><a href="#section-14">find -perm 4000 (SUID)</a></li>
+      <li><a href="#section-15">Writable and executable paths</a></li>
+      <li><a href="#section-16">Cron jobs</a></li>
+      <li><a href="#section-17">Methodology checklist</a></li>
+    </ol>
+  </details>
+  <div class="notes-content">
+
+<section id="section-1" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#01</div><h2>Why enumerate after access</h2>
+      <p class="lead">Getting a shell is rarely the end goal. Whether access came from a critical RCE or a low-privileged account, the next step is always the same: understand the box before trying to escalate. Unlike a CTF, a real engagement doesn't stop at initial access — enumeration keeps mattering through post-compromise.</p>
+    </div>
+    <div class="g2">
+      <article class="card"><h3>What you're looking for</h3><p>Kernel and OS version (known exploits), misconfigured permissions (SUID, writable files, sudo rules), credentials left in files or history, and anything that runs with higher privileges than the account running it.</p></article>
+      <article class="card"><h3>Order of operations</h3><p>Identify the system first, then the user context, then look for specific escalation primitives (SUID, sudo, cron, writable PATH). Broad before narrow.</p></article>
+    </div>
+    <p class="note">For authorized testing and CTF practice (HTB/THM) only. Running these against systems you don't own or have written permission to test is illegal.</p>
+  </div>
+</section>
+
+<section id="cat-os" class="station cat-head" style="padding-bottom:0;">
+  <div class="stack" style="gap:10px;">
+    <p class="eyebrow">// category</p>
+    <h2>OS enumeration</h2>
+    <p class="lead">Identify the kernel, distro and version to spot known exploits.</p>
+  </div>
+</section>
+<section id="section-2" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#02</div><h2>hostname</h2>
+      <p class="lead">Prints the machine's hostname. It can be a meaningless default (<code>ubuntu-3487</code>) or a naming-convention hint about the box's role (<code>sql-prod-01</code>, <code>web-dmz-2</code>), which is useful for mapping a network during a larger engagement.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Check the hostname</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>hostname</code></pre></div></article>
+  </div>
+</section>
+
+<section id="section-3" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#03</div><h2>uname -a</h2>
+      <p class="lead">Prints kernel name, version, architecture and build date in one line. The kernel version is the first thing to check against known kernel exploits (Dirty COW, Dirty Pipe, PwnKit-adjacent kernel bugs, etc.).</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Full kernel/OS banner</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>uname -a
+# or individually:
+uname -r   # kernel release
+uname -m   # architecture</code></pre></div></article>
+    <p class="note">Cross-reference the kernel version with searchsploit or a CVE database before trying a kernel exploit — a wrong match can crash the box.</p>
+  </div>
+</section>
+
+<section id="section-4" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#04</div><h2>/proc/version</h2>
+      <p class="lead">The proc filesystem exposes live kernel and process information as regular files. <code>/proc/version</code> gives the kernel version plus the compiler (often GCC) used to build it — useful when you need to compile a local exploit and must match the target's toolchain.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Read it directly</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>cat /proc/version</code></pre></div></article>
+  </div>
+</section>
+
+<section id="section-5" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#05</div><h2>/etc/issue</h2>
+      <p class="lead">A plain-text file meant to be shown before login, usually naming the distro and version. Like any banner file it can be edited or stripped, so treat it as a hint, not a guarantee — cross-check with <code>uname -a</code> and <code>/etc/os-release</code>.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Read it</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>cat /etc/issue
+cat /etc/os-release</code></pre></div></article>
+  </div>
+</section>
+
+<section id="cat-user" class="station cat-head" style="padding-bottom:0;">
+  <div class="stack" style="gap:10px;">
+    <p class="eyebrow">// category</p>
+    <h2>User enumeration</h2>
+    <p class="lead">Identify who you are, what you can run, and who else exists on the box.</p>
+  </div>
+</section>
+<section id="section-6" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#06</div><h2>ps and ps aux</h2>
+      <p class="lead">Lists running processes. Plain <code>ps</code> only shows processes tied to the current terminal. <code>ps aux</code> shows every process for every user: <b>a</b>ll processes, include the <b>u</b>ser that launched each one, and processes not attached to a terminal (<b>x</b>). Look for services running as root that a low-privileged user can interact with or restart.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Process listing</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>ps              # current shell only
+ps -A           # every process
+ps axjf         # process tree
+ps aux          # all users, with owner column</code></pre></div></article>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Column</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>PID</td><td>Unique process ID.</td></tr>
+        <tr><td>TTY</td><td>Terminal type attached to the process, if any.</td></tr>
+        <tr><td>TIME</td><td>CPU time used, not wall-clock runtime.</td></tr>
+        <tr><td>CMD</td><td>The executable's name — command-line arguments are not shown here.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="section-7" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#07</div><h2>id</h2>
+      <p class="lead">Shows the current user's UID, GID and all group memberships. Group membership matters: being in <code>docker</code>, <code>lxd</code>, <code>disk</code> or <code>adm</code> can each be its own privilege-escalation path even without any sudo rights.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Current and another user</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>id
+id www-data   # check another account's UID/groups</code></pre></div></article>
+  </div>
+</section>
+
+<section id="section-8" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#08</div><h2>env</h2>
+      <p class="lead">Lists environment variables for the current shell. <code>PATH</code> is the one to check first: if it includes a directory the current user can write to, and a root-run script or SUID binary calls a command without an absolute path, that's a PATH hijack. Also check for stray credentials left in variables.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>List environment variables</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>env
+echo $PATH</code></pre></div></article>
+  </div>
+</section>
+
+<section id="section-9" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#09</div><h2>sudo -l</h2>
+      <p class="lead">Lists the commands the current user is allowed to run with <code>sudo</code>, with or without a password. Any binary listed here that can read files, write files, or spawn a shell (check <a href="https://gtfobins.github.io/" target="_blank" rel="noopener">GTFOBins</a> for the specific binary) is a direct path to root.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>List sudo rights</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>sudo -l</code></pre></div></article>
+    <p class="note">A command allowed with <code>NOPASSWD</code> is the most interesting entry — no credential needed, just the right GTFOBins technique for that binary.</p>
+  </div>
+</section>
+
+<section id="section-10" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#10</div><h2>/etc/passwd</h2>
+      <p class="lead">Readable by everyone by default, it lists every account on the system: username, UID, GID, home directory and login shell. Most entries are system or service accounts with no login shell — real human accounts are the ones worth targeting for credential reuse or lateral movement.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Filter to real users</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>cat /etc/passwd
+grep home /etc/passwd          # accounts with a /home directory
+cut -d: -f1 /etc/passwd         # usernames only, for a wordlist</code></pre></div></article>
+    <p class="note">If <code>/etc/passwd</code> is ever writable, that alone is a privilege-escalation path: appending a new root UID-0 entry with a known password hash creates a new root account.</p>
+  </div>
+</section>
+
+<section id="section-11" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#11</div><h2>history</h2>
+      <p class="lead">Shows the current shell's command history, and files like <code>~/.bash_history</code> keep it across sessions. Admins sometimes type passwords or sensitive flags directly on the command line by mistake, so this is worth a quick scan even though hits are rare.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Current and saved history</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>history
+cat ~/.bash_history
+cat /root/.bash_history   2>/dev/null</code></pre></div></article>
+  </div>
+</section>
+
+<section id="cat-network" class="station cat-head" style="padding-bottom:0;">
+  <div class="stack" style="gap:10px;">
+    <p class="eyebrow">// category</p>
+    <h2>Network enumeration</h2>
+    <p class="lead">Find interfaces, routes and listening services that aren't visible from outside.</p>
+  </div>
+</section>
+<section id="section-12" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#12</div><h2>ifconfig and ip route</h2>
+      <p class="lead">Shows network interfaces. A box with more than one interface (e.g. <code>eth0</code> plus a <code>tun</code>/internal interface) may be a pivot point into a network segment you can't reach directly. <code>ip route</code> confirms which routes actually exist from this host.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Interfaces and routes</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>ifconfig -a
+ip a
+ip route</code></pre></div></article>
+  </div>
+</section>
+
+<section id="section-13" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#13</div><h2>netstat</h2>
+      <p class="lead">Shows existing connections and listening ports — useful for finding internal-only services (e.g. a database or admin panel bound to <code>127.0.0.1</code>) that aren't visible from an external scan but can be reached locally.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Common flag combinations</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>netstat -a      # all listening + established
+netstat -at     # TCP only
+netstat -au     # UDP only
+netstat -l      # listening only
+netstat -s      # per-protocol statistics
+netstat -tp     # TCP with service name and PID (needs root to see others' PIDs)
+netstat -ano    # all sockets, no name resolution, timers</code></pre></div></article>
+  </div>
+</section>
+
+<section id="cat-files" class="station cat-head" style="padding-bottom:0;">
+  <div class="stack" style="gap:10px;">
+    <p class="eyebrow">// category</p>
+    <h2>Files enumeration</h2>
+    <p class="lead">Find SUID binaries, writable paths, and scheduled jobs a privileged process trusts.</p>
+  </div>
+</section>
+<section id="section-14" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#14</div><h2>find -perm 4000 (SUID)</h2>
+      <p class="lead">The SUID bit makes a binary run with its <b>owner's</b> privileges rather than the privileges of whoever executes it. A SUID binary owned by root that lets you read files, write files, or spawn a shell is a direct escalation path — check any hit against GTFOBins.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Find SUID binaries</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>find / -perm -u=s -type f 2>/dev/null
+find / -perm -4000 -type f 2>/dev/null
+# SGID equivalent (runs as the owning group):
+find / -perm -g=s -type f 2>/dev/null</code></pre></div></article>
+    <p class="note">Redirecting errors to <code>/dev/null</code> keeps the output readable — <code>find /</code> generates a lot of "Permission denied" noise on a real filesystem.</p>
+  </div>
+</section>
+
+<section id="section-15" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#15</div><h2>Writable and executable paths</h2>
+      <p class="lead">Beyond SUID, a world-writable directory that a privileged process reads from (a script run by cron, a service's config, a library path) is just as useful — drop or replace a file there and wait for it to run as someone else.</p>
+    </div>
+    <div class="g2">
+      <article class="card"><h3>Write access</h3><p>Three equivalent ways to find world-writable directories; the manual page explains why there are three flag styles for one permission check.</p></article>
+      <article class="card"><h3>Execute access</h3><p>World-executable directories and the presence of a compiler or scripting runtime, which matters if you need to build or run a local exploit on-box.</p></article>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Writable / executable / toolchain checks</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>find / -writable -type d 2>/dev/null
+find / -perm -222 -type d 2>/dev/null
+find / -perm -o w -type d 2>/dev/null
+
+find / -perm -o x -type d 2>/dev/null    # world-executable dirs
+
+find / -name "python*" 2>/dev/null
+find / -name "perl*" 2>/dev/null
+find / -name "gcc*" 2>/dev/null</code></pre></div></article>
+  </div>
+</section>
+
+<section id="section-16" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#16</div><h2>Cron jobs</h2>
+      <p class="lead">Scheduled tasks often run as root. If a cron job calls a script that your current user can edit, or a script with no absolute paths that relies on a writable <code>PATH</code> entry, you can get code to run as whoever owns the cron job — usually root.</p>
+    </div>
+    <article><div class="query-box"><div class="query-box-header"><h3>Where cron jobs are defined</h3><div class="query-actions"><span class="copy-status" aria-live="polite"></span><button class="copy-btn" type="button">Copy</button></div></div><pre class="pre"><code>cat /etc/crontab
+ls -la /etc/cron.d/ /etc/cron.daily/ /etc/cron.hourly/
+crontab -l                 # current user's own jobs
+crontab -l -u root 2>/dev/null
+cat /var/spool/cron/crontabs/* 2>/dev/null</code></pre></div></article>
+    <p class="note">Check the permissions on every script a cron job references, not just the crontab file itself — the crontab can be read-only while the script it calls is writable.</p>
+  </div>
+</section>
+
+<section id="section-17" class="station">
+  <div class="stack">
+    <div class="head"><div class="chap-meta">#17</div><h2>Methodology checklist</h2>
+      <p class="lead">A repeatable order to run through on a fresh shell, roughly matching the sections above.</p>
+    </div>
+    <ol class="plain">
+      <li><b>Identify the system</b> — <code>hostname</code>, <code>uname -a</code>, <code>/proc/version</code>, <code>/etc/issue</code>.</li>
+      <li><b>Identify the user context</b> — <code>id</code>, <code>env</code>, <code>sudo -l</code>.</li>
+      <li><b>Look around</b> — <code>ps aux</code>, <code>/etc/passwd</code>, <code>history</code>, <code>ls -la</code> on home directories (hidden files are easy to miss with plain <code>ls</code>).</li>
+      <li><b>Network context</b> — <code>ifconfig</code> / <code>ip a</code>, <code>ip route</code>, <code>netstat -ano</code>.</li>
+      <li><b>Escalation primitives</b> — SUID/SGID binaries, writable files/directories a privileged process touches, cron jobs.</li>
+      <li><b>Cross-reference</b> — kernel version against CVEs, SUID binaries against GTFOBins, sudo rules against GTFOBins.</li>
+    </ol>
+    <div class="takeaways"><h3>Key takeaways</h3><ul>
+      <li>Enumeration doesn't stop at initial access — it's the main activity of the post-compromise phase.</li>
+      <li>Check broad system facts first (kernel, OS), then user context (id, sudo), then specific primitives (SUID, cron, writable paths).</li>
+      <li>Most privesc paths are misconfigurations — excess sudo rights, a writable file a root process trusts, a SUID binary that shouldn't exist — not kernel exploits.</li>
+    </ul></div>
+  </div>
+</section>
+
+  </div>
+</main>
+
+
+<script is:inline>
+(function () {
+  const toc = document.querySelector('.notes-sidebar');
+  const compact = window.matchMedia('(max-width: 980px)');
+  const updateToc = function () { toc.open = !compact.matches; };
+  updateToc();
+  if (compact.addEventListener) compact.addEventListener('change', updateToc);
+  else compact.addListener(updateToc);
+
+  const fallbackCopy = function (text) {
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    document.body.appendChild(field);
+    field.select();
+    const copied = document.execCommand('copy');
+    field.remove();
+    if (!copied) throw new Error('Clipboard copy was rejected.');
+  };
+
+  document.querySelectorAll('.query-box').forEach(function (box) {
+    const button = box.querySelector('.copy-btn');
+    const status = box.querySelector('.copy-status');
+    button.addEventListener('click', async function () {
+      const text = box.querySelector('code').textContent.trim();
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          fallbackCopy(text);
+        }
+        status.textContent = 'Copied.';
+      } catch (error) {
+        console.error('Unable to copy query text.', error);
+        status.textContent = 'Copy failed. Select and copy the text manually.';
+      }
+    });
+  });
+})();
+</script>
+</Base>

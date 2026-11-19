@@ -1,0 +1,53 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteNav from '../components/SiteNav.astro';
+import { withBase } from '../utils/paths';
+
+interface Props {
+  title: string;
+  description?: string;
+  bodyClass?: string;
+  activeNav?: '' | 'projects' | 'writeups' | 'notes' | 'contact';
+  navVariant?: 'main' | 'none';
+  footerVariant?: 'main' | 'none';
+  footerMessage?: string;
+  includeNav?: boolean;
+  includeFooter?: boolean;
+  includePortfolioStyles?: boolean;
+  includeThemeScript?: boolean;
+}
+
+const {
+  title,
+  description = "Cybersecurity portfolio of Rachid Chokrani (0xr4sh) — engineering student at ENSIASD, offensive security, network defense, CTF writeups, and technical notes.",
+  bodyClass,
+  activeNav = '',
+  navVariant = 'main',
+  footerVariant = 'main',
+  footerMessage,
+  includeNav = true,
+  includeFooter = true,
+  includePortfolioStyles = true,
+  includeThemeScript = true
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    {includePortfolioStyles && <link rel="stylesheet" href={withBase('/assets/css/style.css')} />}
+    {includePortfolioStyles && <link rel="stylesheet" href={withBase('/assets/css/theme.css')} />}
+    <slot name="head" />
+    {includeThemeScript && <script is:inline src={withBase('/assets/js/theme.js')}></script>}
+  </head>
+  <body class={bodyClass}>
+    {(includeNav && navVariant !== 'none') && <SiteNav active={activeNav} />}
+    <slot />
+    {(includeFooter && footerVariant !== 'none') && <SiteFooter message={footerMessage} />}
+  </body>
+</html>
