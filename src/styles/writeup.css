@@ -19,7 +19,7 @@
   color: var(--accent);
   margin-bottom: 14px;
   padding: 4px 12px;
-  border: 1px solid rgba(240, 75, 56, 0.25);
+  border: 1px solid rgba(255, 51, 68, 0.25);
   border-radius: 3px;
 }
 
@@ -54,7 +54,7 @@
 
 .writeup-header .meta-item.os {
   color: var(--accent2);
-  border-color: rgba(79, 214, 224, 0.25);
+  border-color: rgba(154, 164, 178, 0.25);
 }
 
 .writeup-header .meta-item.difficulty {
@@ -64,7 +64,7 @@
 
 .writeup-header .meta-item.difficulty.easy {
   color: var(--accent);
-  border-color: rgba(240, 75, 56, 0.25);
+  border-color: rgba(255, 51, 68, 0.25);
 }
 
 .writeup-header .tags {
@@ -77,8 +77,8 @@
 .writeup-header .tag {
   font-size: 11px;
   padding: 3px 10px;
-  background: rgba(79, 214, 224, 0.08);
-  border: 1px solid rgba(79, 214, 224, 0.2);
+  background: rgba(154, 164, 178, 0.08);
+  border: 1px solid rgba(154, 164, 178, 0.2);
   border-radius: 3px;
   color: var(--accent2);
 }
@@ -142,7 +142,7 @@
   font-size: 12px;
   color: var(--accent);
   padding: 3px 10px;
-  border: 1px solid rgba(240, 75, 56, 0.25);
+  border: 1px solid rgba(255, 51, 68, 0.25);
   border-radius: 3px;
   letter-spacing: 1px;
 }
@@ -210,11 +210,11 @@ code {
 }
 
 :not(pre) > code {
-  background: rgba(240, 75, 56, 0.06);
+  background: rgba(255, 51, 68, 0.06);
   padding: 1px 6px;
   border-radius: 3px;
   font-size: 0.9em;
-  border: 1px solid rgba(240, 75, 56, 0.1);
+  border: 1px solid rgba(255, 51, 68, 0.1);
 }
 
 table {
@@ -240,7 +240,7 @@ th {
 
 .callout {
   border-left: 3px solid var(--accent);
-  background: rgba(240, 75, 56, 0.04);
+  background: rgba(255, 51, 68, 0.04);
   padding: 14px 18px;
   border-radius: 0 4px 4px 0;
   margin: 18px 0;
@@ -284,7 +284,7 @@ th {
   display: inline-block;
   padding: 8px 16px;
   border: 1px dashed var(--accent);
-  background: rgba(240, 75, 56, 0.05);
+  background: rgba(255, 51, 68, 0.05);
   border-radius: 4px;
   font-weight: 700;
   color: var(--accent);
