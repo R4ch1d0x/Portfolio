@@ -14,15 +14,15 @@
   /* ---------- Where things live (edit URLs here) ---------- */
   var PAGES = {
     home: { label: 'Home', url: 'index.html', group: 'Pages' },
-    projects: { label: 'Projects', url: 'projects.html', group: 'Pages' },
+    projects: { label: 'Projects', url: 'Projects/projects.html', group: 'Pages' },
     writeups: { label: 'Writeups', url: 'writeups/index.html', group: 'Pages' },
     notes: { label: 'Notes', url: 'Notes/index.html', group: 'Pages' },
     skills: { label: 'Skills', url: 'skills.html', group: 'Pages' },
     certs: { label: 'Certs', url: 'certs.html', group: 'Pages' },
     contact: { label: 'Contact', url: 'contact.html', group: 'Pages' },
-    ddos: { label: 'Lab 01: DDoS Simulator', url: 'Notes/lab-ddos.html', group: 'Notes' },
-    jwt: { label: 'Lab 02: JWT Forgery', url: 'Notes/lab-jwt.html', group: 'Notes' },
     sqlinjection: { label: 'SQL Injection Fundamentals', url: 'Notes/sql-injection.html', group: 'Notes' },
+    metasploit: { label: 'Metasploit Framework Cheatsheet', url: 'Notes/lab-metasploit.html', group: 'Notes' },
+    linuxprivesc: { label: 'Linux Privilege Escalation Enumeration', url: 'Notes/linux-privesc-enum.html', group: 'Notes' },
     touch: { label: 'HTB: Touch', url: 'writeups/HTB/touch-writeup.html', group: 'Writeups' },
     github: { label: 'GitHub', url: 'https://github.com/', group: 'Links', external: true },
     htb: { label: 'Hack The Box', url: 'https://app.hackthebox.com/', group: 'Links', external: true }
@@ -49,7 +49,7 @@
   }
   function scroll() { body.scrollTop = body.scrollHeight; }
 
-  var TARGETS = ['ddos', 'jwt', 'sqlinjection', 'touch', 'projects', 'writeups', 'notes', 'skills', 'certs', 'contact', 'github', 'htb'];
+  var TARGETS = ['sqlinjection', 'metasploit', 'linuxprivesc', 'touch', 'projects', 'writeups', 'notes', 'skills', 'certs', 'contact', 'github', 'htb'];
 var FILES = ['skills.txt', 'contact.txt', 'certs.txt', 'education.txt'];
 var DIRS = ['projects', 'writeups', 'notes', 'certs'];
 var NAMES = ['help', 'whoami', 'ls', 'cat', 'cd', 'clear', 'pwd', 'date', 'echo', 'sudo'];
@@ -67,14 +67,14 @@ var CMDS = {
     line('tip: Tab completes, ↑ ↓ browse history.', 'dim');
   },
   whoami: function () {
-    line('r4ch1d0x', 'ok');
+    line('0xr4sh', 'ok');
     line('Rachid Chokrani, cybersecurity engineering student at ENSIASD (2025–2028).');
     line('Focus: offensive security & privilege escalation. Morocco.', 'dim');
   },
-  pwd: function () { line('/home/r4ch1d0x'); },
+  pwd: function () { line('/home/0xr4sh'); },
   date: function () { line(new Date().toString()); },
   echo: function (a) { line(a.join(' ')); },
-  sudo: function () { line('r4ch1d0x is not in the sudoers file. This incident will be reported.', 'err'); },
+  sudo: function () { line('0xr4sh is not in the sudoers file. This incident will be reported.', 'err'); },
   clear: function () { out.textContent = ''; },
   ls: function (a) {
     var d = (a[0] || '').replace(/\/$/, '').toLowerCase();
@@ -89,9 +89,9 @@ var CMDS = {
       line('read it: cd touch', 'dim');
     } else if (d === 'notes') {
       line('sql-injection   SQL fundamentals, injection awareness, and prevention');
-      line('ddos-simulator   lab 01   3D server under attack, protection toggle, defense game');
-      line('jwt-forgery      lab 02   forge an admin token from a hardcoded secret');
-      line('open notes: cd sqlinjection | interactive demos: cd ddos | cd jwt', 'dim');
+      line('metasploit       Framework commands, modules, sessions, and payloads');
+      line('linux-privesc    Linux privilege escalation enumeration');
+      line('open notes: cd sqlinjection | cd metasploit | cd linuxprivesc', 'dim');
     } else if (d === 'certs') {
       line('CCNA 1 & 2 (SRWE)   Cisco Networking Academy');
       line('Cybersecurity Bootcamp   CyberTalents');
@@ -133,7 +133,7 @@ var CMDS = {
 
   function run(raw) {
     var prompt = el('div', 'line echo');
-    var pr = el('span', 'ps', 'root@r4ch1d0x:~# '); prompt.appendChild(pr); prompt.appendChild(document.createTextNode(raw));
+    var pr = el('span', 'ps', 'root@0xr4sh:~# '); prompt.appendChild(pr); prompt.appendChild(document.createTextNode(raw));
     out.appendChild(prompt);
     var parts = raw.trim().split(/\s+/).filter(Boolean);
     if (!parts.length) return;

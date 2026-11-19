@@ -14,20 +14,193 @@
   /* ---------- Where things live (edit URLs here) ---------- */
   var PAGES = {
     home: { label: 'Home', url: 'index.html', group: 'Pages' },
-    projects: { label: 'Projects', url: 'projects.html', group: 'Pages' },
+    projects: { label: 'Projects', url: 'Projects/projects.html', group: 'Pages' },
     writeups: { label: 'Writeups', url: 'writeups/index.html', group: 'Pages' },
     notes: { label: 'Notes', url: 'Notes/index.html', group: 'Pages' },
     skills: { label: 'Skills', url: 'skills.html', group: 'Pages' },
     certs: { label: 'Certs', url: 'certs.html', group: 'Pages' },
     contact: { label: 'Contact', url: 'contact.html', group: 'Pages' },
-    ddos: { label: 'Lab 01: DDoS Simulator', url: 'Notes/lab-ddos.html', group: 'Notes' },
-    jwt: { label: 'Lab 02: JWT Forgery', url: 'Notes/lab-jwt.html', group: 'Notes' },
     sqlinjection: { label: 'SQL Injection Fundamentals', url: 'Notes/sql-injection.html', group: 'Notes' },
+    metasploit: { label: 'Metasploit Framework Cheatsheet', url: 'Notes/lab-metasploit.html', group: 'Notes' },
+    linuxprivesc: { label: 'Linux Privilege Escalation Enumeration', url: 'Notes/linux-privesc-enum.html', group: 'Notes' },
     touch: { label: 'HTB: Touch', url: 'writeups/HTB/touch-writeup.html', group: 'Writeups' },
     github: { label: 'GitHub', url: 'https://github.com/', group: 'Links', external: true },
     htb: { label: 'Hack The Box', url: 'https://app.hackthebox.com/', group: 'Links', external: true }
   };
   var EMAIL = 'chokrani.rachid10@gmail.com';
+
+  var projectsGrid = $('#projects-grid');
+  if (projectsGrid) {
+    var projects = [
+      {
+        image: 'assets/img/projects/thumbnails/thumb-dos-dns-spoofing.svg',
+        category: 'Network Security · Lab',
+        index: '01',
+        title: 'Virtualized DoS & DNS/ARP Spoofing Attack Lab',
+        subtitle: 'OCP internship · ENSIASD Taroudant',
+        description: 'Slowloris DoS and DNS/ARP spoofing with defensive controls.',
+        caseStudyUrl: 'Projects/DoS_DNS_Spoofing_Presentation.html'
+      },
+      {
+        image: 'assets/img/projects/thumbnails/thumb-safe-shelter.svg',
+        category: 'Application Security · Audit',
+        index: '02',
+        title: 'Safe Shelter Connect — Comparative Security Audit',
+        subtitle: 'Personal project · ENSIASD Taroudant',
+        description: 'AI-assisted and human code compared through a practical security audit.',
+        caseStudyUrl: 'Projects/projects.html'
+      },
+      {
+        image: 'assets/img/projects/thumbnails/thumb-aes-ctr.svg',
+        category: 'Cryptography · Engineering',
+        index: '03',
+        title: 'Symmetric Cryptographic Algorithms for Network Security',
+        subtitle: 'PFE · EST Safi',
+        description: 'AES in CTR mode with secure key establishment and network analysis.',
+        caseStudyUrl: 'Projects/projects.html'
+      }
+    ];
+
+    projects.forEach(function (project) {
+      var card = document.createElement('article');
+      card.className = 'project-card';
+
+      var visual = document.createElement('div');
+      visual.className = 'project-visual';
+      if (project.image) {
+        var image = document.createElement('img');
+        image.src = project.image;
+        image.alt = project.title + ' project preview';
+        visual.appendChild(image);
+      } else {
+        visual.classList.add('project-placeholder');
+      }
+
+      var divider = document.createElement('div');
+      divider.className = 'project-progress';
+      card.appendChild(visual);
+      card.appendChild(divider);
+
+      var content = document.createElement('div');
+      content.className = 'project-content';
+
+      var meta = document.createElement('div');
+      meta.className = 'project-meta';
+      var category = document.createElement('span');
+      category.className = 'project-category';
+      var dot = document.createElement('span');
+      dot.className = 'project-category-dot';
+      category.appendChild(dot);
+      category.appendChild(document.createTextNode(project.category));
+      var index = document.createElement('span');
+      index.className = 'project-index';
+      index.textContent = project.index;
+      meta.appendChild(category);
+      meta.appendChild(index);
+
+      var title = document.createElement('h3');
+      title.className = 'project-title';
+      title.textContent = project.title;
+      var subtitle = document.createElement('p');
+      subtitle.className = 'project-subtitle';
+      subtitle.textContent = project.subtitle;
+      var description = document.createElement('p');
+      description.className = 'project-description';
+      description.textContent = project.description;
+
+      content.appendChild(meta);
+      content.appendChild(title);
+      content.appendChild(subtitle);
+      content.appendChild(description);
+
+      var footer = document.createElement('div');
+      footer.className = 'project-footer';
+      var caseLink = document.createElement('a');
+      caseLink.className = 'project-case-link';
+      caseLink.href = project.caseStudyUrl;
+      caseLink.textContent = 'Read the case study';
+      var caseArrow = document.createElement('span');
+      caseArrow.setAttribute('aria-hidden', 'true');
+      caseArrow.textContent = ' \u2192';
+      caseLink.appendChild(caseArrow);
+
+      footer.appendChild(caseLink);
+      card.appendChild(content);
+      card.appendChild(footer);
+      card.addEventListener('click', function (event) {
+        if (event.target.closest('a')) return;
+        window.location.href = project.caseStudyUrl;
+      });
+      projectsGrid.appendChild(card);
+    });
+
+    var projectCards = Array.prototype.slice.call(projectsGrid.querySelectorAll('.project-card'));
+    var projectsDots = $('.projects-dots');
+    var projectsPrev = $('.projects-prev');
+    var projectsNext = $('.projects-next');
+    var projectPage = 0;
+
+    function cardsPerView() {
+      return window.matchMedia('(max-width: 900px)').matches ? 1 : 3;
+    }
+
+    function pageCount() {
+      return Math.ceil(projectCards.length / cardsPerView());
+    }
+
+    function goToProjectPage(index) {
+      projectPage = (index + pageCount()) % pageCount();
+      var cardOffset = projectPage * cardsPerView() * (projectCards[0].offsetWidth + 20);
+      projectsGrid.scrollTo({ left: cardOffset, behavior: 'smooth' });
+      var dots = projectsDots.querySelectorAll('.projects-dot');
+      for (var i = 0; i < dots.length; i++) {
+        dots[i].classList.toggle('active', i === projectPage);
+        dots[i].setAttribute('aria-current', i === projectPage ? 'true' : 'false');
+      }
+    }
+
+    for (var page = 0; page < pageCount(); page++) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'projects-dot' + (page === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', 'Show project page ' + (page + 1));
+      dot.setAttribute('aria-current', page === 0 ? 'true' : 'false');
+      (function (pageIndex) {
+        dot.addEventListener('click', function () { goToProjectPage(pageIndex); });
+      })(page);
+      projectsDots.appendChild(dot);
+    }
+
+    if (projectsPrev) projectsPrev.addEventListener('click', function () { goToProjectPage(projectPage - 1); });
+    if (projectsNext) projectsNext.addEventListener('click', function () { goToProjectPage(projectPage + 1); });
+    projectsGrid.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowLeft') goToProjectPage(projectPage - 1);
+      if (event.key === 'ArrowRight') goToProjectPage(projectPage + 1);
+    });
+  }
+
+  var certGrid = $('.certs-grid'), certDialog = $('#cert-preview');
+  var certPreviewImage = certDialog && $('.cert-preview img', certDialog);
+  var certPreviewClose = certDialog && $('.cert-preview-close', certDialog);
+  if (certGrid && certDialog && certPreviewImage && certPreviewClose && typeof certDialog.showModal === 'function') {
+    certGrid.addEventListener('click', function (e) {
+      var button = e.target.closest('.cert-img');
+      if (!button || !certGrid.contains(button)) return;
+      var image = $('img', button);
+      if (!image) return;
+      certPreviewImage.src = image.currentSrc || image.src;
+      certPreviewImage.alt = image.alt;
+      certDialog.showModal();
+    });
+    certPreviewClose.addEventListener('click', function () { certDialog.close(); });
+    certDialog.addEventListener('click', function (e) {
+      if (e.target === certDialog) certDialog.close();
+    });
+    certDialog.addEventListener('close', function () {
+      certPreviewImage.removeAttribute('src');
+      certPreviewImage.alt = '';
+    });
+  }
 
   function go(url, external) {
     if (external) window.open(url, '_blank', 'noopener');
@@ -49,7 +222,7 @@
   }
   function scroll() { body.scrollTop = body.scrollHeight; }
 
-  var TARGETS = ['ddos', 'jwt', 'sqlinjection', 'touch', 'projects', 'writeups', 'notes', 'skills', 'certs', 'contact', 'github', 'htb'];
+  var TARGETS = ['sqlinjection', 'metasploit', 'linuxprivesc', 'touch', 'projects', 'writeups', 'notes', 'skills', 'certs', 'contact', 'github', 'htb'];
 var FILES = ['skills.txt', 'contact.txt', 'certs.txt', 'education.txt'];
 var DIRS = ['projects', 'writeups', 'notes', 'certs'];
 var NAMES = ['help', 'whoami', 'ls', 'cat', 'cd', 'clear', 'pwd', 'date', 'echo', 'sudo'];
@@ -67,14 +240,14 @@ var CMDS = {
     line('tip: Tab completes, ↑ ↓ browse history.', 'dim');
   },
   whoami: function () {
-    line('r4ch1d0x', 'ok');
+    line('0xr4sh', 'ok');
     line('Rachid Chokrani, cybersecurity engineering student at ENSIASD (2025–2028).');
     line('Focus: offensive security & privilege escalation. Morocco.', 'dim');
   },
-  pwd: function () { line('/home/r4ch1d0x'); },
+  pwd: function () { line('/home/0xr4sh'); },
   date: function () { line(new Date().toString()); },
   echo: function (a) { line(a.join(' ')); },
-  sudo: function () { line('r4ch1d0x is not in the sudoers file. This incident will be reported.', 'err'); },
+  sudo: function () { line('0xr4sh is not in the sudoers file. This incident will be reported.', 'err'); },
   clear: function () { out.textContent = ''; },
   ls: function (a) {
     var d = (a[0] || '').replace(/\/$/, '').toLowerCase();
@@ -89,9 +262,9 @@ var CMDS = {
       line('read it: cd touch', 'dim');
     } else if (d === 'notes') {
       line('sql-injection   SQL fundamentals, injection awareness, and prevention');
-      line('ddos-simulator   lab 01   3D server under attack, protection toggle, defense game');
-      line('jwt-forgery      lab 02   forge an admin token from a hardcoded secret');
-      line('open notes: cd sqlinjection | interactive demos: cd ddos | cd jwt', 'dim');
+      line('metasploit       Framework commands, modules, sessions, and payloads');
+      line('linux-privesc    Linux privilege escalation enumeration');
+      line('open notes: cd sqlinjection | cd metasploit | cd linuxprivesc', 'dim');
     } else if (d === 'certs') {
       line('CCNA 1 & 2 (SRWE)   Cisco Networking Academy');
       line('Cybersecurity Bootcamp   CyberTalents');
@@ -133,7 +306,7 @@ var CMDS = {
 
   function run(raw) {
     var prompt = el('div', 'line echo');
-    var pr = el('span', 'ps', 'root@r4ch1d0x:~# '); prompt.appendChild(pr); prompt.appendChild(document.createTextNode(raw));
+    var pr = el('span', 'ps', 'root@0xr4sh:~# '); prompt.appendChild(pr); prompt.appendChild(document.createTextNode(raw));
     out.appendChild(prompt);
     var parts = raw.trim().split(/\s+/).filter(Boolean);
     if (!parts.length) return;
