@@ -1,0 +1,206 @@
+:root {
+  --bg: #0b0a10;
+  --bg-raised: #15131d;
+  --bg-code: #08070e;
+  --text: #eae7f0;
+  --text-dim: #9a95a8;
+  --accent: #f04b38;
+  --accent2: #4fd6e0;
+  --red: #ff8a7a;
+  --amber: #e2b53e;
+  --purple: #4fd6e0;
+  --border: rgba(255, 255, 255, 0.09);
+}
+
+body {
+  background-image:
+    linear-gradient(rgba(240, 75, 56, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 75, 56, 0.025) 1px, transparent 1px);
+}
+
+#contact {
+  background-image: radial-gradient(50% 90% at 50% 100%, rgba(240, 75, 56, 0.14), transparent 70%);
+}
+
+nav {
+  background: rgba(8, 7, 14, 0.92);
+}
+
+nav .links a.active {
+  background: rgba(240, 75, 56, 0.08);
+  border-color: rgba(240, 75, 56, 0.25);
+}
+
+.hero .status {
+  background: rgba(79, 214, 224, 0.08);
+  border-color: rgba(79, 214, 224, 0.35);
+  box-shadow: 0 0 16px rgba(79, 214, 224, 0.12), inset 0 0 12px rgba(79, 214, 224, 0.05);
+  color: var(--accent2);
+}
+
+.hero .status .dot {
+  background: var(--accent2);
+  box-shadow: 0 0 8px var(--accent2);
+}
+
+.terminal-bar {
+  background: #15131d;
+}
+
+.terminal-body {
+  background: #08070e;
+}
+
+.terminal-window {
+  box-shadow:
+    0 24px 60px -24px rgba(240, 75, 56, 0.35),
+    0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+#contact .contact-link[href^="mailto:"] {
+  padding: 10px 20px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: var(--accent);
+  color: #08070e;
+  font-size: 0.95rem;
+  font-weight: 500;
+  box-shadow: 0 10px 30px -12px var(--accent);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+#contact .contact-link[href^="mailto:"] .icon {
+  color: inherit;
+}
+
+#contact .contact-link[href^="mailto:"]:hover {
+  transform: translateY(-2px);
+  border-color: var(--red);
+  background: var(--red);
+  color: #08070e;
+}
+
+.terminal-val.badge {
+  background: rgba(79, 214, 224, 0.12);
+  border-color: rgba(79, 214, 224, 0.3);
+}
+
+.project-card:hover {
+  border-color: rgba(240, 75, 56, 0.55);
+  box-shadow: 0 16px 34px -24px rgba(240, 75, 56, 0.65);
+}
+
+.project-card:focus-within {
+  outline-color: rgba(240, 75, 56, 0.18);
+}
+
+.project-placeholder {
+  background: linear-gradient(135deg, rgba(240, 75, 56, 0.05), transparent), #08070e;
+}
+
+.project-category-dot {
+  box-shadow: 0 0 10px rgba(240, 75, 56, 0.5);
+}
+
+.writeup-card:hover {
+  background: #08070e;
+}
+
+.notes-more-card {
+  background:
+    linear-gradient(135deg, rgba(240, 75, 56, 0.07), transparent 55%),
+    var(--bg-raised);
+}
+
+.difficulty.easy {
+  background: rgba(79, 214, 224, 0.1);
+  border-color: rgba(79, 214, 224, 0.3);
+  color: var(--accent2);
+}
+
+.difficulty.hard {
+  background: rgba(240, 75, 56, 0.12);
+  border-color: rgba(240, 75, 56, 0.3);
+}
+
+.difficulty.insane {
+  background: rgba(79, 214, 224, 0.12);
+  border-color: rgba(79, 214, 224, 0.3);
+}
+
+.card-tag {
+  background: rgba(79, 214, 224, 0.08);
+  border-color: rgba(79, 214, 224, 0.2);
+}
+
+.pal {
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(240, 75, 56, 0.08);
+}
+
+.pal-item[aria-selected="true"] {
+  background: rgba(240, 75, 56, 0.1);
+}
+
+.terminal-window .terminal-title {
+  color: var(--accent2);
+}
+
+html[data-theme="light"] {
+  --bg: #f4f6f8;
+  --bg-raised: #ffffff;
+  --bg-code: #eef1f4;
+  --text: #2b3038;
+  --text-dim: #5a6370;
+  --accent: #c53527;
+  --accent2: #006f7d;
+  --red: #c53527;
+  --amber: #8b5a00;
+  --purple: #006f7d;
+  --border: #d8dde4;
+}
+
+html[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(197, 53, 39, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(197, 53, 39, 0.04) 1px, transparent 1px);
+}
+
+html[data-theme="light"] #contact {
+  background-image: radial-gradient(50% 90% at 50% 100%, rgba(197, 53, 39, 0.08), transparent 70%);
+}
+
+html[data-theme="light"] nav {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+html[data-theme="light"] .terminal-bar {
+  background: #e8ebef;
+}
+
+html[data-theme="light"] .terminal-body {
+  background: #f8f9fb;
+}
+
+html[data-theme="light"] .terminal-window {
+  box-shadow:
+    0 24px 60px -24px rgba(197, 53, 39, 0.22),
+    0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+html[data-theme="light"] #contact .contact-link[href^="mailto:"]:hover {
+  border-color: #a92d22;
+  background: #a92d22;
+  color: #ffffff;
+}
+
+html[data-theme="light"] .writeup-card:hover {
+  background: #fff5f3;
+}
+
+html[data-theme="light"] .pal {
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(197, 53, 39, 0.08);
+}

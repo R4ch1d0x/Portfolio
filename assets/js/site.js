@@ -14,7 +14,7 @@
   /* ---------- Where things live (edit URLs here) ---------- */
   var PAGES = {
     home: { label: 'Home', url: 'index.html', group: 'Pages' },
-    projects: { label: 'Projects', url: 'Projects/projects.html', group: 'Pages' },
+    projects: { label: 'Projects', url: '../index.html#projects', group: 'Pages' },
     writeups: { label: 'Writeups', url: 'writeups/index.html', group: 'Pages' },
     notes: { label: 'Notes', url: 'Notes/index.html', group: 'Pages' },
     skills: { label: 'Skills', url: 'skills.html', group: 'Pages' },

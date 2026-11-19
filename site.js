@@ -14,7 +14,7 @@
   /* ---------- Where things live (edit URLs here) ---------- */
   var PAGES = {
     home: { label: 'Home', url: 'index.html', group: 'Pages' },
-    projects: { label: 'Projects', url: 'Projects/projects.html', group: 'Pages' },
+    projects: { label: 'Projects', url: 'index.html#projects', group: 'Pages' },
     writeups: { label: 'Writeups', url: 'writeups/index.html', group: 'Pages' },
     notes: { label: 'Notes', url: 'Notes/index.html', group: 'Pages' },
     skills: { label: 'Skills', url: 'skills.html', group: 'Pages' },
@@ -48,7 +48,7 @@
         title: 'Safe Shelter Connect — Comparative Security Audit',
         subtitle: 'Personal project · ENSIASD Taroudant',
         description: 'AI-assisted and human code compared through a practical security audit.',
-        caseStudyUrl: 'Projects/projects.html'
+        caseStudyUrl: 'index.html#projects'
       },
       {
         image: 'assets/img/projects/thumbnails/thumb-aes-ctr.svg',
@@ -57,7 +57,7 @@
         title: 'Symmetric Cryptographic Algorithms for Network Security',
         subtitle: 'PFE · EST Safi',
         description: 'AES in CTR mode with secure key establishment and network analysis.',
-        caseStudyUrl: 'Projects/projects.html'
+        caseStudyUrl: 'index.html#projects'
       }
     ];
 

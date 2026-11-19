@@ -22,7 +22,7 @@ Then visit <http://localhost:8000>.
 ## Pages
 
 - `index.html` — home page and interactive terminal
-- `Projects/projects.html` — project summaries and presentation links
+- `index.html#projects` — project summaries and carousel; the DoS/DNS lab presentation remains under `Projects/`
 - `contact.html` — contact and profile links
 - `Notes/` — SQL injection fundamentals, Metasploit reference, and Linux privilege-escalation enumeration
 - `writeups/` — HTB Touch writeup and writeup directories

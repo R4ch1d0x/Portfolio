@@ -12,7 +12,6 @@ The site can be opened from `index.html`. For the most consistent behavior, serv
 Portfolio/
 ├── index.html                     # Home page and interactive terminal
 ├── Projects/
-│   ├── projects.html              # Project summaries
 │   └── DoS_DNS_Spoofing_Presentation.html
 ├── contact.html                   # Contact links
 ├── site.js                        # Terminal script loaded by the home page
@@ -57,8 +56,7 @@ Portfolio/
 
 | Page | Local runtime dependencies | Main connections |
 |---|---|---|
-| [`index.html`](./index.html) | `assets/css/style.css`, `assets/css/theme.css`, `assets/js/theme.js`, root `site.js` | Main entry point. Links to the project, writeup, notes, and contact pages; cards link to Touch and the three listed note pages. |
-| [`Projects/projects.html`](./Projects/projects.html) | `assets/css/style.css`, `assets/css/theme.css`, `assets/js/theme.js` | Reachable from the main navigation. Contains project summaries and links to the DoS/DNS spoofing presentation. |
+| [`index.html`](./index.html) | `assets/css/style.css`, `assets/css/theme.css`, `assets/js/theme.js`, root `site.js` | Main entry point. Its Projects navigation link targets `#projects`; project cards link to the DoS/DNS spoofing presentation, Touch, and the three listed note pages. |
 | [`contact.html`](./contact.html) | `assets/css/style.css`, `assets/css/theme.css`, `assets/js/theme.js` | Reachable from the main navigation. Contains email and external profile links. |
 | [`Notes/index.html`](./Notes/index.html) | `assets/css/style.css`, `assets/css/theme.css`, `assets/js/theme.js`, `assets/js/site.js`, inline search and category filters | Notes directory. Its cards link to the SQL, Metasploit, and Linux enumeration pages. The inline script filters cards already present in the page; it does not fetch note data. |
 | [`Notes/sql-injection.html`](./Notes/sql-injection.html) | `assets/css/theme.css`, `assets/js/theme.js`, inline styles/scripts, Google Fonts stylesheet | Self-contained SQL fundamentals course with in-page navigation and browser-side interactions. It does not load the main `style.css` or `site.js`. |
@@ -75,7 +73,7 @@ The common page navigation uses regular HTML links; there is no client-side rout
 
 ### `assets/css/style.css`
 
-The main visual foundation: color variables, typography, navigation, page containers, cards, sections, responsive breakpoints, terminal styling, and reusable lab components. It imports JetBrains Mono from Google Fonts.
+The main visual foundation: color variables, typography, navigation, page containers, cards, sections, responsive breakpoints, terminal styling, and reusable lab components. The shared palette uses a charcoal background with red (`--accent`) and cyan (`--accent2`) highlights. It imports JetBrains Mono from Google Fonts.
 
 ### `assets/css/theme.css`
 
@@ -104,7 +102,7 @@ The cards use:
 - Equal-height card layout with a framed SVG/image preview.
 - `object-fit: contain` for previews so SVG diagrams are fully visible.
 - A progress line that expands from 15% to 100% on card hover.
-- A grey “Read the case study” link that becomes green while its card is hovered.
+- A grey “Read the case study” link that uses the site accent while its card is hovered.
 - Whole-card click behavior: clicking any non-link area opens the same case-study URL.
 - Real `<a>` links for keyboard access, visible focus styles, reduced-motion support, and no nested links.
 
@@ -114,7 +112,6 @@ To add or reorder a project, update the project array in `site.js` and place its
 
 ```text
 index.html
-├── Projects/projects.html
 ├── contact.html
 ├── writeups/index.html
 │   ├── writeups/HTB/index.html
