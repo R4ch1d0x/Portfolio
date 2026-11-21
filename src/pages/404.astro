@@ -1,0 +1,67 @@
+---
+import Base from "../layouts/Base.astro";
+import { withBase } from "../utils/paths";
+---
+
+<Base title="404 — Not Found | 0xr4sh" description="Page not found." footerMessage="Nothing here. Try the links above.">
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+    <style is:global>
+      .nf404 { padding-top: 140px; padding-bottom: 60px; }
+      .nf404 .code {
+        font-size: clamp(64px, 14vw, 120px);
+        font-weight: 800;
+        line-height: 1;
+        color: var(--accent);
+        margin: 0 0 8px;
+        letter-spacing: -2px;
+      }
+      .nf404 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+      .nf404 .terminal-window { max-width: 640px; margin-top: 28px; }
+      .nf404 .terminal-body .err { color: var(--accent); }
+      .nf404 .terminal-body .dim { color: var(--text-dim); }
+      .nf404 .terminal-body a { color: var(--accent); }
+    </style>
+  </Fragment>
+
+  <div class="container nf404">
+    <header class="page-header" style="padding-top:0;">
+      <span class="tag">// error: resource not found</span>
+      <p class="code">404</p>
+      <h1>Access denied<span style="color:var(--accent);">.</span> Or just lost.</h1>
+      <p>The page you requested doesn't exist, was moved, or never made it past recon.</p>
+    </header>
+
+    <div class="terminal-window">
+      <div class="terminal-bar">
+        <span class="terminal-dot dot-red"></span>
+        <span class="terminal-dot dot-yellow"></span>
+        <span class="terminal-dot dot-green"></span>
+        <span class="terminal-title">404.sh</span>
+      </div>
+      <div class="terminal-body">
+        <div class="cmd"><span class="prompt">$</span> curl -I <span id="nf-path">/this/page</span></div>
+        <div><span class="err">HTTP/1.1 404 Not Found</span></div>
+        <div class="dim">gobuster found nothing. Try one of these:</div>
+        <div>
+          <a href={withBase('/')}>/</a> ·
+          <a href={withBase('/writeups')}>/writeups</a> ·
+          <a href={withBase('/notes')}>/notes</a> ·
+          <a href={withBase('/contact')}>/contact</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href={withBase('/')} class="contact-link"><span class="icon">⌂</span> cd ~</a>
+      <a href={withBase('/writeups')} class="contact-link"><span class="icon">▸</span> ls writeups</a>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var el = document.getElementById('nf-path');
+      if (el) el.textContent = location.pathname;
+    })();
+  </script>
+</Base>

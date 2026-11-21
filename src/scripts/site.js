@@ -259,8 +259,8 @@ var CMDS = {
       line('symmetric-crypto-aes-ctr/     Dec 2024 – Apr 2025');
       line('open them on the Projects page: cd projects', 'dim');
     } else if (d === 'writeups') {
-      line('htb/   Medium   kiosk escape → MySQL UDF → SYSTEM');
-      line('thm/   Easy     Pickle Rick CTF walkthrough');
+      line('HackTheBox   Touch: kiosk escape → MySQL UDF → SYSTEM');
+      line('TryHackMe    Pickle Rick, Library');
       line('read it: cd touch', 'dim');
     } else if (d === 'notes') {
       line('sql-injection   SQL fundamentals, injection awareness, and prevention');
