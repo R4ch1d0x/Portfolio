@@ -90,4 +90,4 @@ Do not edit `src/pages/index.astro` or `src/pages/writeups/index.astro` to add a
 - Add project cards to the project array in `src/scripts/site.js` and place their previews under `public/assets/img/projects/thumbnails/`.
 - Edit `public/assets/css/style.css` and `theme.css` for shared visual behavior; edit `public/assets/js/theme.js` for theme controls.
 
-`meta/` contains authoring notes. `dist/` and `graphify-out/` are generated output, not page source.
+`dist/` and `graphify-out/` are generated output, not page source.

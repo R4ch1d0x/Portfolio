@@ -6,7 +6,7 @@
 > Legend: ⬜ still open · 🔶 partly done.
 
 > [!IMPORTANT]
-> **Done since the previous audit (removed from this list):** Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
+> **Done since the previous audit (removed from this list):** removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
 >
 > **No longer applies:** GitHub Actions / `.nojekyll` / `dist/` deploy (hosting is Vercel), SRI for Three.js (`lab-ddos` was removed).
 >
@@ -33,8 +33,9 @@
 
 ## 1. Git & Repository
 
-| # | Issue | Details | Fix |
-|---|-------|---------|-----|
+No open items.
+
+---|-------|---------|-----|
 | 1.2 ⬜ | **`Portfolio.zip` (77 MB) is not in `.gitignore`** | If it is ever committed it bloats the repo permanently. `.gitignore` currently lists only `node_modules/`, `dist/`, `.astro/` and `graphify-out/`. | Add `Portfolio.zip` (and `*.zip`) to `.gitignore`. |
 
 ---
@@ -44,7 +45,6 @@
 | # | Issue | Details | Fix |
 |---|-------|---------|-----|
 | 2.3 ⬜ | **No Content Security Policy (CSP)** | The site loads Google Fonts from a CDN with no CSP header or `<meta>` tag. | Add a CSP (Vercel headers in `vercel.json`, or a `<meta http-equiv="Content-Security-Policy">`) restricting `script-src`, `style-src`, `font-src` and `img-src` to known origins. |
-| 2.5 ⬜ | **`meta/` directory is public** | `meta/prompt.txt`, `htb-touch-writeup.md` and `pickle_rick_writeup.md` are authoring material tracked in a public repo. `prompt.txt` reveals internal prompt details. | Decide whether `meta/` should be public. If not, remove it from the repo and add it to `.gitignore`. |
 | 2.7 ⬜ | **Old commits still contain the plaintext email** | The email was removed from the source, but it still exists in git history. | Only matters if you want it fully gone: rewrite history, or accept that the address is already public. A contact form (Formspree / Netlify Forms) would remove the need to publish it at all. |
 
 ---
@@ -129,22 +129,20 @@
 
 ### Quick wins (under an hour each)
 
-⬜ 1. **Add `*.zip` to `.gitignore`** (1.2).
-⬜ 2. **Add `robots.txt` and the sitemap integration** (5.8).
-⬜ 3. **Add `<main>` and a skip-to-content link** (5.4, 5.5).
-⬜ 4. **Show a focus ring on the terminal input** (5.10).
-⬜ 5. **Switch the terminal prompt to a non-root user** (6.6).
-⬜ 6. **Decide what to do with `meta/`** (2.5).
+⬜ 1. **Add `robots.txt` and the sitemap integration** (5.8).
+⬜ 2. **Add `<main>` and a skip-to-content link** (5.4, 5.5).
+⬜ 3. **Show a focus ring on the terminal input** (5.10).
+⬜ 4. **Switch the terminal prompt to a non-root user** (6.6).
 
 ### High-priority improvements
 
-⬜ 7. **Optimize images**: WebP, `srcset`, `loading="lazy"` (4.1, 4.5).
-⬜ 8. **Add a CSP** (2.3).
-⬜ 9. **Fix the project case-study links** (6.4).
-⬜ 10. **Add a CV download** (8.2).
+⬜ 5. **Optimize images**: WebP, `srcset`, `loading="lazy"` (4.1, 4.5).
+⬜ 6. **Add a CSP** (2.3).
+⬜ 7. **Fix the project case-study links** (6.4).
+⬜ 8. **Add a CV download** (8.2).
 
 ### Medium-term refactoring
 
-⬜ 11. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
-⬜ 12. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
-⬜ 13. **Add linting and automated checks** (7.5, 9.2).
+⬜ 9. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
+⬜ 10. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
+⬜ 11. **Add linting and automated checks** (7.5, 9.2).
