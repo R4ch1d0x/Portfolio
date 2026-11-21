@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import { withBase } from "../utils/paths";
+import { writeups } from "../data/writeups";
 ---
 
 <Base title="RACHID CHOKRANI — Cybersecurity Portfolio" navVariant="main" footerVariant="main">
@@ -82,46 +83,18 @@ import { withBase } from "../utils/paths";
       </div>
 
       <div class="writeups-grid">
-        <a href={withBase('/writeups/htb/touch-writeup')} class="writeup-card">
-          <div class="card-top">
-            <h3>HTB: Touch</h3>
-            <span class="difficulty easy">Easy</span>
-          </div>
-          <p class="desc">Windows kiosk breakout into MySQL UDF privilege escalation. Chained a leaked serial number →
-            plaintext creds → kiosk escape → file-dialog-to-shell → SYSTEM via UDF.</p>
-          <div class="card-tags">
-            <span class="card-tag">Kiosk Escape</span>
-            <span class="card-tag">Credential Hunting</span>
-            <span class="card-tag">MySQL UDF</span>
-            <span class="card-tag">SYSTEM Privesc</span>
-          </div>
-        </a>
-
-        <a href={withBase('/writeups/thm/pickle-rick-writeup')} class="writeup-card">
-          <div class="card-top">
-            <h3>THM: Pickle Rick</h3>
-            <span class="difficulty easy">Easy</span>
-          </div>
-          <p class="desc">Rick and Morty-themed web exploitation. Recover three ingredients through information disclosure, command-panel RCE, a reverse shell, and unrestricted sudo privileges.</p>
-          <div class="card-tags">
-            <span class="card-tag">Information Disclosure</span>
-            <span class="card-tag">Reverse Shell</span>
-            <span class="card-tag">Sudo NOPASSWD</span>
-          </div>
-        </a>
-
-        <a href={withBase('/writeups/thm/library-writeup')} class="writeup-card">
-          <div class="card-top">
-            <h3>THM: Library</h3>
-            <span class="difficulty easy">Easy</span>
-          </div>
-          <p class="desc">Static blog box: robots.txt hint → SSH brute force → symlink attack on a root-run backup script to read root.txt.</p>
-          <div class="card-tags">
-            <span class="card-tag">Credential Brute Force</span>
-            <span class="card-tag">Sudo NOPASSWD</span>
-            <span class="card-tag">Symlink Attack</span>
-          </div>
-        </a>
+        {writeups.map((w) => (
+          <a href={withBase('/writeups/' + w.slug)} class="writeup-card">
+            <div class="card-top">
+              <h3>{w.title}</h3>
+              <span class={'difficulty ' + w.difficulty}>{w.difficulty[0].toUpperCase() + w.difficulty.slice(1)}</span>
+            </div>
+            <p class="desc">{w.desc}</p>
+            <div class="card-tags">
+              {w.tags.map((t) => <span class="card-tag">{t}</span>)}
+            </div>
+          </a>
+        ))}
 
         <!-- Placeholder for future writeups -->
         <div class="writeup-card" style="opacity:0.35; pointer-events:none; border-style:dashed;">
