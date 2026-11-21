@@ -23,11 +23,10 @@ Install dependencies with `npm install`, run the dev server with `npm run dev`, 
 | `/notes/sql-injection` | `src/pages/notes/sql-injection.astro` | SQL fundamentals notes |
 | `/notes/lab-metasploit` | `src/pages/notes/lab-metasploit.astro` | Metasploit reference |
 | `/notes/linux-privesc-enum` | `src/pages/notes/linux-privesc-enum.astro` | Linux enumeration notes |
-| `/writeups` | `src/pages/writeups/index.astro` | Writeup directory |
-| `/writeups/htb` | `src/pages/writeups/htb/index.astro` | HTB directory |
+| `/writeups` | `src/pages/writeups/index.astro` | Searchable writeup directory with HackTheBox / TryHackMe filters |
 | `/writeups/htb/touch-writeup` | `src/pages/writeups/htb/touch-writeup.astro` | HTB Touch article |
-| `/writeups/thm` | `src/pages/writeups/thm/index.astro` | THM directory |
 | `/writeups/thm/pickle-rick-writeup` | `src/pages/writeups/thm/pickle-rick-writeup.astro` | Pickle Rick article |
+| `/writeups/thm/library-writeup` | `src/pages/writeups/thm/library-writeup.astro` | Library article |
 | `/projects/dos-dns-spoofing-presentation` | `src/pages/projects/dos-dns-spoofing-presentation.astro` | Interactive full-screen presentation |
 
 Route directories and URLs are lowercase. Astro's `trailingSlash: 'never'` and directory output settings preserve these extensionless paths.
