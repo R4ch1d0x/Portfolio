@@ -722,7 +722,7 @@ function sw(c,x,y,s=1,col='#8fd1ff'){c.save();c.translate(x,y);c.scale(s,s);c.st
 function label(c,s1,x,y,col=C.ink,sz=20){T(c,s1,x,y,{c:col,s:sz,w:600})}
 
 /* terminal window with a placeholder instead of a real command */
-function term(c,x,y,lbl,t){c.save();c.font=`500 16px ${FM}`;const pr='0xr4sh@kali',sf=':~$ ',lw=c.measureText(pr+sf).width,cm=lbl||'',cw=c.measureText(cm).width,w=Math.max(lw+cw+58,330),h=70;
+function term(c,x,y,lbl,t){c.save();c.font=`500 16px ${FM}`;const pr='0xR4sh@kali',sf=':~$ ',lw=c.measureText(pr+sf).width,cm=lbl||'',cw=c.measureText(cm).width,w=Math.max(lw+cw+58,330),h=70;
 c.fillStyle='#070b09';c.strokeStyle='#3a5446';c.lineWidth=2;rr(c,x,y,w,h,10);c.fill();c.stroke();c.fillStyle='#17251d';c.beginPath();c.roundRect(x+1,y+1,w-2,24,[9,9,0,0]);c.fill();
 [['#ff6a5f',16],['#ffc02e',32],['#2fc84e',48]].forEach(([col,dx])=>{c.fillStyle=col;c.beginPath();c.arc(x+dx,y+13,5,0,TAU);c.fill()});
 c.textBaseline='middle';c.textAlign='left';c.fillStyle='#4be07f';c.fillText(pr,x+16,y+48);c.fillStyle='#d6efe0';c.fillText(sf,x+16+c.measureText(pr).width,y+48);

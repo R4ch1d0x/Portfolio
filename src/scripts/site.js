@@ -242,14 +242,14 @@ var CMDS = {
     line('tip: Tab completes, ↑ ↓ browse history.', 'dim');
   },
   whoami: function () {
-    line('0xr4sh', 'ok');
+    line('0xR4sh', 'ok');
     line('Rachid Chokrani, cybersecurity engineering student at ENSIASD (2025–2028).');
     line('Focus: offensive security & privilege escalation. Morocco.', 'dim');
   },
-  pwd: function () { line('/home/0xr4sh'); },
+  pwd: function () { line('/home/0xR4sh'); },
   date: function () { line(new Date().toString()); },
   echo: function (a) { line(a.join(' ')); },
-  sudo: function () { line('0xr4sh is not in the sudoers file. This incident will be reported.', 'err'); },
+  sudo: function () { line('0xR4sh is not in the sudoers file. This incident will be reported.', 'err'); },
   clear: function () { out.textContent = ''; },
   ls: function (a) {
     var d = (a[0] || '').replace(/\/$/, '').toLowerCase();
@@ -308,7 +308,7 @@ var CMDS = {
 
   function run(raw) {
     var prompt = el('div', 'line echo');
-    var pr = el('span', 'ps', 'root@0xr4sh:~# '); prompt.appendChild(pr); prompt.appendChild(document.createTextNode(raw));
+    var pr = el('span', 'ps', 'root@0xR4sh:~# '); prompt.appendChild(pr); prompt.appendChild(document.createTextNode(raw));
     out.appendChild(prompt);
     var parts = raw.trim().split(/\s+/).filter(Boolean);
     if (!parts.length) return;
