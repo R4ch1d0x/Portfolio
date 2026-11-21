@@ -20,7 +20,7 @@
         stroke-linejoin: miter;
       }
       .fill-dark {
-        fill: #0d1015;
+        fill: #ffffff;
       }
     </style>
   </defs>
