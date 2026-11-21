@@ -1,0 +1,18 @@
+---
+import { withBase } from '../utils/paths';
+import type { Writeup } from '../data/writeups';
+
+interface Props { writeup: Writeup; }
+const { writeup: w } = Astro.props;
+---
+
+<a href={withBase('/writeups/' + w.slug)} class="writeup-card" data-category={w.platform}>
+  <div class="card-top">
+    <h3>{w.title}</h3>
+    <span class={'difficulty ' + w.difficulty}>{w.difficulty[0].toUpperCase() + w.difficulty.slice(1)}</span>
+  </div>
+  <p class="desc">{w.desc}</p>
+  <div class="card-tags">
+    {w.tags.map((t) => <span class="card-tag">{t}</span>)}
+  </div>
+</a>

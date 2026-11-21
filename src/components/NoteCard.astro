@@ -1,0 +1,20 @@
+---
+import { withBase } from '../utils/paths';
+import type { Note } from '../data/notes';
+
+interface Props { note: Note; }
+const { note: n } = Astro.props;
+---
+
+<a href={withBase('/notes/' + n.slug)} class="writeup-card" data-category={n.category}>
+  <div class="card-top">
+    <div>
+      <h3>{n.title}</h3>
+    </div>
+    <span class="difficulty medium">{n.category}</span>
+  </div>
+  <p class="desc">{n.desc}</p>
+  <div class="card-tags">
+    {n.tags.map((t) => <span class="card-tag">{t}</span>)}
+  </div>
+</a>

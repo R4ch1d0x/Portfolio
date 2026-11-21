@@ -1,6 +1,9 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { withBase } from "../../utils/paths";
+import NoteCard from "../../components/NoteCard.astro";
+import { notes } from "../../data/notes";
+
+const categories = [...new Set(notes.map((n) => n.category))];
 ---
 
 <Base title="Notes — 0xR4sh" description="Cybersecurity notes and reference guides covering web security, tools, and system enumeration." activeNav="notes">
@@ -90,66 +93,15 @@ import { withBase } from "../../utils/paths";
 
     <div class="category-filters" role="group" aria-label="Filter notes by category">
       <button type="button" class="category-filter" data-category="All" aria-pressed="true">All</button>
-      <button type="button" class="category-filter" data-category="Web" aria-pressed="false">Web</button>
-      <button type="button" class="category-filter" data-category="Cryptography" aria-pressed="false">Cryptography</button>
-      <button type="button" class="category-filter" data-category="Reverse Engineering" aria-pressed="false">Reverse Engineering</button>
-      <button type="button" class="category-filter" data-category="OSINT" aria-pressed="false">OSINT</button>
-      <button type="button" class="category-filter" data-category="Forensics" aria-pressed="false">Forensics</button>
-      <button type="button" class="category-filter" data-category="Misc" aria-pressed="false">Misc</button>
-      <button type="button" class="category-filter" data-category="Pwn" aria-pressed="false">Pwn</button>
-      <button type="button" class="category-filter" data-category="Other" aria-pressed="false">Other</button>
+      {categories.map((c) => (
+        <button type="button" class="category-filter" data-category={c} aria-pressed="false">{c}</button>
+      ))}
     </div>
     <p id="notes-search-status" class="notes-search-status" role="status" aria-live="polite"></p>
 
     <section id="notes" style="padding-top:0;">
       <div class="writeups-grid">
-        <a href={withBase('/notes/sql-injection')} class="writeup-card" data-category="Web">
-          <div class="card-top">
-            <div>
-              <h3>SQL Injection Fundamentals</h3>
-            </div>
-            <span class="difficulty medium">Web</span>
-          </div>
-          <p class="desc">Build a foundation in SQL, learn how injection changes query logic, and see how parameterized
-            queries prevent it.</p>
-          <div class="card-tags">
-            <span class="card-tag">MySQL</span>
-            <span class="card-tag">SQL Injection</span>
-            <span class="card-tag">Prevention</span>
-          </div>
-        </a>
-
-        <a href={withBase('/notes/lab-metasploit')} class="writeup-card" data-category="Pwn">
-          <div class="card-top">
-            <div>
-              <h3>Metasploit Framework Cheatsheet</h3>
-            </div>
-            <span class="difficulty medium">Pwn</span>
-          </div>
-          <p class="desc">A practical msfconsole reference covering databases, modules, payloads, sessions, Meterpreter,
-            msfvenom, and resource scripts.</p>
-          <div class="card-tags">
-            <span class="card-tag">Metasploit</span>
-            <span class="card-tag">msfconsole</span>
-            <span class="card-tag">Post-exploitation</span>
-          </div>
-        </a>
-
-        <a href={withBase('/notes/linux-privesc-enum')} class="writeup-card" data-category="Misc">
-          <div class="card-top">
-            <div>
-              <h3>Linux Privilege Escalation Enumeration</h3>
-            </div>
-            <span class="difficulty medium">Misc</span>
-          </div>
-          <p class="desc">A manual enumeration reference for Linux hosts, users, processes, permissions, SUID binaries,
-            cron jobs, and privilege-escalation checks.</p>
-          <div class="card-tags">
-            <span class="card-tag">Linux</span>
-            <span class="card-tag">Enumeration</span>
-            <span class="card-tag">Privilege escalation</span>
-          </div>
-        </a>
+        {notes.map((n) => <NoteCard note={n} />)}
       </div>
     </section>
   </div>

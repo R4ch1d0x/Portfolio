@@ -6,7 +6,7 @@
 > Legend: ⬜ still open · 🔶 partly done.
 
 > [!IMPORTANT]
-> **Done since the previous audit (removed from this list):** Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup cards driven by `src/data/writeups.ts`**, **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
+> **Done since the previous audit (removed from this list):** Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
 >
 > **No longer applies:** GitHub Actions / `.nojekyll` / `dist/` deploy (hosting is Vercel), SRI for Three.js (`lab-ddos` was removed).
 >
@@ -90,7 +90,6 @@
 | 6.4 ⬜ | **Two of three project cards link back to `#projects`** | Projects 02 and 03 have `caseStudyUrl: withBase('#projects')` in `site.js`, so "Read the case study" just scrolls to the same section. | Create case-study pages, or hide the link and show a "Coming soon" label. |
 | 6.6 ⬜ | **Terminal prompt says `root@0xR4sh:~#`** | `root` and `#` imply running as root, which can look like poor security practice on a cybersecurity portfolio. | Use a regular user prompt such as `0xR4sh@portfolio:~$` (in `index.astro` and `site.js`). |
 | 6.7 ⬜ | **No page transitions** | Navigation is an instant full page load. | Optional: use Astro's `ClientRouter` / View Transitions. |
-| 6.8 ⬜ | **Empty categories on the Notes filter** | Cryptography, Reverse Engineering, OSINT, Forensics, Misc, Pwn and Other have no notes yet. | Show only categories that have content, or add counts. |
 
 ---
 
@@ -121,7 +120,6 @@
 
 | # | Issue | Details | Fix |
 |---|-------|---------|-----|
-| 9.1 🔶 | **Writeups are data-driven, notes are not** | Writeup cards now come from `src/data/writeups.ts` (add one entry per writeup). Notes cards on `/notes` and the home page are still hand-written HTML. | Apply the same pattern to notes, or use Astro content collections with Markdown/MDX. |
 | 9.2 ⬜ | **No automated checks** | No HTML validation, link checking or Lighthouse CI, so a broken link can go live unnoticed. | Add `html-validate` or `htmlhint`, a link checker, and Lighthouse CI. |
 | 9.3 ⬜ | **Presentation page is a standalone monolith** | It has its own styling system and doesn't use the shared layout. | Fine for a one-off. Document it, or build a reusable presentation layout if more are planned. |
 
@@ -148,6 +146,5 @@
 ### Medium-term refactoring
 
 ⬜ 11. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
-⬜ 12. **Make notes data-driven like writeups** (9.1).
-⬜ 13. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
-⬜ 14. **Add linting and automated checks** (7.5, 9.2).
+⬜ 12. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
+⬜ 13. **Add linting and automated checks** (7.5, 9.2).

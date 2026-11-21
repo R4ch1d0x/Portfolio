@@ -1,10 +1,14 @@
 ---
 import Base from "../layouts/Base.astro";
 import { withBase } from "../utils/paths";
+import WriteupCard from "../components/WriteupCard.astro";
+import NoteCard from "../components/NoteCard.astro";
 import { writeups } from "../data/writeups";
+import { notes } from "../data/notes";
 
 // Newest entries are appended to the END of writeups.ts; show the 3 latest, newest first.
 const latest = writeups.slice(-3).reverse();
+const latestNotes = notes.slice(-3).reverse();
 ---
 
 <Base title="RACHID CHOKRANI — Cybersecurity Portfolio" navVariant="main" footerVariant="main">
@@ -86,25 +90,19 @@ const latest = writeups.slice(-3).reverse();
       </div>
 
       <div class="writeups-grid">
-        {latest.map((w) => (
-          <a href={withBase('/writeups/' + w.slug)} class="writeup-card">
-            <div class="card-top">
-              <h3>{w.title}</h3>
-              <span class={'difficulty ' + w.difficulty}>{w.difficulty[0].toUpperCase() + w.difficulty.slice(1)}</span>
-            </div>
-            <p class="desc">{w.desc}</p>
-            <div class="card-tags">
-              {w.tags.map((t) => <span class="card-tag">{t}</span>)}
-            </div>
-          </a>
-        ))}
+        {latest.map((w) => <WriteupCard writeup={w} />)}
 
-        <a href={withBase('/writeups')} class="writeup-card" style="border-style:dashed; justify-content:center;">
+        <a href={withBase('/writeups')} class="writeup-card notes-more-card">
           <div class="card-top">
-            <h3>Explore more writeups</h3>
-            <span class="difficulty easy">→</span>
+            <h3>Explore More Writeups</h3>
+            <span class="notes-more-arrow" aria-hidden="true">→</span>
           </div>
-          <p class="desc">Browse all HackTheBox and TryHackMe writeups, with search and platform filters.</p>
+          <p class="desc">Browse all HackTheBox and TryHackMe writeups, search by technique, and filter by platform.</p>
+          <div class="card-tags">
+            <span class="card-tag">Search</span>
+            <span class="card-tag">Filters</span>
+            <span class="card-tag">More writeups</span>
+          </div>
         </a>
       </div>
     </section>
@@ -117,53 +115,7 @@ const latest = writeups.slice(-3).reverse();
       </div>
 
       <div class="writeups-grid">
-        <a href={withBase('/notes/sql-injection')} class="writeup-card">
-          <div class="card-top">
-            <div>
-              <h3>SQL Injection Fundamentals</h3>
-            </div>
-            <span class="difficulty medium">Web</span>
-          </div>
-          <p class="desc">Learn SQL fundamentals, understand how injection happens, and review practical ways to prevent
-            it with parameterized queries.</p>
-          <div class="card-tags">
-            <span class="card-tag">SQL</span>
-            <span class="card-tag">Injection awareness</span>
-            <span class="card-tag">Prevention</span>
-          </div>
-        </a>
-
-        <a href={withBase('/notes/lab-metasploit')} class="writeup-card">
-          <div class="card-top">
-            <div>
-              <h3>Metasploit Framework Cheatsheet</h3>
-            </div>
-            <span class="difficulty medium">Pwn</span>
-          </div>
-          <p class="desc">A practical msfconsole reference covering databases, modules, payloads, sessions, Meterpreter,
-            msfvenom, and resource scripts.</p>
-          <div class="card-tags">
-            <span class="card-tag">Metasploit</span>
-            <span class="card-tag">msfconsole</span>
-            <span class="card-tag">Post-exploitation</span>
-          </div>
-        </a>
-
-        <a href={withBase('/notes/linux-privesc-enum')} class="writeup-card">
-          <div class="card-top">
-            <div>
-              <h3>Linux Privilege Escalation Enumeration</h3>
-            </div>
-            <span class="difficulty medium">Misc</span>
-          </div>
-          <p class="desc">A manual enumeration reference for Linux hosts, users, processes, permissions, SUID binaries,
-            cron jobs, and privilege-escalation checks.</p>
-          <div class="card-tags">
-            <span class="card-tag">Linux</span>
-            <span class="card-tag">Enumeration</span>
-            <span class="card-tag">Privilege escalation</span>
-          </div>
-        </a>
+        {latestNotes.map((n) => <NoteCard note={n} />)}
 
         <a href={withBase('/notes')} class="writeup-card notes-more-card">
           <div class="card-top">
