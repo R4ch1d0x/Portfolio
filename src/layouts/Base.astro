@@ -48,5 +48,8 @@ const {
     {(includeNav && navVariant !== 'none') && <SiteNav active={activeNav} />}
     <slot />
     {(includeFooter && footerVariant !== 'none') && <SiteFooter message={footerMessage} />}
+    <script>
+      import "../scripts/reveal-email.js";
+    </script>
   </body>
 </html>

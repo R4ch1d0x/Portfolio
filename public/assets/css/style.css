@@ -1100,7 +1100,7 @@ section+section {
   font-size: 16px;
 }
 
-#contact .contact-link[href^="mailto:"] {
+#contact .contact-link[data-mail] {
   padding: 10px 20px;
   border: 1px solid var(--accent);
   border-radius: 10px;
@@ -1116,11 +1116,11 @@ section+section {
     border-color 0.2s ease;
 }
 
-#contact .contact-link[href^="mailto:"] .icon {
+#contact .contact-link[data-mail] .icon {
   color: inherit;
 }
 
-#contact .contact-link[href^="mailto:"]:hover {
+#contact .contact-link[data-mail]:hover {
   transform: translateY(-2px);
   border-color: var(--red);
   background: var(--red);

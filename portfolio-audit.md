@@ -59,7 +59,7 @@
 | # | Issue | Details | Fix |
 |---|-------|---------|-----|
 | 2.1 ✅ | **Missing `rel="noopener noreferrer"` on external links** | Most `target="_blank"` links (LinkedIn, HTB on `index.html` and `contact.html`) lack `rel="noopener noreferrer"`. Only the TryHackMe link has it. This is a [tabnapping vulnerability](https://owasp.org/www-community/attacks/Reverse_Tabnapping). | Add `rel="noopener noreferrer"` to **every** `target="_blank"` link. |
-| 2.2 ⬜ | **Personal email exposed in plaintext** | `chokrani.rachid10@gmail.com` appears in HTML source, JS source (`site.js`), and the terminal output. Bots will scrape it for spam. | Consider obfuscating the email (e.g., JS-based rendering, `mailto:` with encoding, or a contact form via Formspree/Netlify Forms). |
+| 2.2 ✅ | **Personal email exposed in plaintext** | Email is no longer in HTML or JS source; it is stored base64-encoded and revealed at runtime by `src/scripts/reveal-email.js`. | Done. For stronger protection, consider a contact form via Formspree/Netlify Forms. |
 
 ### 🟡 Important
 

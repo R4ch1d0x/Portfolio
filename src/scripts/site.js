@@ -29,7 +29,7 @@ import { withBase } from '../utils/paths';
     github: { label: 'GitHub', url: 'https://github.com/R4ch1d0x', group: 'Links', external: true },
     htb: { label: 'Hack The Box', url: 'https://app.hackthebox.com/users/3997830', group: 'Links', external: true }
   };
-  var EMAIL = 'chokrani.rachid10@gmail.com';
+  var EMAIL = atob('Y2hva3JhbmkucmFjaGlkMTBAZ21haWwuY29t');
 
   var projectsGrid = $('#projects-grid');
   if (projectsGrid) {
