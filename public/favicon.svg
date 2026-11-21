@@ -39,7 +39,13 @@
     L 18 142
     L 38 52
     Z
-  " />
+    M 63 52
+    H 92
+    C 101 52, 105 56, 104 63
+    C 103 69, 98 72, 90 72
+    H 59
+    Z
+  " fill-rule="evenodd" />
 
   
   <path class="inner-red" d="
@@ -71,14 +77,6 @@
   " />
 
   
-  <path class="fill-dark outer-red" d="
-    M 63 52
-    H 92
-    C 101 52, 105 56, 104 63
-    C 103 69, 98 72, 90 72
-    H 59
-    Z
-  " />
 
   
   <path class="fill-dark outer-red" d="
@@ -94,7 +92,11 @@
     H 122
     L 112 88
     Z
-  " />
+    M 176 58
+    L 148 83
+    H 171
+    Z
+  " fill-rule="evenodd" />
 
   
   <path class="inner-red" d="
@@ -125,10 +127,4 @@
   " />
 
   
-  <path class="fill-dark outer-red" d="
-    M 176 58
-    L 148 83
-    H 171
-    Z
-  " />
 </svg>
