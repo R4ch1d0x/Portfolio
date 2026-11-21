@@ -32,7 +32,10 @@ const {
       <a href={withBase('/')} class="logo" style="text-decoration:none;">
         <span class="prompt">$</span> 0xR4sh<span class="cursor"></span>
       </a>
-      <div class="links">
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="links" id="nav-links">
         <a href={withBase('#projects')} class:list={{ active: active === 'projects' }}>[Projects]</a>
         <a href={withBase('/writeups')} class:list={{ active: active === 'writeups' }}>[Writeups]</a>
         <a href={withBase('/notes')} class:list={{ active: active === 'notes' }}>[Notes]</a>
@@ -41,3 +44,18 @@ const {
     </>
   )}
 </nav>
+
+<script>
+  const nav = document.querySelector('nav');
+  const toggle = nav?.querySelector<HTMLButtonElement>('.nav-toggle');
+  if (nav && toggle) {
+    const setOpen = (open: boolean) => {
+      nav.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    };
+    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
+    nav.querySelectorAll('.links a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+    window.matchMedia('(min-width: 641px)').addEventListener('change', (m) => { if (m.matches) setOpen(false); });
+  }
+</script>
