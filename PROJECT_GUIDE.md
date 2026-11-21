@@ -91,3 +91,13 @@ Do not edit `src/pages/index.astro` or `src/pages/writeups/index.astro` to add a
 - Edit `public/assets/css/style.css` and `theme.css` for shared visual behavior; edit `public/assets/js/theme.js` for theme controls.
 
 `dist/` and `graphify-out/` are generated output, not page source.
+
+## Terminal hidden challenge
+
+The home page terminal has a small CTF. The pieces live in `src/scripts/site.js`:
+
+- `SECRET` is the base64 text printed by `cat .secret.txt` (visible only after `ls -a`). Decoding it gives a Caesar cipher (shift 3) of the flag.
+- `FLAG_HASH` is the SHA-256 of the flag. Only the hash is stored, so the flag is not in the source. `submit <flag>` compares against it.
+- `HINTS` is the list of clues printed one at a time by `hint`.
+
+To change the flag: Caesar-shift its letters by +3, base64-encode the result into `SECRET`, and put the SHA-256 of the plain flag into `FLAG_HASH`.

@@ -6,7 +6,7 @@
 > Legend: ⬜ still open · 🔶 partly done.
 
 > [!IMPORTANT]
-> **Done since the previous audit (removed from this list):** new R4 favicon (white fill, transparent inner holes), `cat education.txt` reformatted with dates, removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
+> **Done since the previous audit (removed from this list):** terminal rework (`ls` now opens sections, hidden CTF challenge with `hint` / `submit`), new R4 favicon (white fill, transparent inner holes), `cat education.txt` reformatted with dates, removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
 >
 > **No longer applies:** GitHub Actions / `.nojekyll` / `dist/` deploy (hosting is Vercel), SRI for Three.js (`lab-ddos` was removed).
 >
@@ -55,7 +55,6 @@ No open items.
 |---|-------|---------|-----|
 | 3.4 ⬜ | **`site.js` hardcodes all page URLs** | The `PAGES` object lists every navigable page. Adding content means editing it by hand. | Generate the map from `src/data/writeups.ts` or another shared data file. |
 | 3.5 ⬜ | **Projects defined in JS, not data** | The project array in `site.js` mixes data and presentation logic. | Move project data to a JSON/TS file or an Astro content collection and render it from the template. |
-| 3.6 ⬜ | **Terminal listings are hardcoded** | The `ls projects`, `ls notes` and `ls writeups` outputs in `site.js` are plain text lists written by hand, so new writeups, notes and projects never appear in them. | Generate the listings from `src/data/writeups.ts`, `src/data/notes.ts` and the project data. Can be done together with 3.4 and 3.5. |
 
 ---
 
@@ -145,6 +144,6 @@ No open items.
 
 ### Medium-term refactoring
 
-⬜ 10. **Move project data and the `PAGES` map out of `site.js`, and generate the terminal listings from data** (3.4, 3.5, 3.6).
+⬜ 10. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
 ⬜ 11. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
 ⬜ 12. **Add linting and automated checks** (7.5, 9.2).

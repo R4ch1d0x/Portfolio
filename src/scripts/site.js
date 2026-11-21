@@ -223,16 +223,29 @@ import { withBase } from '../utils/paths';
   var TARGETS = ['projects', 'writeups', 'notes', 'skills', 'certs', 'contact', 'github', 'htb'];
 var FILES = ['skills.txt', 'contact.txt', 'certs.txt', 'education.txt'];
 var DIRS = ['projects', 'writeups', 'notes', 'certs'];
-var NAMES = ['help', 'whoami', 'ls', 'cat', 'cd', 'clear', 'pwd', 'date', 'echo', 'sudo'];
+var NAMES = ['help', 'whoami', 'ls', 'cat', 'cd', 'hint', 'submit', 'clear', 'pwd', 'date', 'echo', 'sudo'];
+
+/* Hidden challenge. The flag is only stored as a SHA-256 hash. */
+var FLAG_HASH = '43a22c262ba1d7ba49e8c33aa69de06680726d3b68333837d12de1061baf9b02';
+var SECRET = 'MGFVNHZre2IweF9pMHhxZ193azNfazFnZzNxX2kxbzN9';
+var HINTS = [
+  'Some files hide from a plain ls. Look for an option that shows them.',
+  'Read the hidden file. The text looks like base64: decode it with a tool outside this terminal.',
+  'The decoded text is still unreadable. It is a Caesar cipher: shift every letter back by 3.',
+  'The flag looks like 0xR4sh{...}. Send it with: submit <flag>'
+];
+var hintIdx = 0;
 
 var CMDS = {
   help: function () {
     line('available commands', 'key');
     [['help', 'show this list'],
      ['whoami', 'who is behind this site'],
-     ['ls [dir]', 'list directories'],
+     ['ls [dir]', 'list files, or open a section'],
      ['cat <file>', 'open files'],
      ['cd <target>', 'eg: cd projects'],
+     ['hint', 'a clue for the hidden challenge'],
+     ['submit <flag>', 'submit a flag'],
      ['clear', 'clear the screen (or Ctrl+L)']
     ].forEach(function (r) { line('  ' + pad(r[0], 15) + r[1]); });
     line('tip: Tab completes, ↑ ↓ browse history.', 'dim');
@@ -248,24 +261,16 @@ var CMDS = {
   sudo: function () { line('0xR4sh is not in the sudoers file. This incident will be reported.', 'err'); },
   clear: function () { out.textContent = ''; },
   ls: function (a) {
-    var d = (a[0] || '').replace(/\/$/, '').toLowerCase();
-    if (!d) { line('projects/  writeups/  notes/  skills.txt  certs.txt  contact.txt  education.txt'); return; }
-    if (d === 'projects') {
-      line('safe-shelter-connect-audit');
-      line('symmetric-crypto-aes-ctr');
-      line('dos-dns-spoofing-lab');
-    } else if (d === 'writeups') {
-      line('HackTheBox:   Touch');
-      line('TryHackMe:    Pickle Rick, Library');
-    } else if (d === 'notes') {
-      line('sql-injection');
-      line('metasploit');
-      line('linux-privesc');
-    } else if (d === 'certs') {
-      line('CCNA 1 & 2 (SRWE)   Cisco Networking Academy');
-      line('Cybersecurity Bootcamp   CyberTalents');
-      line('Problem Solving (Basic)   HackerRank');
-    } else line('ls: cannot access \'' + d + '\': No such directory', 'err');
+    var flags = a.filter(function (x) { return x.charAt(0) === '-'; });
+    var args = a.filter(function (x) { return x.charAt(0) !== '-'; });
+    var showAll = flags.some(function (f) { return f.indexOf('a') > 0; });
+    var d = (args[0] || '').replace(/\/$/, '').toLowerCase();
+    if (!d) {
+      line('projects/  writeups/  notes/  skills.txt  certs.txt  contact.txt  education.txt' + (showAll ? '  .secret.txt' : ''));
+      return;
+    }
+    if (d === 'projects' || d === 'writeups' || d === 'notes' || d === 'certs') { CMDS.cd([d]); return; }
+    line('ls: cannot access \'' + d + '\': No such directory', 'err');
   },
   cat: function (a) {
     var name = a[0] || '';
@@ -284,11 +289,33 @@ var CMDS = {
       line('email    ' + EMAIL);
       linkLine('github   ', 'github.com', PAGES.github.url);
       linkLine('htb      ', 'app.hackthebox.com', PAGES.htb.url);
-    } else if (f === 'certs') CMDS.ls(['certs']);
+    } else if (f === 'certs') {
+      line('CCNA 1 & 2 (SRWE)   Cisco Networking Academy');
+      line('Cybersecurity Bootcamp   CyberTalents');
+      line('Problem Solving (Basic)   HackerRank');
+    } else if (f === '.secret') line(SECRET);
     else if (f === 'education') {
       line('ENSIASD — Cybersecurity & Digital Trust Engineering   2025–2028');
       line('EST Safi — DUT Génie Informatique   2023–2025');
     } else line('cat: ' + name + ': No such file', 'err');
+  },
+  hint: function () {
+    if (hintIdx >= HINTS.length) { line('No more hints.', 'dim'); return; }
+    line('hint ' + (hintIdx + 1) + '/' + HINTS.length + ': ' + HINTS[hintIdx], 'dim');
+    hintIdx++;
+  },
+  submit: function (a) {
+    var guess = a.join(' ').trim();
+    if (!guess) { line('usage: submit <flag>', 'err'); return; }
+    if (!(window.crypto && window.crypto.subtle)) { line('submit needs a secure (https) connection.', 'err'); return; }
+    window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(guess)).then(function (buf) {
+      var hex = Array.prototype.map.call(new Uint8Array(buf), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+      if (hex === FLAG_HASH) {
+        line('You found it. Contact me', 'ok');
+        linkLine('→ ', 'contact page', PAGES.contact.url);
+      } else line('Nope, try again', 'err');
+      scroll();
+    });
   },
   cd: function (a) {
     var t = (a[0] || '').toLowerCase();
