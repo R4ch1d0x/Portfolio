@@ -854,27 +854,27 @@ section+section {
 }
 
 .difficulty.easy {
-  background: rgba(154, 164, 178, 0.12);
-  color: var(--accent2);
-  border: 1px solid rgba(154, 164, 178, 0.25);
+  background: rgba(46, 204, 113, 0.12);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
 .difficulty.medium {
-  background: rgba(226, 181, 62, 0.12);
-  color: var(--amber);
-  border: 1px solid rgba(226, 181, 62, 0.25);
+  background: rgba(240, 165, 0, 0.12);
+  color: #f0a500;
+  border: 1px solid rgba(240, 165, 0, 0.3);
 }
 
 .difficulty.hard {
   background: rgba(255, 51, 68, 0.12);
-  color: var(--red);
-  border: 1px solid rgba(255, 51, 68, 0.25);
+  color: #ff3344;
+  border: 1px solid rgba(255, 51, 68, 0.3);
 }
 
 .difficulty.insane {
-  background: rgba(255, 138, 122, 0.12);
-  color: var(--red);
-  border: 1px solid rgba(255, 138, 122, 0.25);
+  background: rgba(178, 102, 255, 0.12);
+  color: #b266ff;
+  border: 1px solid rgba(178, 102, 255, 0.3);
 }
 
 .writeup-card .desc {

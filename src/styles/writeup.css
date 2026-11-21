@@ -57,15 +57,11 @@
   border-color: rgba(154, 164, 178, 0.25);
 }
 
-.writeup-header .meta-item.difficulty {
-  color: var(--amber);
-  border-color: rgba(226, 181, 62, 0.25);
-}
-
-.writeup-header .meta-item.difficulty.easy {
-  color: var(--accent);
-  border-color: rgba(255, 51, 68, 0.25);
-}
+.writeup-header .meta-item.difficulty { color: #f0a500; border-color: rgba(240, 165, 0, 0.3); }
+.writeup-header .meta-item.difficulty.easy { color: #2ecc71; border-color: rgba(46, 204, 113, 0.3); }
+.writeup-header .meta-item.difficulty.medium { color: #f0a500; border-color: rgba(240, 165, 0, 0.3); }
+.writeup-header .meta-item.difficulty.hard { color: #ff3344; border-color: rgba(255, 51, 68, 0.3); }
+.writeup-header .meta-item.difficulty.insane { color: #b266ff; border-color: rgba(178, 102, 255, 0.3); }
 
 .writeup-header .tags {
   display: flex;
