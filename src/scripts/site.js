@@ -25,7 +25,6 @@ import { withBase } from '../utils/paths';
     sqlinjection: { label: 'SQL Injection Fundamentals', url: withBase('/notes/sql-injection'), group: 'Notes' },
     metasploit: { label: 'Metasploit Framework Cheatsheet', url: withBase('/notes/lab-metasploit'), group: 'Notes' },
     linuxprivesc: { label: 'Linux Privilege Escalation Enumeration', url: withBase('/notes/linux-privesc-enum'), group: 'Notes' },
-    touch: { label: 'HTB: Touch', url: withBase('/writeups/htb/touch-writeup'), group: 'Writeups' },
     github: { label: 'GitHub', url: 'https://github.com/R4ch1d0x', group: 'Links', external: true },
     htb: { label: 'Hack The Box', url: 'https://app.hackthebox.com/users/3997830', group: 'Links', external: true }
   };
@@ -224,7 +223,7 @@ import { withBase } from '../utils/paths';
   }
   function scroll() { body.scrollTop = body.scrollHeight; }
 
-  var TARGETS = ['sqlinjection', 'metasploit', 'linuxprivesc', 'touch', 'projects', 'writeups', 'notes', 'skills', 'certs', 'contact', 'github', 'htb'];
+  var TARGETS = ['sqlinjection', 'metasploit', 'linuxprivesc', 'projects', 'writeups', 'notes', 'skills', 'certs', 'contact', 'github', 'htb'];
 var FILES = ['skills.txt', 'contact.txt', 'certs.txt', 'education.txt'];
 var DIRS = ['projects', 'writeups', 'notes', 'certs'];
 var NAMES = ['help', 'whoami', 'ls', 'cat', 'cd', 'clear', 'pwd', 'date', 'echo', 'sudo'];
@@ -259,9 +258,8 @@ var CMDS = {
       line('symmetric-crypto-aes-ctr/     Dec 2024 – Apr 2025');
       line('open them on the Projects page: cd projects', 'dim');
     } else if (d === 'writeups') {
-      line('HackTheBox   Touch: kiosk escape → MySQL UDF → SYSTEM');
-      line('TryHackMe    Pickle Rick, Library');
-      line('read it: cd touch', 'dim');
+      line('HackTheBox:   Touch');
+      line('TryHackMe:    Pickle Rick, Library');
     } else if (d === 'notes') {
       line('sql-injection   SQL fundamentals, injection awareness, and prevention');
       line('metasploit       Framework commands, modules, sessions, and payloads');
