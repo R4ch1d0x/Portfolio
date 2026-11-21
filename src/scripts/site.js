@@ -22,9 +22,6 @@ import { withBase } from '../utils/paths';
     skills: { label: 'Skills', url: withBase('#skills'), group: 'Pages' },
     certs: { label: 'Certs', url: withBase('#certs'), group: 'Pages' },
     contact: { label: 'Contact', url: withBase('/contact'), group: 'Pages' },
-    sqlinjection: { label: 'SQL Injection Fundamentals', url: withBase('/notes/sql-injection'), group: 'Notes' },
-    metasploit: { label: 'Metasploit Framework Cheatsheet', url: withBase('/notes/lab-metasploit'), group: 'Notes' },
-    linuxprivesc: { label: 'Linux Privilege Escalation Enumeration', url: withBase('/notes/linux-privesc-enum'), group: 'Notes' },
     github: { label: 'GitHub', url: 'https://github.com/R4ch1d0x', group: 'Links', external: true },
     htb: { label: 'Hack The Box', url: 'https://app.hackthebox.com/users/3997830', group: 'Links', external: true }
   };
@@ -223,7 +220,7 @@ import { withBase } from '../utils/paths';
   }
   function scroll() { body.scrollTop = body.scrollHeight; }
 
-  var TARGETS = ['sqlinjection', 'metasploit', 'linuxprivesc', 'projects', 'writeups', 'notes', 'skills', 'certs', 'contact', 'github', 'htb'];
+  var TARGETS = ['projects', 'writeups', 'notes', 'skills', 'certs', 'contact', 'github', 'htb'];
 var FILES = ['skills.txt', 'contact.txt', 'certs.txt', 'education.txt'];
 var DIRS = ['projects', 'writeups', 'notes', 'certs'];
 var NAMES = ['help', 'whoami', 'ls', 'cat', 'cd', 'clear', 'pwd', 'date', 'echo', 'sudo'];
@@ -254,17 +251,16 @@ var CMDS = {
     var d = (a[0] || '').replace(/\/$/, '').toLowerCase();
     if (!d) { line('projects/  writeups/  notes/  skills.txt  certs.txt  contact.txt  education.txt'); return; }
     if (d === 'projects') {
-      line('safe-shelter-connect-audit/   2026');
-      line('symmetric-crypto-aes-ctr/     Dec 2024 – Apr 2025');
-      line('open them on the Projects page: cd projects', 'dim');
+      line('safe-shelter-connect-audit');
+      line('symmetric-crypto-aes-ctr');
+      line('dos-dns-spoofing-lab');
     } else if (d === 'writeups') {
       line('HackTheBox:   Touch');
       line('TryHackMe:    Pickle Rick, Library');
     } else if (d === 'notes') {
-      line('sql-injection   SQL fundamentals, injection awareness, and prevention');
-      line('metasploit       Framework commands, modules, sessions, and payloads');
-      line('linux-privesc    Linux privilege escalation enumeration');
-      line('open notes: cd sqlinjection | cd metasploit | cd linuxprivesc', 'dim');
+      line('sql-injection');
+      line('metasploit');
+      line('linux-privesc');
     } else if (d === 'certs') {
       line('CCNA 1 & 2 (SRWE)   Cisco Networking Academy');
       line('Cybersecurity Bootcamp   CyberTalents');

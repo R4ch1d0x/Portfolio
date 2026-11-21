@@ -55,7 +55,7 @@ No open items.
 |---|-------|---------|-----|
 | 3.4 ⬜ | **`site.js` hardcodes all page URLs** | The `PAGES` object lists every navigable page. Adding content means editing it by hand. | Generate the map from `src/data/writeups.ts` or another shared data file. |
 | 3.5 ⬜ | **Projects defined in JS, not data** | The project array in `site.js` mixes data and presentation logic. | Move project data to a JSON/TS file or an Astro content collection and render it from the template. |
-| 3.6 ⬜ | **Terminal content is out of sync with the site** | `ls projects` lists only two of the three projects (the DoS / DNS spoofing lab is missing), and the `ls writeups` listing is hardcoded, so new writeups never appear in it. | Generate the terminal listings and `cd` targets from `src/data/writeups.ts` and the project data. Can be done together with 3.4 and 3.5. |
+| 3.6 ⬜ | **Terminal listings are hardcoded** | The `ls projects`, `ls notes` and `ls writeups` outputs in `site.js` are plain text lists written by hand, so new writeups, notes and projects never appear in them. | Generate the listings from `src/data/writeups.ts`, `src/data/notes.ts` and the project data. Can be done together with 3.4 and 3.5. |
 
 ---
 
