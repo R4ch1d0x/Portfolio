@@ -21,7 +21,7 @@ const {
 } = Astro.props;
 ---
 
-<nav>
+<nav class="site-nav">
   {variant === 'article' ? (
     <>
       <a href={backHref} class="back"><span class="arrow">←</span> {backLabel}</a>
@@ -59,3 +59,52 @@ const {
     window.matchMedia('(min-width: 641px)').addEventListener('change', (m) => { if (m.matches) setOpen(false); });
   }
 </script>
+
+<style is:global>
+  nav.site-nav .nav-toggle {
+    display: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  nav.site-nav .nav-toggle span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--accent);
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  nav.site-nav .nav-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 640px) {
+    nav.site-nav { flex-wrap: wrap; }
+    nav.site-nav .nav-toggle { display: flex; }
+    nav.site-nav .links {
+      display: none;
+      flex-basis: 100%;
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 12px;
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+      overflow: visible;
+    }
+    nav.site-nav.open .links { display: flex; }
+    nav.site-nav .links a { font-size: 15px; padding: 12px 10px; white-space: nowrap; }
+    nav.site-nav.open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    nav.site-nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+    nav.site-nav.open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  }
+</style>

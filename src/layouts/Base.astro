@@ -33,6 +33,7 @@ const {
   ogImage = '/og.png'
 } = Astro.props;
 
+const buildId = Date.now().toString(36);
 const siteUrl = Astro.site ?? new URL('https://0xr4sh.vercel.app');
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 const ogImageUrl = new URL(withBase(ogImage), siteUrl).href;
@@ -59,7 +60,7 @@ const ogImageUrl = new URL(withBase(ogImage), siteUrl).href;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
-    {includePortfolioStyles && <link rel="stylesheet" href={withBase('/assets/css/style.css')} />}
+    {includePortfolioStyles && <link rel="stylesheet" href={withBase('/assets/css/style.css') + '?v=' + buildId} />}
     <slot name="head" />
     {includeThemeScript && <script is:inline src={withBase('/assets/js/theme.js')}></script>}
   </head>
