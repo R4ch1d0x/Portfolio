@@ -1,12 +1,12 @@
 # Portfolio Audit — Open Items
 
 > [!NOTE]
-> Remaining work for the portfolio (Astro, hosted on Vercel). Items that are finished or no longer apply have been removed. Last updated 2026-11-21.
+> Remaining work for the portfolio (Astro, hosted on Vercel). Items that are finished or no longer apply have been removed. Last updated 2026-11-21 (evening).
 >
 > Legend: ⬜ still open · 🔶 partly done.
 
 > [!IMPORTANT]
-> **Done since the previous audit (removed from this list):** removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
+> **Done since the previous audit (removed from this list):** new R4 favicon (white fill, transparent inner holes), `cat education.txt` reformatted with dates, removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
 >
 > **No longer applies:** GitHub Actions / `.nojekyll` / `dist/` deploy (hosting is Vercel), SRI for Three.js (`lab-ddos` was removed).
 >
@@ -55,6 +55,7 @@ No open items.
 |---|-------|---------|-----|
 | 3.4 ⬜ | **`site.js` hardcodes all page URLs** | The `PAGES` object lists every navigable page and the writeup shortcut (`touch`). Adding content means editing it by hand. | Generate the map from `src/data/writeups.ts` or another shared data file. |
 | 3.5 ⬜ | **Projects defined in JS, not data** | The project array in `site.js` mixes data and presentation logic. | Move project data to a JSON/TS file or an Astro content collection and render it from the template. |
+| 3.6 ⬜ | **Terminal content is out of sync with the site** | `ls projects` lists only two of the three projects (the DoS / DNS spoofing lab is missing), and `ls writeups` offers a `cd touch` shortcut only, with none for Pickle Rick or Library. | Generate the terminal listings and `cd` targets from `src/data/writeups.ts` and the project data. Can be done together with 3.4 and 3.5. |
 
 ---
 
@@ -110,7 +111,7 @@ No open items.
 | # | Issue | Details | Fix |
 |---|-------|---------|-----|
 | 8.2 ⬜ | **No resume/CV download** | Recruiters expect a downloadable PDF. | Add a "Download CV" button in the hero or contact section. |
-| 8.3 ⬜ | **Education timeline gaps** | ENSIASD has dates but the earlier DUT at EST Safi has none. | Add a date range for each stage. |
+| 8.3 🔶 | **Education is only visible in the terminal** | `cat education.txt` now shows ENSIASD (2025–2028) and EST Safi, DUT Génie Informatique (2023–2025). No page shows the EST Safi degree, its dates, or the earlier EST Fkih Ben Salah year; the contact page shows only "ENSIASD (2025–2028)". | Add an Education section to the home page (or the contact card) with every stage and its dates. |
 | 8.4 ⬜ | **Duplicate commits from an abandoned React migration** | Commits `823ce45` and `140efbb` both say "Last changes before moving to react". | Clean up the history before promoting the repo, or leave it. |
 | 8.5 ⬜ | **XML listed as a "Language"** | XML is a markup language, and it sits next to C/C++ and Python. | Move it to tools, or replace it with JavaScript/TypeScript or HTML/CSS. |
 
@@ -133,16 +134,17 @@ No open items.
 ⬜ 2. **Add `<main>` and a skip-to-content link** (5.4, 5.5).
 ⬜ 3. **Show a focus ring on the terminal input** (5.10).
 ⬜ 4. **Switch the terminal prompt to a non-root user** (6.6).
+⬜ 5. **Add an Education section with dates to the home page** (8.3).
 
 ### High-priority improvements
 
-⬜ 5. **Optimize images**: WebP, `srcset`, `loading="lazy"` (4.1, 4.5).
-⬜ 6. **Add a CSP** (2.3).
-⬜ 7. **Fix the project case-study links** (6.4).
-⬜ 8. **Add a CV download** (8.2).
+⬜ 6. **Optimize images**: WebP, `srcset`, `loading="lazy"` (4.1, 4.5).
+⬜ 7. **Add a CSP** (2.3).
+⬜ 8. **Fix the project case-study links** (6.4).
+⬜ 9. **Add a CV download** (8.2).
 
 ### Medium-term refactoring
 
-⬜ 9. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
-⬜ 10. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
-⬜ 11. **Add linting and automated checks** (7.5, 9.2).
+⬜ 10. **Move project data and the `PAGES` map out of `site.js`, and generate the terminal listings from data** (3.4, 3.5, 3.6).
+⬜ 11. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
+⬜ 12. **Add linting and automated checks** (7.5, 9.2).
