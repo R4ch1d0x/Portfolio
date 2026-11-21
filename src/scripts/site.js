@@ -293,7 +293,7 @@ var CMDS = {
     } else if (f === 'certs') CMDS.ls(['certs']);
     else if (f === 'education') {
       line('ENSIASD — Cybersecurity & Digital Trust Engineering   2025–2028');
-      line('DUT Génie Informatique — EST Safi');
+      line('EST Safi — DUT Génie Informatique   2023–2025');
     } else line('cat: ' + name + ': No such file', 'err');
   },
   cd: function (a) {
