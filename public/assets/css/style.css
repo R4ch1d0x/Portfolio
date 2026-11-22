@@ -940,6 +940,55 @@ section+section {
   color: var(--accent);
 }
 
+/* ========== Education ========== */
+.edu-list {
+  display: grid;
+  gap: 16px;
+}
+
+.edu-item {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  padding: 18px 20px;
+}
+
+.edu-date {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+
+.edu-item h3 {
+  margin: 6px 0 4px;
+}
+
+.edu-school,
+.edu-degree {
+  color: var(--text-dim);
+  font-size: 13px;
+  margin: 2px 0;
+}
+
+.edu-degree {
+  color: var(--text);
+}
+
+.edu-now {
+  display: inline-block;
+  white-space: nowrap;
+  margin-left: 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+
 /* ========== Certifications ========== */
 .certs-grid {
   display: grid;
