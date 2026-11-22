@@ -106,3 +106,7 @@ To change the flag: Caesar-shift its letters by +3, base64-encode the result int
 
 The home page "Download CV" button links to `public/CV_Rachid_Chokrani.pdf`. To update it, replace that file keeping the same name. Before publishing, remove any phone number or home address from the PDF with real redaction (covering text with a box is not enough, the text stays inside the file).
 
+## Images
+
+Store images as WebP (quality about 80, max width 1600 px) under `public/assets/img/`. For every `<img>` add `width` and `height` (the real pixel size), `loading="lazy"` and `decoding="async"`, except for images at the very top of a page. Keep `public/og.png` as PNG, because social networks do not reliably read WebP for preview images.
+

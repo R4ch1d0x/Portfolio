@@ -46,7 +46,7 @@ import { withBase } from "../../../utils/paths";
 <section class="writeup-section" id="description">
   <h2><span class="num">00</span> Description</h2>
   <p>In this Rick and Morty-themed room, Rick has turned himself into a pickle again and cannot change back. You play Morty and must compromise his web server to recover the three secret ingredients he needs for the potion that turns him back into a human. The room is a good example of how a single web server can be attacked in several ways: reading exposed files, abusing a command panel, getting a reverse shell and escalating privileges. It shows how small weaknesses chain together into a full compromise.</p>
-  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/pickle-rick-landing.jpg')} alt="Landing page"><figcaption>Landing page</figcaption></figure>
+  <figure class="screenshot"><img loading="lazy" decoding="async" width="900" height="457" src={withBase('/assets/img/writeups/thm/pickle-rick-landing.webp')} alt="Landing page"><figcaption>Landing page</figcaption></figure>
 </section>
 
 <section class="writeup-section" id="recon">
@@ -77,9 +77,9 @@ import { withBase } from "../../../utils/paths";
 <section class="writeup-section" id="foothold">
   <h2><span class="num">03</span> Foothold — Command Panel</h2>
   <p><code>/portal.php</code> provided a command panel that executed system commands. Running <code>ls</code> listed the web root, while <code>whoami</code> returned <code>www-data</code>.</p>
-  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/pickle-rick-command-panel.jpg')} alt="Command panel output"><figcaption>Command panel output</figcaption></figure>
+  <figure class="screenshot"><img loading="lazy" decoding="async" width="900" height="281" src={withBase('/assets/img/writeups/thm/pickle-rick-command-panel.webp')} alt="Command panel output"><figcaption>Command panel output</figcaption></figure>
   <div class="callout"><strong>Command filtering:</strong> the panel's blacklist was only an application-layer restriction. It did not prevent an actual reverse shell from reaching the OS.</div>
-  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/pickle-rick-blocked-command.jpg')} alt="Blocked command"><figcaption>Blocked command</figcaption></figure>
+  <figure class="screenshot"><img loading="lazy" decoding="async" width="900" height="351" src={withBase('/assets/img/writeups/thm/pickle-rick-blocked-command.webp')} alt="Blocked command"><figcaption>Blocked command</figcaption></figure>
   <h3>Reverse shell</h3>
   <div class="step"><div class="step-num">1</div><div class="step-body">Start a listener on the attacker machine:<pre data-lang="bash"><code>nc -lvnp 4444</code></pre></div></div>
   <div class="step"><div class="step-num">2</div><div class="step-body">Submit a PHP reverse shell one-liner from <a href="https://gtfobins.github.io/" target="_blank" rel="noopener">GTFOBins</a> through the command panel.</div></div>

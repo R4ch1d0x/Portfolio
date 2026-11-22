@@ -6,11 +6,11 @@
 > Legend: ⬜ still open · 🔶 partly done.
 
 > [!IMPORTANT]
-> **Done since the previous audit (removed from this list):** `<main id="main">` landmark and skip-to-content link on every page except the presentation deck, **CV download button** on the home page (`public/CV_Rachid_Chokrani.pdf`, phone number removed from the public copy), `robots.txt` and `sitemap-index.xml` (via `@astrojs/sitemap`), terminal rework (`ls` now opens sections, hidden CTF challenge with `hint` / `submit`), new R4 favicon (white fill, transparent inner holes), `cat education.txt` reformatted with dates, removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
+> **Done since the previous audit (removed from this list):** **image optimization** (all images converted to WebP, about 60% smaller; `width`/`height`, `loading="lazy"` and `decoding="async"` added; `og.png` stays PNG for social crawlers), `<main id="main">` landmark and skip-to-content link on every page except the presentation deck, **CV download button** on the home page (`public/CV_Rachid_Chokrani.pdf`, phone number removed from the public copy), `robots.txt` and `sitemap-index.xml` (via `@astrojs/sitemap`), terminal rework (`ls` now opens sections, hidden CTF challenge with `hint` / `submit`), new R4 favicon (white fill, transparent inner holes), `cat education.txt` reformatted with dates, removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
 >
 > **No longer applies:** GitHub Actions / `.nojekyll` / `dist/` deploy (hosting is Vercel), SRI for Three.js (`lab-ddos` was removed).
 >
-> **Next best picks:** 6.4 case-study links, 4.1 image optimization.
+> **Next best picks:** 6.4 case-study links.
 >
 > Not re-verified: 4.5, 5.6, 5.10, 7.x items. They stay open until checked.
 
@@ -62,10 +62,8 @@ No open items.
 
 | # | Issue | Details | Fix |
 |---|-------|---------|-----|
-| 4.1 ⬜ | **No image optimization** | Certificate images are uncompressed JPEGs (168–349 KB each), project and writeup screenshots are large PNG/JPG files, and there are no WebP/AVIF variants or `srcset`. | Convert to WebP, provide multiple sizes, and use Astro's built-in `<Image>` component. |
 | 4.3 🔶 | **`style.css` and `site.js` are not minified** | Astro minifies its own bundles, but `public/assets/css/style.css` (about 1500 lines), `theme.js` and `theme.css` are copied as-is. | Move the stylesheet into `src/` and import it so Astro bundles and minifies it. |
 | 4.4 ⬜ | **Presentation page is a monolith** | `dos-dns-spoofing-presentation.astro` carries about a thousand lines of inline CSS and JS plus extra Google Font families. | Split into external CSS/JS, or at least defer non-critical scripts. |
-| 4.5 ⬜ | **`loading="lazy"` is missing on some images** | Certificate images have it. Writeup screenshots and presentation images do not. | Add `loading="lazy"` to all below-the-fold images. |
 
 ---
 
@@ -131,12 +129,11 @@ No open items.
 
 ### High-priority improvements
 
-⬜ 4. **Optimize images**: WebP, `srcset`, `loading="lazy"` (4.1, 4.5).
-⬜ 5. **Add a CSP** (2.3).
-⬜ 6. **Fix the project case-study links** (6.4).
+⬜ 4. **Add a CSP** (2.3).
+⬜ 5. **Fix the project case-study links** (6.4).
 
 ### Medium-term refactoring
 
-⬜ 7. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
-⬜ 8. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
-⬜ 9. **Add linting and automated checks** (7.5, 9.2).
+⬜ 6. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
+⬜ 7. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
+⬜ 8. **Add linting and automated checks** (7.5, 9.2).

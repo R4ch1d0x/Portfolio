@@ -46,7 +46,7 @@ import { withBase } from "../../../utils/paths";
 <section class="writeup-section" id="description">
   <h2><span class="num">00</span> Description</h2>
   <p>Thompson is a beginner-friendly Linux box built around a stock Apache Tomcat 8.5.5 installation. The path to root goes through the Tomcat Manager application, which is left reachable with a known default <code>manager-gui</code> credential pair, allowing a WAR file to be deployed and executed as a reverse shell. Privilege escalation relies on a world-writable helper script that is silently re-executed by root on a schedule.</p>
-  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/thompson-tomcat-landing.png')} alt="Apache Tomcat 8.5.5 default landing page on port 8080"><figcaption>Default Tomcat 8.5.5 landing page on port 8080</figcaption></figure>
+  <figure class="screenshot"><img loading="lazy" decoding="async" width="1259" height="805" src={withBase('/assets/img/writeups/thm/thompson-tomcat-landing.webp')} alt="Apache Tomcat 8.5.5 default landing page on port 8080"><figcaption>Default Tomcat 8.5.5 landing page on port 8080</figcaption></figure>
 </section>
 
 <section class="writeup-section" id="recon">
@@ -77,7 +77,7 @@ import { withBase } from "../../../utils/paths";
 <section class="writeup-section" id="foothold">
   <h2><span class="num">03</span> Foothold — Tomcat Manager RCE</h2>
   <p>With valid <code>manager-gui</code> credentials (<code>tomcat:s3cret</code>), <code>/manager/html</code> opened and exposed the full list of deployed applications plus a form to deploy a new WAR file directly from the browser.</p>
-  <figure class="screenshot"><img src={withBase('/assets/img/writeups/thm/thompson-manager-deploy.png')} alt="Tomcat Manager application list and WAR deploy form"><figcaption>Tomcat Manager — deployed apps and WAR upload/deploy form</figcaption></figure>
+  <figure class="screenshot"><img loading="lazy" decoding="async" width="1600" height="679" src={withBase('/assets/img/writeups/thm/thompson-manager-deploy.webp')} alt="Tomcat Manager application list and WAR deploy form"><figcaption>Tomcat Manager — deployed apps and WAR upload/deploy form</figcaption></figure>
   <div class="callout"><strong>Why this works:</strong> the Manager app is explicitly designed to let an authenticated user deploy arbitrary web applications. A WAR file is just a packaged web app, so a WAR containing a JSP reverse shell is executed server-side with the same privileges as the Tomcat service the moment it is deployed.</div>
 
   <h3>Building the payload</h3>
