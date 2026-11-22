@@ -6,11 +6,11 @@
 > Legend: ⬜ still open · 🔶 partly done.
 
 > [!IMPORTANT]
-> **Done since the previous audit (removed from this list):** **CV download button** on the home page (`public/CV_Rachid_Chokrani.pdf`, phone number removed from the public copy), `robots.txt` and `sitemap-index.xml` (via `@astrojs/sitemap`), terminal rework (`ls` now opens sections, hidden CTF challenge with `hint` / `submit`), new R4 favicon (white fill, transparent inner holes), `cat education.txt` reformatted with dates, removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
+> **Done since the previous audit (removed from this list):** `<main id="main">` landmark and skip-to-content link on every page except the presentation deck, **CV download button** on the home page (`public/CV_Rachid_Chokrani.pdf`, phone number removed from the public copy), `robots.txt` and `sitemap-index.xml` (via `@astrojs/sitemap`), terminal rework (`ls` now opens sections, hidden CTF challenge with `hint` / `submit`), new R4 favicon (white fill, transparent inner holes), `cat education.txt` reformatted with dates, removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
 >
 > **No longer applies:** GitHub Actions / `.nojekyll` / `dist/` deploy (hosting is Vercel), SRI for Three.js (`lab-ddos` was removed).
 >
-> **Next best picks:** 5.4 `<main>` landmark and skip link, 6.4 case-study links, 4.1 image optimization.
+> **Next best picks:** 6.4 case-study links, 4.1 image optimization.
 >
 > Not re-verified: 4.5, 5.6, 5.10, 7.x items. They stay open until checked.
 
@@ -73,8 +73,6 @@ No open items.
 
 | # | Issue | Details | Fix |
 |---|-------|---------|-----|
-| 5.4 ⬜ | **No `<main>` landmark in the shared layout** | Screen readers can't identify the primary content area. Pages wrap content in `<div class="container">`. | Make the outer content wrapper a `<main>` in `Base.astro` / `Article.astro`. |
-| 5.5 ⬜ | **No skip-to-content link** | Keyboard users must tab through the whole nav on every page. | Add a visually hidden "Skip to main content" link as the first element in `<body>`. |
 | 5.6 ⬜ | **Heading hierarchy not audited** | The presentation page uses non-semantic heading levels. | Audit heading levels on every page. |
 | 5.10 ⬜ | **Terminal input lacks a visible focus indicator** | The terminal `<input>` uses `outline: 0` with no replacement, failing WCAG 2.4.7. | Add a visible focus style (border color or box-shadow). |
 | 5.11 🔶 | **Color contrast** | `--text-dim` on the dark background is borderline for small text, and several labels use 10–11px fonts. | Brighten `--text-dim` or raise the minimum font size to 12–14px. |
@@ -127,19 +125,18 @@ No open items.
 
 ### Quick wins (under an hour each)
 
-⬜ 1. **Add `<main>` and a skip-to-content link** (5.4, 5.5).
-⬜ 2. **Show a focus ring on the terminal input** (5.10).
-⬜ 3. **Switch the terminal prompt to a non-root user** (6.6).
-⬜ 4. **Add an Education section with dates to the home page** (8.3).
+⬜ 1. **Show a focus ring on the terminal input** (5.10).
+⬜ 2. **Switch the terminal prompt to a non-root user** (6.6).
+⬜ 3. **Add an Education section with dates to the home page** (8.3).
 
 ### High-priority improvements
 
-⬜ 5. **Optimize images**: WebP, `srcset`, `loading="lazy"` (4.1, 4.5).
-⬜ 6. **Add a CSP** (2.3).
-⬜ 7. **Fix the project case-study links** (6.4).
+⬜ 4. **Optimize images**: WebP, `srcset`, `loading="lazy"` (4.1, 4.5).
+⬜ 5. **Add a CSP** (2.3).
+⬜ 6. **Fix the project case-study links** (6.4).
 
 ### Medium-term refactoring
 
-⬜ 8. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
-⬜ 9. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
-⬜ 10. **Add linting and automated checks** (7.5, 9.2).
+⬜ 7. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
+⬜ 8. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
+⬜ 9. **Add linting and automated checks** (7.5, 9.2).

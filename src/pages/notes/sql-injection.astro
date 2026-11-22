@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 ---
 
-<Base title="SQL Injection Fundamentals | 0xR4sh" description="Comprehensive guide to SQL injection fundamentals, mechanics, and prevention using parameterized queries." activeNav="notes">
+<Base title="SQL Injection Fundamentals | 0xR4sh" description="Comprehensive guide to SQL injection fundamentals, mechanics, and prevention using parameterized queries." activeNav="notes" mainLandmark={false}>
   <Fragment slot="head">
 
 <style is:global>
@@ -231,7 +231,7 @@ footer .pl{color:var(--accent)}
   <p class="lead">SQL and secure query construction notes. Sections 1-12 cover baseline SQL and the injection boundary; 13-28 walk UNION-based extraction end to end; 29-31 close with methodology and defense.</p>
 </header>
 
-<main class="wrap notes-layout">
+<main id="main" class="wrap notes-layout">
   <details class="notes-sidebar" aria-label="On this page" open>
     <summary>On this page</summary>
     <ol>

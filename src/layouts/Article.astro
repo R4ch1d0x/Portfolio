@@ -28,6 +28,7 @@ const {
   description={description}
   includeNav={false}
   includeFooter={false}
+  mainLandmark={false}
 >
   <slot name="head" slot="head" />
   <SiteNav
@@ -36,7 +37,7 @@ const {
     backLabel={backLabel}
     title={navTitle}
   />
-  <slot />
+  <main id="main"><slot /></main>
   <SiteFooter
     variant="article"
     backHref={backHref}

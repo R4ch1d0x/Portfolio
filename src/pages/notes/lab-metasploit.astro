@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 ---
 
-<Base title="Metasploit Framework Cheatsheet | 0xR4sh" description="Quick reference and cheatsheet for Metasploit Framework, msfconsole, modules, payloads, and post-exploitation." activeNav="notes">
+<Base title="Metasploit Framework Cheatsheet | 0xR4sh" description="Quick reference and cheatsheet for Metasploit Framework, msfconsole, modules, payloads, and post-exploitation." activeNav="notes" mainLandmark={false}>
   <Fragment slot="head">
 
 <style is:global>
@@ -116,7 +116,7 @@ footer .pl{color:var(--accent)}
   <p class="lead">msfconsole usage end to end. Sections 1-6 cover the console and database; 7-10 cover finding and configuring modules; 11-15 cover payloads, sessions, Meterpreter and post-exploitation; 16-18 close with msfvenom, resource scripts and a workflow checklist.</p>
 </header>
 
-<main class="wrap notes-layout">
+<main id="main" class="wrap notes-layout">
   <details class="notes-sidebar" aria-label="On this page" open>
     <summary>On this page</summary>
     <ol>
