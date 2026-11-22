@@ -101,3 +101,8 @@ The home page terminal has a small CTF. The pieces live in `src/scripts/site.js`
 - `HINTS` is the list of clues printed one at a time by `hint`.
 
 To change the flag: Caesar-shift its letters by +3, base64-encode the result into `SECRET`, and put the SHA-256 of the plain flag into `FLAG_HASH`.
+
+## Updating the CV
+
+The home page "Download CV" button links to `public/CV_Rachid_Chokrani.pdf`. To update it, replace that file keeping the same name. Before publishing, remove any phone number or home address from the PDF with real redaction (covering text with a box is not enough, the text stays inside the file).
+

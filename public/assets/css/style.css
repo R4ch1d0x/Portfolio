@@ -1101,7 +1101,8 @@ section+section {
   font-size: 16px;
 }
 
-#contact .contact-link[data-mail] {
+#contact .contact-link[data-mail],
+.cv-btn {
   padding: 10px 20px;
   border: 1px solid var(--accent);
   border-radius: 10px;
@@ -1117,15 +1118,24 @@ section+section {
     border-color 0.2s ease;
 }
 
-#contact .contact-link[data-mail] .icon {
+#contact .contact-link[data-mail] .icon,
+.cv-btn .icon {
   color: inherit;
 }
 
-#contact .contact-link[data-mail]:hover {
+#contact .contact-link[data-mail]:hover,
+.cv-btn:hover {
   transform: translateY(-2px);
   border-color: var(--red);
   background: var(--red);
   color: #070708;
+}
+
+.cv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
 }
 
 #contact {
