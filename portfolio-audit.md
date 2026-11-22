@@ -12,7 +12,7 @@
 >
 > **Next best picks:** 6.4 case-study links.
 >
-> Not re-verified: 4.5, 5.6, 5.10, 7.x items. They stay open until checked.
+> Not re-verified: 5.6, 5.10, 7.x items. They stay open until checked.
 
 ---
 
