@@ -6,7 +6,7 @@
 > Legend: ⬜ still open · 🔶 partly done.
 
 > [!IMPORTANT]
-> **Done since the previous audit (removed from this list):** **image optimization** (all images converted to WebP, about 60% smaller; `width`/`height`, `loading="lazy"` and `decoding="async"` added; `og.png` stays PNG for social crawlers), `<main id="main">` landmark and skip-to-content link on every page except the presentation deck, **CV download button** on the home page (`public/CV_Rachid_Chokrani.pdf`, phone number removed from the public copy), `robots.txt` and `sitemap-index.xml` (via `@astrojs/sitemap`), terminal rework (`ls` now opens sections, hidden CTF challenge with `hint` / `submit`), new R4 favicon (white fill, transparent inner holes), `cat education.txt` reformatted with dates, removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
+> **Done since the previous audit (removed from this list):** **Content Security Policy** (per-page `<meta>` with script hashes generated at build time, plus `frame-ancestors`, `nosniff` and referrer headers in `vercel.json`), **image optimization** (all images converted to WebP, about 60% smaller; `width`/`height`, `loading="lazy"` and `decoding="async"` added; `og.png` stays PNG for social crawlers), `<main id="main">` landmark and skip-to-content link on every page except the presentation deck, **CV download button** on the home page (`public/CV_Rachid_Chokrani.pdf`, phone number removed from the public copy), `robots.txt` and `sitemap-index.xml` (via `@astrojs/sitemap`), terminal rework (`ls` now opens sections, hidden CTF challenge with `hint` / `submit`), new R4 favicon (white fill, transparent inner holes), `cat education.txt` reformatted with dates, removal of the public `meta/` folder (the zip file was never in the repo), Astro migration with shared `SiteNav`/`SiteFooter`, lowercase routes, `withBase` paths, meta descriptions, favicon, `rel="noopener noreferrer"` on every external link, GitHub link, lockfile committed, duplicate Notes images removed, Google Fonts via `preconnect` + `<link>`, **email obfuscation** (base64 + runtime reveal), **Open Graph / Twitter Card tags with `og.png`**, **canonical URLs**, **custom 404 page**, **mobile hamburger menu**, **separate `/writeups` page with search and HackTheBox / TryHackMe filters** (the `/writeups/htb` and `/writeups/thm` index routes were removed), **writeup and note cards driven by `src/data/writeups.ts` and `src/data/notes.ts`** (with shared card components; the notes filter now shows only categories that have notes), **home page limited to the 3 latest writeups plus an "Explore more writeups" card** (the "More coming soon" placeholder is gone), **color-coded difficulty badges**, **nav background matched to the site background**, **rebrand to `0xR4sh`**, and a **synchronized set of social links** on the contact page.
 >
 > **No longer applies:** GitHub Actions / `.nojekyll` / `dist/` deploy (hosting is Vercel), SRI for Three.js (`lab-ddos` was removed).
 >
@@ -44,7 +44,6 @@ No open items.
 
 | # | Issue | Details | Fix |
 |---|-------|---------|-----|
-| 2.3 ⬜ | **No Content Security Policy (CSP)** | The site loads Google Fonts from a CDN with no CSP header or `<meta>` tag. | Add a CSP (Vercel headers in `vercel.json`, or a `<meta http-equiv="Content-Security-Policy">`) restricting `script-src`, `style-src`, `font-src` and `img-src` to known origins. |
 | 2.7 ⬜ | **Old commits still contain the plaintext email** | The email was removed from the source, but it still exists in git history. | Only matters if you want it fully gone: rewrite history, or accept that the address is already public. A contact form (Formspree / Netlify Forms) would remove the need to publish it at all. |
 
 ---
@@ -129,11 +128,10 @@ No open items.
 
 ### High-priority improvements
 
-⬜ 4. **Add a CSP** (2.3).
-⬜ 5. **Fix the project case-study links** (6.4).
+⬜ 4. **Fix the project case-study links** (6.4).
 
 ### Medium-term refactoring
 
-⬜ 6. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
-⬜ 7. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
-⬜ 8. **Add linting and automated checks** (7.5, 9.2).
+⬜ 5. **Move project data and the `PAGES` map out of `site.js`** (3.4, 3.5).
+⬜ 6. **Bundle `style.css` through Astro; remove dead and duplicate CSS** (4.3, 7.1, 7.4).
+⬜ 7. **Add linting and automated checks** (7.5, 9.2).

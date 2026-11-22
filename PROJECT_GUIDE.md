@@ -110,3 +110,9 @@ The home page "Download CV" button links to `public/CV_Rachid_Chokrani.pdf`. To 
 
 Store images as WebP (quality about 80, max width 1600 px) under `public/assets/img/`. For every `<img>` add `width` and `height` (the real pixel size), `loading="lazy"` and `decoding="async"`, except for images at the very top of a page. Keep `public/og.png` as PNG, because social networks do not reliably read WebP for preview images.
 
+## Content Security Policy
+
+`astro.config.mjs` contains a small `cspHashes()` integration. After every build it adds a `<meta http-equiv="Content-Security-Policy">` tag to each HTML page and lists the SHA-256 hash of every inline `<script>`, so inline scripts keep working without `'unsafe-inline'`. `vercel.json` adds the headers a meta tag cannot carry (`frame-ancestors`, `nosniff`, referrer policy).
+
+The policy only allows `'self'`, Google Fonts (`fonts.googleapis.com`, `fonts.gstatic.com`) and `data:` images. If you add a script, font, image or API from another domain, add that domain to the `policy` array in `astro.config.mjs`, otherwise the browser will block it. Check the browser console for "Content Security Policy" errors after changes.
+
