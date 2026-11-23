@@ -220,6 +220,38 @@ import { withBase } from '../utils/paths';
   }
   function scroll() { body.scrollTop = body.scrollHeight; }
 
+  /* Win animation: confetti burst + terminal glow */
+  function celebrate() {
+    var win = body.closest('.terminal-window');
+    if (win) { win.classList.remove('flag-win'); void win.offsetWidth; win.classList.add('flag-win'); }
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var c = document.createElement('canvas');
+    c.setAttribute('aria-hidden', 'true');
+    c.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+    var w = c.width = window.innerWidth, h = c.height = window.innerHeight;
+    document.body.appendChild(c);
+    var g = c.getContext('2d'), colors = ['#ff3344', '#ffffff', '#ffb3ba', '#9aa4b2', '#33ff99'];
+    var r = win ? win.getBoundingClientRect() : { left: w / 2, width: 0, top: h / 2, height: 0 };
+    var ox = r.left + r.width / 2, oy = r.top + r.height / 2, P = [];
+    for (var i = 0; i < 140; i++) {
+      var a = Math.random() * Math.PI * 2, v = 4 + Math.random() * 9;
+      P.push({ x: ox, y: oy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4, s: 4 + Math.random() * 5,
+        rot: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4, c: colors[i % colors.length] });
+    }
+    var t0 = performance.now();
+    (function tick(now) {
+      var age = now - t0;
+      g.clearRect(0, 0, w, h);
+      P.forEach(function (q) {
+        q.vy += 0.22; q.vx *= 0.99; q.x += q.vx; q.y += q.vy; q.rot += q.vr;
+        g.save(); g.translate(q.x, q.y); g.rotate(q.rot);
+        g.globalAlpha = Math.max(0, 1 - age / 2600);
+        g.fillStyle = q.c; g.fillRect(-q.s / 2, -q.s / 4, q.s, q.s / 2); g.restore();
+      });
+      if (age < 2600) requestAnimationFrame(tick); else c.remove();
+    })(t0);
+  }
+
   var TARGETS = ['projects', 'writeups', 'notes', 'skills', 'certs', 'contact', 'github', 'htb'];
 var FILES = ['skills.txt', 'contact.txt', 'certs.txt', 'education.txt'];
 var DIRS = ['projects', 'writeups', 'notes', 'certs'];
@@ -312,6 +344,7 @@ var CMDS = {
       var hex = Array.prototype.map.call(new Uint8Array(buf), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
       if (hex === FLAG_HASH) {
         line('You found it. Contact me', 'ok');
+        celebrate();
         linkLine('→ ', 'contact page', PAGES.contact.url);
       } else line('Nope, try again', 'err');
       scroll();
